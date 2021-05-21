@@ -1,3 +1,7 @@
+### 1.4.0 [May 21, 2021]
+
+- Fix URI.escape deprecation warning for Ruby 2.7.0
+
 ### 1.3.2 [November 19, 2020]
 
 - Added "sort_order" property for Submission Data Requests
