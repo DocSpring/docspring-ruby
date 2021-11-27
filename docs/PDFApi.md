@@ -22,12 +22,15 @@ Method | HTTP request | Description
 [**generate_pdf**](PDFApi.md#generate_pdf) | **POST** /templates/{template_id}/submissions | Generates a new PDF
 [**get_combined_submission**](PDFApi.md#get_combined_submission) | **GET** /combined_submissions/{combined_submission_id} | Check the status of a combined submission (merged PDFs)
 [**get_data_request**](PDFApi.md#get_data_request) | **GET** /data_requests/{data_request_id} | Look up a submission data request
+[**get_full_template**](PDFApi.md#get_full_template) | **GET** /templates/{template_id}?full&#x3D;true | Fetch the full template attributes
 [**get_presign_url**](PDFApi.md#get_presign_url) | **GET** /uploads/presign | Get a presigned URL so that you can upload a file to our AWS S3 bucket
 [**get_submission**](PDFApi.md#get_submission) | **GET** /submissions/{submission_id} | Check the status of a PDF
 [**get_submission_batch**](PDFApi.md#get_submission_batch) | **GET** /submissions/batches/{submission_batch_id} | Check the status of a submission batch job
-[**get_template**](PDFApi.md#get_template) | **GET** /templates/{template_id} | Get a single template
+[**get_template**](PDFApi.md#get_template) | **GET** /templates/{template_id} | Check the status of an uploaded template
 [**get_template_schema**](PDFApi.md#get_template_schema) | **GET** /templates/{template_id}/schema | Fetch the JSON schema for a template
 [**list_folders**](PDFApi.md#list_folders) | **GET** /folders/ | Get a list of all folders
+[**list_submissions**](PDFApi.md#list_submissions) | **GET** /submissions | List all submissions
+[**list_submissions_0**](PDFApi.md#list_submissions_0) | **GET** /templates/{template_id}/submissions | List all submissions for a given template
 [**list_templates**](PDFApi.md#list_templates) | **GET** /templates | Get a list of all templates
 [**move_folder_to_folder**](PDFApi.md#move_folder_to_folder) | **POST** /folders/{folder_id}/move | Move a folder
 [**move_template_to_folder**](PDFApi.md#move_template_to_folder) | **POST** /templates/{template_id}/move | Move Template to folder
@@ -933,6 +936,55 @@ Name | Type | Description  | Notes
 
 
 
+# **get_full_template**
+> Template1 get_full_template(template_id)
+
+Fetch the full template attributes
+
+### Example
+```ruby
+# load the gem
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::PDFApi.new
+template_id = 'tpl_000000000000000001' # String | 
+
+begin
+  #Fetch the full template attributes
+  result = api_instance.get_full_template(template_id)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Exception when calling PDFApi->get_full_template: #{e}"
+end
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **template_id** | **String**|  | 
+
+### Return type
+
+[**Template1**](Template1.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+
 # **get_presign_url**
 > Hash&lt;String, Object&gt; get_presign_url
 
@@ -1087,7 +1139,7 @@ Name | Type | Description  | Notes
 # **get_template**
 > Template get_template(template_id)
 
-Get a single template
+Check the status of an uploaded template
 
 ### Example
 ```ruby
@@ -1101,10 +1153,10 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000011' # String | 
+template_id = 'tpl_000000000000000001' # String | 
 
 begin
-  #Get a single template
+  #Check the status of an uploaded template
   result = api_instance.get_template(template_id)
   p result
 rescue DocSpring::ApiError => e
@@ -1221,6 +1273,130 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**Array&lt;Folder&gt;**](Folder.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+
+# **list_submissions**
+> ListSubmissionsResponse list_submissions(opts)
+
+List all submissions
+
+### Example
+```ruby
+# load the gem
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::PDFApi.new
+opts = {
+  cursor: 'sub_list_000012', # String | 
+  limit: 3, # Float | 
+  created_after: '2019-01-01T09:00:00-05:00', # String | 
+  created_before: '2020-01-01T09:00:00-05:00', # String | 
+  type: 'test', # String | 
+  include_data: true # BOOLEAN | 
+}
+
+begin
+  #List all submissions
+  result = api_instance.list_submissions(opts)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Exception when calling PDFApi->list_submissions: #{e}"
+end
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **cursor** | **String**|  | [optional] 
+ **limit** | **Float**|  | [optional] 
+ **created_after** | **String**|  | [optional] 
+ **created_before** | **String**|  | [optional] 
+ **type** | **String**|  | [optional] 
+ **include_data** | **BOOLEAN**|  | [optional] 
+
+### Return type
+
+[**ListSubmissionsResponse**](ListSubmissionsResponse.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+
+# **list_submissions_0**
+> ListSubmissionsResponse list_submissions_0(template_id, opts)
+
+List all submissions for a given template
+
+### Example
+```ruby
+# load the gem
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::PDFApi.new
+template_id = 'tpl_000000000000000002' # String | 
+opts = {
+  cursor: 'cursor_example', # String | 
+  limit: 3.4, # Float | 
+  created_after: 'created_after_example', # String | 
+  created_before: 'created_before_example', # String | 
+  type: 'type_example', # String | 
+  include_data: true # BOOLEAN | 
+}
+
+begin
+  #List all submissions for a given template
+  result = api_instance.list_submissions_0(template_id, opts)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Exception when calling PDFApi->list_submissions_0: #{e}"
+end
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **template_id** | **String**|  | 
+ **cursor** | **String**|  | [optional] 
+ **limit** | **Float**|  | [optional] 
+ **created_after** | **String**|  | [optional] 
+ **created_before** | **String**|  | [optional] 
+ **type** | **String**|  | [optional] 
+ **include_data** | **BOOLEAN**|  | [optional] 
+
+### Return type
+
+[**ListSubmissionsResponse**](ListSubmissionsResponse.md)
 
 ### Authorization
 

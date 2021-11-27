@@ -55,7 +55,7 @@ describe DocSpring::Client do
         )
       }.to raise_error(
         DocSpring::ApiError,
-        'Unprocessable Entity: The root object did not contain a ' \
+        'Unprocessable Entity: Your submission data did not contain a ' \
           "required property of 'description'"
       )
     end

@@ -268,6 +268,18 @@ describe 'PDFApi' do
       expect(result).to_not be_nil
     end
   end
+  # integration tests for get_full_template
+  # Fetch the full template attributes
+  # @param template_id 
+  # @param [Hash] opts the optional parameters
+  # @return [Template1]
+  describe 'get_full_template test' do
+    it 'should work' do
+      template_id = 'tpl_000000000000000001' # String | 
+      result = api_instance.get_full_template(template_id)
+      expect(result).to_not be_nil
+    end
+  end
   # integration tests for get_presign_url
   # Get a presigned URL so that you can upload a file to our AWS S3 bucket
   # @param [Hash] opts the optional parameters
@@ -311,13 +323,13 @@ describe 'PDFApi' do
     end
   end
   # integration tests for get_template
-  # Get a single template
+  # Check the status of an uploaded template
   # @param template_id 
   # @param [Hash] opts the optional parameters
   # @return [Template]
   describe 'get_template test' do
     it 'should work' do
-      template_id = 'tpl_000000000000000011' # String | 
+      template_id = 'tpl_000000000000000001' # String | 
       result = api_instance.get_template(template_id)
       expect(result).to_not be_nil
     end
@@ -345,6 +357,56 @@ describe 'PDFApi' do
         parent_folder_id: 'fld_000000000000000002' # String | Filter By Folder Id
       }
       result = api_instance.list_folders(opts)
+      expect(result).to_not be_nil
+    end
+  end
+  # integration tests for list_submissions
+  # List all submissions
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :cursor 
+  # @option opts [Float] :limit 
+  # @option opts [String] :created_after 
+  # @option opts [String] :created_before 
+  # @option opts [String] :type 
+  # @option opts [BOOLEAN] :include_data 
+  # @return [ListSubmissionsResponse]
+  describe 'list_submissions test' do
+    it 'should work' do
+      opts = {
+        cursor: 'sub_list_000012', # String | 
+        limit: 3, # Float | 
+        created_after: '2019-01-01T09:00:00-05:00', # String | 
+        created_before: '2020-01-01T09:00:00-05:00', # String | 
+        type: 'test', # String | 
+        include_data: true # BOOLEAN | 
+      }
+      result = api_instance.list_submissions(opts)
+      expect(result).to_not be_nil
+    end
+  end
+  # integration tests for list_submissions_0
+  # List all submissions for a given template
+  # @param template_id 
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :cursor 
+  # @option opts [Float] :limit 
+  # @option opts [String] :created_after 
+  # @option opts [String] :created_before 
+  # @option opts [String] :type 
+  # @option opts [BOOLEAN] :include_data 
+  # @return [ListSubmissionsResponse]
+  describe 'list_submissions_0 test' do
+    it 'should work' do
+      template_id = 'tpl_000000000000000002' # String | 
+      opts = {
+        cursor: 'cursor_example', # String | 
+        limit: 3.4, # Float | 
+        created_after: 'created_after_example', # String | 
+        created_before: 'created_before_example', # String | 
+        type: 'type_example', # String | 
+        include_data: true # BOOLEAN | 
+      }
+      result = api_instance.list_submissions_0(template_id, opts)
       expect(result).to_not be_nil
     end
   end

@@ -20,6 +20,8 @@ module DocSpring
 
     attr_accessor :metadata
 
+    attr_accessor :password
+
     attr_accessor :source_pdfs
 
     attr_accessor :test
@@ -30,6 +32,7 @@ module DocSpring
         :'delete_custom_files' => :'delete_custom_files',
         :'expires_in' => :'expires_in',
         :'metadata' => :'metadata',
+        :'password' => :'password',
         :'source_pdfs' => :'source_pdfs',
         :'test' => :'test'
       }
@@ -41,6 +44,7 @@ module DocSpring
         :'delete_custom_files' => :'BOOLEAN',
         :'expires_in' => :'Integer',
         :'metadata' => :'Object',
+        :'password' => :'String',
         :'source_pdfs' => :'Array<Object>',
         :'test' => :'BOOLEAN'
       }
@@ -64,6 +68,10 @@ module DocSpring
 
       if attributes.has_key?(:'metadata')
         self.metadata = attributes[:'metadata']
+      end
+
+      if attributes.has_key?(:'password')
+        self.password = attributes[:'password']
       end
 
       if attributes.has_key?(:'source_pdfs')
@@ -103,6 +111,7 @@ module DocSpring
           delete_custom_files == o.delete_custom_files &&
           expires_in == o.expires_in &&
           metadata == o.metadata &&
+          password == o.password &&
           source_pdfs == o.source_pdfs &&
           test == o.test
     end
@@ -116,7 +125,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Fixnum] Hash code
     def hash
-      [delete_custom_files, expires_in, metadata, source_pdfs, test].hash
+      [delete_custom_files, expires_in, metadata, password, source_pdfs, test].hash
     end
 
     # Builds the object from hash

@@ -18,6 +18,8 @@ module DocSpring
 
     attr_accessor :metadata
 
+    attr_accessor :password
+
     attr_accessor :submission_ids
 
     attr_accessor :test
@@ -27,6 +29,7 @@ module DocSpring
       {
         :'expires_in' => :'expires_in',
         :'metadata' => :'metadata',
+        :'password' => :'password',
         :'submission_ids' => :'submission_ids',
         :'test' => :'test'
       }
@@ -37,6 +40,7 @@ module DocSpring
       {
         :'expires_in' => :'Integer',
         :'metadata' => :'Object',
+        :'password' => :'String',
         :'submission_ids' => :'Array<String>',
         :'test' => :'BOOLEAN'
       }
@@ -56,6 +60,10 @@ module DocSpring
 
       if attributes.has_key?(:'metadata')
         self.metadata = attributes[:'metadata']
+      end
+
+      if attributes.has_key?(:'password')
+        self.password = attributes[:'password']
       end
 
       if attributes.has_key?(:'submission_ids')
@@ -94,6 +102,7 @@ module DocSpring
       self.class == o.class &&
           expires_in == o.expires_in &&
           metadata == o.metadata &&
+          password == o.password &&
           submission_ids == o.submission_ids &&
           test == o.test
     end
@@ -107,7 +116,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Fixnum] Hash code
     def hash
-      [expires_in, metadata, submission_ids, test].hash
+      [expires_in, metadata, password, submission_ids, test].hash
     end
 
     # Builds the object from hash

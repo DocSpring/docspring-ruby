@@ -13,48 +13,28 @@ OpenAPI Generator version: 3.3.0
 require 'date'
 
 module DocSpring
-  class SubmissionData
-    attr_accessor :css
+  class Template1Defaults
+    attr_accessor :color
 
-    attr_accessor :data
+    attr_accessor :font_size
 
-    attr_accessor :data_requests
-
-    attr_accessor :field_overrides
-
-    attr_accessor :html
-
-    attr_accessor :metadata
-
-    attr_accessor :password
-
-    attr_accessor :test
+    attr_accessor :typeface
 
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
-        :'css' => :'css',
-        :'data' => :'data',
-        :'data_requests' => :'data_requests',
-        :'field_overrides' => :'field_overrides',
-        :'html' => :'html',
-        :'metadata' => :'metadata',
-        :'password' => :'password',
-        :'test' => :'test'
+        :'color' => :'color',
+        :'font_size' => :'fontSize',
+        :'typeface' => :'typeface'
       }
     end
 
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'css' => :'String',
-        :'data' => :'Object',
-        :'data_requests' => :'Array<CreateSubmissionDataRequestData>',
-        :'field_overrides' => :'Object',
-        :'html' => :'String',
-        :'metadata' => :'Object',
-        :'password' => :'String',
-        :'test' => :'BOOLEAN'
+        :'color' => :'String',
+        :'font_size' => :'Float',
+        :'typeface' => :'String'
       }
     end
 
@@ -66,38 +46,16 @@ module DocSpring
       # convert string to symbol for hash key
       attributes = attributes.each_with_object({}) { |(k, v), h| h[k.to_sym] = v }
 
-      if attributes.has_key?(:'css')
-        self.css = attributes[:'css']
+      if attributes.has_key?(:'color')
+        self.color = attributes[:'color']
       end
 
-      if attributes.has_key?(:'data')
-        self.data = attributes[:'data']
+      if attributes.has_key?(:'fontSize')
+        self.font_size = attributes[:'fontSize']
       end
 
-      if attributes.has_key?(:'data_requests')
-        if (value = attributes[:'data_requests']).is_a?(Array)
-          self.data_requests = value
-        end
-      end
-
-      if attributes.has_key?(:'field_overrides')
-        self.field_overrides = attributes[:'field_overrides']
-      end
-
-      if attributes.has_key?(:'html')
-        self.html = attributes[:'html']
-      end
-
-      if attributes.has_key?(:'metadata')
-        self.metadata = attributes[:'metadata']
-      end
-
-      if attributes.has_key?(:'password')
-        self.password = attributes[:'password']
-      end
-
-      if attributes.has_key?(:'test')
-        self.test = attributes[:'test']
+      if attributes.has_key?(:'typeface')
+        self.typeface = attributes[:'typeface']
       end
     end
 
@@ -105,17 +63,12 @@ module DocSpring
     # @return Array for valid properties with the reasons
     def list_invalid_properties
       invalid_properties = Array.new
-      if @data.nil?
-        invalid_properties.push('invalid value for "data", data cannot be nil.')
-      end
-
       invalid_properties
     end
 
     # Check to see if the all the properties in the model are valid
     # @return true if the model is valid
     def valid?
-      return false if @data.nil?
       true
     end
 
@@ -124,14 +77,9 @@ module DocSpring
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
-          css == o.css &&
-          data == o.data &&
-          data_requests == o.data_requests &&
-          field_overrides == o.field_overrides &&
-          html == o.html &&
-          metadata == o.metadata &&
-          password == o.password &&
-          test == o.test
+          color == o.color &&
+          font_size == o.font_size &&
+          typeface == o.typeface
     end
 
     # @see the `==` method
@@ -143,7 +91,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Fixnum] Hash code
     def hash
-      [css, data, data_requests, field_overrides, html, metadata, password, test].hash
+      [color, font_size, typeface].hash
     end
 
     # Builds the object from hash

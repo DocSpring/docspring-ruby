@@ -996,6 +996,57 @@ module DocSpring
       return data, status_code, headers
     end
 
+    # Fetch the full template attributes
+    # @param template_id 
+    # @param [Hash] opts the optional parameters
+    # @return [Template1]
+    def get_full_template(template_id, opts = {})
+      data, _status_code, _headers = get_full_template_with_http_info(template_id, opts)
+      data
+    end
+
+    # Fetch the full template attributes
+    # @param template_id 
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(Template1, Fixnum, Hash)>] Template1 data, response status code and response headers
+    def get_full_template_with_http_info(template_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: PDFApi.get_full_template ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling PDFApi.get_full_template"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}?full=true'.sub('{' + 'template_id' + '}', template_id.to_s)
+
+      # query parameters
+      query_params = {}
+
+      # header parameters
+      header_params = {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json'])
+
+      # form parameters
+      form_params = {}
+
+      # http body (model)
+      post_body = nil
+      auth_names = ['api_token_basic']
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path,
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => 'Template1')
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: PDFApi#get_full_template\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Get a presigned URL so that you can upload a file to our AWS S3 bucket
     # @param [Hash] opts the optional parameters
     # @return [Hash<String, Object>]
@@ -1149,7 +1200,7 @@ module DocSpring
       return data, status_code, headers
     end
 
-    # Get a single template
+    # Check the status of an uploaded template
     # @param template_id 
     # @param [Hash] opts the optional parameters
     # @return [Template]
@@ -1158,7 +1209,7 @@ module DocSpring
       data
     end
 
-    # Get a single template
+    # Check the status of an uploaded template
     # @param template_id 
     # @param [Hash] opts the optional parameters
     # @return [Array<(Template, Fixnum, Hash)>] Template data, response status code and response headers
@@ -1295,6 +1346,138 @@ module DocSpring
         :return_type => 'Array<Folder>')
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: PDFApi#list_folders\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # List all submissions
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :cursor 
+    # @option opts [Float] :limit 
+    # @option opts [String] :created_after 
+    # @option opts [String] :created_before 
+    # @option opts [String] :type 
+    # @option opts [BOOLEAN] :include_data 
+    # @return [ListSubmissionsResponse]
+    def list_submissions(opts = {})
+      data, _status_code, _headers = list_submissions_with_http_info(opts)
+      data
+    end
+
+    # List all submissions
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :cursor 
+    # @option opts [Float] :limit 
+    # @option opts [String] :created_after 
+    # @option opts [String] :created_before 
+    # @option opts [String] :type 
+    # @option opts [BOOLEAN] :include_data 
+    # @return [Array<(ListSubmissionsResponse, Fixnum, Hash)>] ListSubmissionsResponse data, response status code and response headers
+    def list_submissions_with_http_info(opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: PDFApi.list_submissions ...'
+      end
+      # resource path
+      local_var_path = '/submissions'
+
+      # query parameters
+      query_params = {}
+      query_params[:'cursor'] = opts[:'cursor'] if !opts[:'cursor'].nil?
+      query_params[:'limit'] = opts[:'limit'] if !opts[:'limit'].nil?
+      query_params[:'created_after'] = opts[:'created_after'] if !opts[:'created_after'].nil?
+      query_params[:'created_before'] = opts[:'created_before'] if !opts[:'created_before'].nil?
+      query_params[:'type'] = opts[:'type'] if !opts[:'type'].nil?
+      query_params[:'include_data'] = opts[:'include_data'] if !opts[:'include_data'].nil?
+
+      # header parameters
+      header_params = {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json'])
+
+      # form parameters
+      form_params = {}
+
+      # http body (model)
+      post_body = nil
+      auth_names = ['api_token_basic']
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path,
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => 'ListSubmissionsResponse')
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: PDFApi#list_submissions\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # List all submissions for a given template
+    # @param template_id 
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :cursor 
+    # @option opts [Float] :limit 
+    # @option opts [String] :created_after 
+    # @option opts [String] :created_before 
+    # @option opts [String] :type 
+    # @option opts [BOOLEAN] :include_data 
+    # @return [ListSubmissionsResponse]
+    def list_submissions_0(template_id, opts = {})
+      data, _status_code, _headers = list_submissions_0_with_http_info(template_id, opts)
+      data
+    end
+
+    # List all submissions for a given template
+    # @param template_id 
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :cursor 
+    # @option opts [Float] :limit 
+    # @option opts [String] :created_after 
+    # @option opts [String] :created_before 
+    # @option opts [String] :type 
+    # @option opts [BOOLEAN] :include_data 
+    # @return [Array<(ListSubmissionsResponse, Fixnum, Hash)>] ListSubmissionsResponse data, response status code and response headers
+    def list_submissions_0_with_http_info(template_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: PDFApi.list_submissions_0 ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling PDFApi.list_submissions_0"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/submissions'.sub('{' + 'template_id' + '}', template_id.to_s)
+
+      # query parameters
+      query_params = {}
+      query_params[:'cursor'] = opts[:'cursor'] if !opts[:'cursor'].nil?
+      query_params[:'limit'] = opts[:'limit'] if !opts[:'limit'].nil?
+      query_params[:'created_after'] = opts[:'created_after'] if !opts[:'created_after'].nil?
+      query_params[:'created_before'] = opts[:'created_before'] if !opts[:'created_before'].nil?
+      query_params[:'type'] = opts[:'type'] if !opts[:'type'].nil?
+      query_params[:'include_data'] = opts[:'include_data'] if !opts[:'include_data'].nil?
+
+      # header parameters
+      header_params = {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json'])
+
+      # form parameters
+      form_params = {}
+
+      # http body (model)
+      post_body = nil
+      auth_names = ['api_token_basic']
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path,
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => 'ListSubmissionsResponse')
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: PDFApi#list_submissions_0\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end

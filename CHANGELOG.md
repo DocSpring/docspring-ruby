@@ -1,3 +1,7 @@
+### 1.4.1 [November 28, 2021]
+
+- Added 'password' parameter to Generate PDF and Combine PDF API endpoints. You can now encrypt each generated PDF with a unique password.
+
 ### 1.4.0 [May 21, 2021]
 
 - Fix URI.escape deprecation warning for Ruby 2.7.0

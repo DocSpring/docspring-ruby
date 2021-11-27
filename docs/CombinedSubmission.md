@@ -4,6 +4,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **metadata** | **Object** |  | [optional] 
+**password** | **String** |  | [optional] 
 **expired** | **BOOLEAN** |  | [optional] 
 **expires_at** | **String** |  | [optional] 
 **source_pdfs** | **Array&lt;Object&gt;** |  | [optional] 

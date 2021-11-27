@@ -16,6 +16,8 @@ module DocSpring
   class CombinedSubmission
     attr_accessor :metadata
 
+    attr_accessor :password
+
     attr_accessor :expired
 
     attr_accessor :expires_at
@@ -60,6 +62,7 @@ module DocSpring
     def self.attribute_map
       {
         :'metadata' => :'metadata',
+        :'password' => :'password',
         :'expired' => :'expired',
         :'expires_at' => :'expires_at',
         :'source_pdfs' => :'source_pdfs',
@@ -76,6 +79,7 @@ module DocSpring
     def self.openapi_types
       {
         :'metadata' => :'Object',
+        :'password' => :'String',
         :'expired' => :'BOOLEAN',
         :'expires_at' => :'String',
         :'source_pdfs' => :'Array<Object>',
@@ -98,6 +102,10 @@ module DocSpring
 
       if attributes.has_key?(:'metadata')
         self.metadata = attributes[:'metadata']
+      end
+
+      if attributes.has_key?(:'password')
+        self.password = attributes[:'password']
       end
 
       if attributes.has_key?(:'expired')
@@ -174,6 +182,7 @@ module DocSpring
       return true if self.equal?(o)
       self.class == o.class &&
           metadata == o.metadata &&
+          password == o.password &&
           expired == o.expired &&
           expires_at == o.expires_at &&
           source_pdfs == o.source_pdfs &&
@@ -194,7 +203,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Fixnum] Hash code
     def hash
-      [metadata, expired, expires_at, source_pdfs, pdf_hash, download_url, submission_ids, id, state, actions].hash
+      [metadata, password, expired, expires_at, source_pdfs, pdf_hash, download_url, submission_ids, id, state, actions].hash
     end
 
     # Builds the object from hash
