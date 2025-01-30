@@ -8,7 +8,7 @@ describe DocSpring::Client do
       c.api_token_secret = 'testsecret123'
     end
     DocSpring.configure do |c|
-      c.host = 'http://api.docspring.local:31337'
+      c.host = 'http://api.docspring.localhost:31337'
     end
   end
 
@@ -21,12 +21,13 @@ describe DocSpring::Client do
       response = client.generate_pdf(
         template_id: template_id,
         data: {
-          title: 'Test PDF',
-          description: 'This PDF is great!',
+          first_name: 'John',
+          last_name: 'Smith',
+          phone_number: "+11234567890"
         },
         field_overrides: {
-          title: {
-            required: false
+          phone_number: {
+            required: true
           }
         }
       )
@@ -50,13 +51,12 @@ describe DocSpring::Client do
         client.generate_pdf(
           template_id: template_id,
           data: {
-            title: 'Test PDF'
+            first_name: 'John'
           }
         )
       }.to raise_error(
         DocSpring::ApiError,
-        'Unprocessable Entity: Your submission data did not contain a ' \
-          "required property of 'description'"
+        /Your submission data did not contain a required property of 'last_name'/
       )
     end
   end
@@ -75,15 +75,17 @@ describe DocSpring::Client do
           {
             template_id: template_id,
             data: {
-              title: 'Test PDF',
-              description: 'This PDF is great!',
+              first_name: 'John',
+              last_name: 'Smith',
+              phone_number: "+11234567890"
             }
           },
           {
             template_id: template_id,
             data: {
-              title: 'Test PDF 2',
-              description: 'This PDF is also great!',
+              first_name: 'Jane',
+              last_name: 'Doe',
+              phone_number: "+64215556789"
             }
           }
         ]
@@ -131,14 +133,17 @@ describe DocSpring::Client do
           {
             template_id: template_id,
             data: {
-              title: 'Test PDF',
-              description: 'This PDF is great!',
+              first_name: 'John',
+              last_name: 'Smith',
+              phone_number: "+11234567890"
             }
           },
           {
             template_id: template_id,
             data: {
-              description: 'This PDF is also great!',
+              # first_name: 'Jane',  # Missing required field
+              last_name: 'Doe',
+              phone_number: "+64215556789"
             }
           }
         ]
@@ -240,15 +245,17 @@ describe DocSpring::Client do
           {
             template_id: template_id,
             data: {
-              title: 'Test PDF',
-              description: 'This PDF is great!',
+              first_name: 'John',
+              last_name: 'Smith',
+              phone_number: "+11234567890"
             }
           },
           {
             template_id: template_id,
             data: {
-              title: 'Test PDF 2',
-              description: 'This PDF is also great!',
+              first_name: 'Jane',
+              last_name: 'Doe',
+              phone_number: "+64215556789"
             }
           }
         ]

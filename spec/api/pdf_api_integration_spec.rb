@@ -21,7 +21,7 @@ describe 'PDFApi' do
     DocSpring.configure do |c|
       c.api_token_id = 'api_token123'
       c.api_token_secret = 'testsecret123'
-      c.host = 'http://api.docspring.local:31337'
+      c.host = 'http://api.docspring.localhost:31337'
     end
   end
 
@@ -43,14 +43,15 @@ describe 'PDFApi' do
       responses = client.batch_generate_pdf_v1(template_id, [
         {
           data: {
-            title: 'Test PDF',
-            description: 'This PDF is great!',
+            first_name: 'John',
+            last_name: 'Smith',
           }
         },
         {
           data: {
-            title: 'Test PDF 2',
-            description: 'This PDF is also great!',
+            first_name: 'Jane',
+            last_name: 'Doe',
+            phone_number: "+64215556789"
           }
         }
       ])
@@ -74,15 +75,16 @@ describe 'PDFApi' do
           {
             template_id: template_id,
             data: {
-              title: 'Test PDF',
-              description: 'This PDF is great!',
+              first_name: 'John',
+              last_name: 'Smith',
             }
           },
           {
             template_id: template_id,
             data: {
-              title: 'Test PDF 2',
-              description: 'This PDF is also great!',
+              first_name: 'Jane',
+              last_name: 'Doe',
+              phone_number: "+64215556789"
             }
           }
         ]
@@ -153,7 +155,7 @@ describe 'PDFApi' do
       ]
     )
     expect(response.status).to eq 'success'
-    expect(response.new_field_ids).to eq [3, 4, 5]
+    expect(response.new_field_ids).to eq [4, 5, 6]
     expect(response.new_field_ids[0].class).to eq Integer
   end
 
@@ -184,7 +186,7 @@ describe 'PDFApi' do
       expect(response.token.id).to_not be_nil
       expect(response.token.secret).to_not be_nil
       expect(response.token.data_request_url).to start_with \
-        'http://app.docspring.local/data_requests/drq_000000000000000001?token_id='
+        'http://app.docspring.localhost/data_requests/drq_000000000000000001?token_id='
       expect(response.token.data_request_url).to include \
         "?token_id=#{response.token.id}" \
         "&token_secret=#{response.token.secret}"
@@ -225,8 +227,8 @@ describe 'PDFApi' do
       template_id = 'tpl_000000000000000001'
       response = client.generate_pdf(template_id,
         data: {
-          title: 'Test PDF',
-          description: 'This PDF is great!',
+          first_name: 'John',
+          last_name: 'Smith',
         })
       expect(response.status).to eq 'success'
       submission = response.submission
@@ -246,13 +248,13 @@ describe 'PDFApi' do
       template_id = 'tpl_000000000000000001'
       response = client.generate_pdf(template_id,
         data: {
-          title: 'Test PDF',
+          first_name: 'John',
         },
         data_requests: [
           {
             name: 'John Smith',
             email: 'jsmith@example.com',
-            fields: ['description'],
+            fields: ['last_name'],
             order: 1,
             auth_type: 'email_link',
           }
@@ -270,7 +272,7 @@ describe 'PDFApi' do
 
       expect(data_request.id).to start_with 'drq_'
       expect(data_request.state).to eq 'pending'
-      expect(data_request.fields).to eq ['description']
+      expect(data_request.fields).to eq ['last_name']
       expect(data_request.order).to eq 1
       expect(data_request.name).to eq 'John Smith'
       expect(data_request.email).to eq 'jsmith@example.com'
@@ -302,7 +304,7 @@ describe 'PDFApi' do
       expect(data_request.order).to eq 1
       expect(data_request.name).to eq 'John Doe'
       expect(data_request.email).to eq 'jdoe@example.com'
-      expect(data_request.fields).to eq ['description']
+      expect(data_request.fields).to eq ['last_name']
       expect(data_request.metadata).to eq(user_id: 123)
       expect(data_request.state).to eq 'pending'
       expect(data_request.viewed_at).to be_nil
@@ -323,7 +325,7 @@ describe 'PDFApi' do
         name: 'Harry Smith',
         email: 'hsmith@example.com',
         order: 2,
-        fields: ['title'],
+        fields: ['first_name'],
         metadata: { user_id: 345 },
         auth_type: 'oauth',
         auth_provider: 'twitter',
@@ -336,7 +338,7 @@ describe 'PDFApi' do
       expect(data_request.order).to eq 1
       expect(data_request.name).to eq 'John Doe'
       expect(data_request.email).to eq 'jdoe@example.com'
-      expect(data_request.fields).to eq ['description']
+      expect(data_request.fields).to eq ['last_name']
       expect(data_request.metadata).to eq(user_id: 345)
       expect(data_request.state).to eq 'pending'
       expect(data_request.viewed_at).to be_nil

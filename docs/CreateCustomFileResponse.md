@@ -1,10 +1,22 @@
 # DocSpring::CreateCustomFileResponse
 
 ## Properties
-Name | Type | Description | Notes
------------- | ------------- | ------------- | -------------
-**custom_file** | [**CustomFile**](CustomFile.md) |  | [optional] 
-**errors** | **Array&lt;String&gt;** |  | [optional] 
-**status** | **String** |  | [optional] 
 
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **status** | **String** |  |  |
+| **errors** | **Array&lt;String&gt;** |  | [optional] |
+| **custom_file** | **Object** |  |  |
+
+## Example
+
+```ruby
+require 'docspring'
+
+instance = DocSpring::CreateCustomFileResponse.new(
+  status: null,
+  errors: null,
+  custom_file: null
+)
+```
 

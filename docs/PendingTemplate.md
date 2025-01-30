@@ -1,24 +1,50 @@
 # DocSpring::PendingTemplate
 
 ## Properties
-Name | Type | Description | Notes
------------- | ------------- | ------------- | -------------
-**expiration_interval** | **String** |  | [optional] 
-**webhook_url** | **String** |  | [optional] 
-**parent_folder_id** | **String** |  | [optional] 
-**expire_after** | **Float** |  | [optional] 
-**allow_additional_properties** | **BOOLEAN** |  | [optional] 
-**description** | **String** |  | [optional] 
-**public_submissions** | **BOOLEAN** |  | [optional] 
-**slack_webhook_url** | **String** |  | [optional] 
-**path** | **String** |  | [optional] 
-**public_web_form** | **BOOLEAN** |  | [optional] 
-**editable_submissions** | **BOOLEAN** |  | [optional] 
-**expire_submissions** | **BOOLEAN** |  | [optional] 
-**name** | **String** |  | [optional] 
-**template_type** | **String** |  | [optional] 
-**id** | **String** |  | [optional] 
-**locked** | **BOOLEAN** |  | [optional] 
-**redirect_url** | **String** |  | [optional] 
 
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **id** | **String** |  |  |
+| **name** | **String** |  |  |
+| **description** | **String** |  |  |
+| **template_type** | **String** |  |  |
+| **public_web_form** | **Boolean** |  |  |
+| **public_submissions** | **Boolean** |  |  |
+| **expire_submissions** | **Boolean** |  |  |
+| **expire_after** | **Float** |  | [optional] |
+| **locked** | **Boolean** |  |  |
+| **expiration_interval** | **String** |  | [optional] |
+| **allow_additional_properties** | **Boolean** |  |  |
+| **editable_submissions** | **Boolean** |  |  |
+| **webhook_url** | **String** |  |  |
+| **slack_webhook_url** | **String** |  |  |
+| **redirect_url** | **String** |  |  |
+| **path** | **String** |  | [optional] |
+| **parent_folder_id** | **String** |  | [optional] |
+
+## Example
+
+```ruby
+require 'docspring'
+
+instance = DocSpring::PendingTemplate.new(
+  id: null,
+  name: null,
+  description: null,
+  template_type: null,
+  public_web_form: null,
+  public_submissions: null,
+  expire_submissions: null,
+  expire_after: null,
+  locked: null,
+  expiration_interval: null,
+  allow_additional_properties: null,
+  editable_submissions: null,
+  webhook_url: null,
+  slack_webhook_url: null,
+  redirect_url: null,
+  path: null,
+  parent_folder_id: null
+)
+```
 
