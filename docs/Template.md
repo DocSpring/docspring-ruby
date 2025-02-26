@@ -4,26 +4,52 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **name** | **String** |  |  |
-| **description** | **String** |  |  |
-| **public_web_form** | **Boolean** |  |  |
-| **public_submissions** | **Boolean** |  |  |
-| **expire_submissions** | **Boolean** |  |  |
-| **expire_after** | **Float** |  |  |
-| **expiration_interval** | **String** |  |  |
+| **add_data_request_submission_id_footers** | **Boolean** |  |  |
 | **allow_additional_properties** | **Boolean** |  |  |
-| **editable_submissions** | **Boolean** |  |  |
-| **locked** | **Boolean** |  |  |
-| **webhook_url** | **String** |  |  |
-| **slack_webhook_url** | **String** |  |  |
-| **redirect_url** | **String** |  |  |
-| **id** | **String** |  |  |
-| **template_type** | **String** |  |  |
-| **page_dimensions** | **Array&lt;Array&lt;Float&gt;&gt;** |  |  |
+| **description** | **String** |  |  |
+| **document_filename** | **String** |  |  |
+| **document_md5** | **String** |  |  |
+| **document_parse_error** | **Boolean** |  |  |
+| **document_processed** | **Boolean** |  |  |
+| **document_state** | **String** |  |  |
 | **document_url** | **String** |  |  |
-| **permanent_document_url** | **String** |  |  |
-| **path** | **String** |  |  |
+| **editable_submissions** | **Boolean** |  |  |
+| **embed_domains** | **String** |  |  |
+| **encrypt_pdfs_password** | **String** |  |  |
+| **encrypt_pdfs** | **Boolean** |  |  |
+| **expiration_interval** | **String** |  |  |
+| **expire_after** | **Integer** |  |  |
+| **expire_submissions** | **Boolean** |  |  |
+| **external_predefined_fields_template_id** | **String** |  |  |
+| **external_predefined_fields_template_name** | **String** |  |  |
+| **first_template** | **Boolean** |  |  |
+| **id** | **String** |  |  |
+| **locked** | **Boolean** |  |  |
+| **merge_audit_trail_pdf** | **Boolean** |  |  |
+| **name** | **String** |  |  |
+| **page_count** | **Integer** |  |  |
+| **page_dimensions** | **Array&lt;Array&lt;Float&gt;&gt;** |  |  |
 | **parent_folder_id** | **String** |  |  |
+| **path** | **String** |  |  |
+| **permanent_document_url** | **String** |  |  |
+| **public_submissions** | **Boolean** |  |  |
+| **public_web_form** | **Boolean** |  |  |
+| **redirect_url** | **String** |  |  |
+| **slack_webhook_url** | **String** |  |  |
+| **template_type** | **String** |  |  |
+| **updated_at** | **String** |  |  |
+| **webhook_url** | **String** |  |  |
+| **demo** | **Boolean** |  |  |
+| **defaults** | **Object** |  |  |
+| **field_order** | **Array&lt;Array&lt;Float&gt;&gt;** |  |  |
+| **fields** | **Object** |  |  |
+| **footer_html** | **String** |  |  |
+| **header_html** | **String** |  |  |
+| **html_engine_options** | **Object** |  |  |
+| **html** | **String** |  |  |
+| **predefined_fields** | **Array&lt;Object&gt;** |  |  |
+| **scss** | **String** |  |  |
+| **shared_field_data** | **Object** |  |  |
 
 ## Example
 
@@ -31,26 +57,52 @@
 require 'docspring'
 
 instance = DocSpring::Template.new(
-  name: null,
-  description: null,
-  public_web_form: null,
-  public_submissions: null,
-  expire_submissions: null,
-  expire_after: null,
-  expiration_interval: null,
+  add_data_request_submission_id_footers: null,
   allow_additional_properties: null,
-  editable_submissions: null,
-  locked: null,
-  webhook_url: null,
-  slack_webhook_url: null,
-  redirect_url: null,
-  id: null,
-  template_type: null,
-  page_dimensions: null,
+  description: null,
+  document_filename: null,
+  document_md5: null,
+  document_parse_error: null,
+  document_processed: null,
+  document_state: null,
   document_url: null,
-  permanent_document_url: null,
+  editable_submissions: null,
+  embed_domains: null,
+  encrypt_pdfs_password: null,
+  encrypt_pdfs: null,
+  expiration_interval: null,
+  expire_after: null,
+  expire_submissions: null,
+  external_predefined_fields_template_id: null,
+  external_predefined_fields_template_name: null,
+  first_template: null,
+  id: null,
+  locked: null,
+  merge_audit_trail_pdf: null,
+  name: null,
+  page_count: null,
+  page_dimensions: null,
+  parent_folder_id: null,
   path: null,
-  parent_folder_id: null
+  permanent_document_url: null,
+  public_submissions: null,
+  public_web_form: null,
+  redirect_url: null,
+  slack_webhook_url: null,
+  template_type: null,
+  updated_at: null,
+  webhook_url: null,
+  demo: null,
+  defaults: null,
+  field_order: null,
+  fields: null,
+  footer_html: null,
+  header_html: null,
+  html_engine_options: null,
+  html: null,
+  predefined_fields: null,
+  scss: null,
+  shared_field_data: null
 )
 ```
 

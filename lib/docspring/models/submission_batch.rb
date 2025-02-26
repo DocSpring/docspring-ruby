@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -17,6 +17,12 @@ module DocSpring
   class SubmissionBatch
     attr_accessor :id
 
+    attr_accessor :state
+
+    attr_accessor :metadata
+
+    attr_accessor :processed_at
+
     attr_accessor :total_count
 
     attr_accessor :pending_count
@@ -24,14 +30,6 @@ module DocSpring
     attr_accessor :error_count
 
     attr_accessor :completion_percentage
-
-    attr_accessor :state
-
-    attr_accessor :processed_at
-
-    attr_accessor :metadata
-
-    attr_accessor :submissions
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -59,14 +57,13 @@ module DocSpring
     def self.attribute_map
       {
         :'id' => :'id',
+        :'state' => :'state',
+        :'metadata' => :'metadata',
+        :'processed_at' => :'processed_at',
         :'total_count' => :'total_count',
         :'pending_count' => :'pending_count',
         :'error_count' => :'error_count',
-        :'completion_percentage' => :'completion_percentage',
-        :'state' => :'state',
-        :'processed_at' => :'processed_at',
-        :'metadata' => :'metadata',
-        :'submissions' => :'submissions'
+        :'completion_percentage' => :'completion_percentage'
       }
     end
 
@@ -79,20 +76,20 @@ module DocSpring
     def self.openapi_types
       {
         :'id' => :'String',
+        :'state' => :'String',
+        :'metadata' => :'Object',
+        :'processed_at' => :'String',
         :'total_count' => :'Integer',
         :'pending_count' => :'Integer',
         :'error_count' => :'Integer',
-        :'completion_percentage' => :'Integer',
-        :'state' => :'String',
-        :'processed_at' => :'String',
-        :'metadata' => :'Object',
-        :'submissions' => :'Array<Submission>'
+        :'completion_percentage' => :'Float'
       }
     end
 
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
+        :'id',
         :'processed_at',
       ])
     end
@@ -118,6 +115,24 @@ module DocSpring
         self.id = nil
       end
 
+      if attributes.key?(:'state')
+        self.state = attributes[:'state']
+      else
+        self.state = nil
+      end
+
+      if attributes.key?(:'metadata')
+        self.metadata = attributes[:'metadata']
+      else
+        self.metadata = nil
+      end
+
+      if attributes.key?(:'processed_at')
+        self.processed_at = attributes[:'processed_at']
+      else
+        self.processed_at = nil
+      end
+
       if attributes.key?(:'total_count')
         self.total_count = attributes[:'total_count']
       else
@@ -141,30 +156,6 @@ module DocSpring
       else
         self.completion_percentage = nil
       end
-
-      if attributes.key?(:'state')
-        self.state = attributes[:'state']
-      else
-        self.state = nil
-      end
-
-      if attributes.key?(:'processed_at')
-        self.processed_at = attributes[:'processed_at']
-      else
-        self.processed_at = nil
-      end
-
-      if attributes.key?(:'metadata')
-        self.metadata = attributes[:'metadata']
-      else
-        self.metadata = nil
-      end
-
-      if attributes.key?(:'submissions')
-        if (value = attributes[:'submissions']).is_a?(Array)
-          self.submissions = value
-        end
-      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -172,8 +163,12 @@ module DocSpring
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @id.nil?
-        invalid_properties.push('invalid value for "id", id cannot be nil.')
+      if @state.nil?
+        invalid_properties.push('invalid value for "state", state cannot be nil.')
+      end
+
+      if @metadata.nil?
+        invalid_properties.push('invalid value for "metadata", metadata cannot be nil.')
       end
 
       if @total_count.nil?
@@ -192,14 +187,6 @@ module DocSpring
         invalid_properties.push('invalid value for "completion_percentage", completion_percentage cannot be nil.')
       end
 
-      if @state.nil?
-        invalid_properties.push('invalid value for "state", state cannot be nil.')
-      end
-
-      if @metadata.nil?
-        invalid_properties.push('invalid value for "metadata", metadata cannot be nil.')
-      end
-
       invalid_properties
     end
 
@@ -207,15 +194,14 @@ module DocSpring
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @id.nil?
-      return false if @total_count.nil?
-      return false if @pending_count.nil?
-      return false if @error_count.nil?
-      return false if @completion_percentage.nil?
       return false if @state.nil?
       state_validator = EnumAttributeValidator.new('String', ["pending", "processed", "error"])
       return false unless state_validator.valid?(@state)
       return false if @metadata.nil?
+      return false if @total_count.nil?
+      return false if @pending_count.nil?
+      return false if @error_count.nil?
+      return false if @completion_percentage.nil?
       true
     end
 
@@ -235,14 +221,13 @@ module DocSpring
       return true if self.equal?(o)
       self.class == o.class &&
           id == o.id &&
+          state == o.state &&
+          metadata == o.metadata &&
+          processed_at == o.processed_at &&
           total_count == o.total_count &&
           pending_count == o.pending_count &&
           error_count == o.error_count &&
-          completion_percentage == o.completion_percentage &&
-          state == o.state &&
-          processed_at == o.processed_at &&
-          metadata == o.metadata &&
-          submissions == o.submissions
+          completion_percentage == o.completion_percentage
     end
 
     # @see the `==` method
@@ -254,7 +239,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, total_count, pending_count, error_count, completion_percentage, state, processed_at, metadata, submissions].hash
+      [id, state, metadata, processed_at, total_count, pending_count, error_count, completion_percentage].hash
     end
 
     # Builds the object from hash

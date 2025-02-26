@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -17,27 +17,29 @@ module DocSpring
   class CombinedSubmission
     attr_accessor :id
 
+    attr_accessor :state
+
     attr_accessor :expired
 
     attr_accessor :expires_in
 
     attr_accessor :expires_at
 
-    attr_accessor :state
+    attr_accessor :processed_at
 
     attr_accessor :error_message
-
-    attr_accessor :metadata
-
-    attr_accessor :password
 
     attr_accessor :submission_ids
 
     attr_accessor :source_pdfs
 
-    attr_accessor :download_url
+    attr_accessor :metadata
+
+    attr_accessor :password
 
     attr_accessor :pdf_hash
+
+    attr_accessor :download_url
 
     attr_accessor :actions
 
@@ -67,17 +69,18 @@ module DocSpring
     def self.attribute_map
       {
         :'id' => :'id',
+        :'state' => :'state',
         :'expired' => :'expired',
         :'expires_in' => :'expires_in',
         :'expires_at' => :'expires_at',
-        :'state' => :'state',
+        :'processed_at' => :'processed_at',
         :'error_message' => :'error_message',
-        :'metadata' => :'metadata',
-        :'password' => :'password',
         :'submission_ids' => :'submission_ids',
         :'source_pdfs' => :'source_pdfs',
-        :'download_url' => :'download_url',
+        :'metadata' => :'metadata',
+        :'password' => :'password',
         :'pdf_hash' => :'pdf_hash',
+        :'download_url' => :'download_url',
         :'actions' => :'actions'
       }
     end
@@ -91,17 +94,18 @@ module DocSpring
     def self.openapi_types
       {
         :'id' => :'String',
+        :'state' => :'String',
         :'expired' => :'Boolean',
         :'expires_in' => :'Integer',
         :'expires_at' => :'String',
-        :'state' => :'String',
+        :'processed_at' => :'String',
         :'error_message' => :'String',
-        :'metadata' => :'Object',
-        :'password' => :'String',
         :'submission_ids' => :'Array<String>',
         :'source_pdfs' => :'Array<Object>',
-        :'download_url' => :'String',
+        :'metadata' => :'Object',
+        :'password' => :'String',
         :'pdf_hash' => :'String',
+        :'download_url' => :'String',
         :'actions' => :'Array<CombinedSubmissionAction>'
       }
     end
@@ -109,12 +113,14 @@ module DocSpring
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
+        :'id',
         :'expires_in',
         :'expires_at',
+        :'processed_at',
         :'error_message',
         :'password',
-        :'download_url',
         :'pdf_hash',
+        :'download_url',
       ])
     end
 
@@ -139,6 +145,12 @@ module DocSpring
         self.id = nil
       end
 
+      if attributes.key?(:'state')
+        self.state = attributes[:'state']
+      else
+        self.state = nil
+      end
+
       if attributes.key?(:'expired')
         self.expired = attributes[:'expired']
       else
@@ -147,28 +159,26 @@ module DocSpring
 
       if attributes.key?(:'expires_in')
         self.expires_in = attributes[:'expires_in']
+      else
+        self.expires_in = nil
       end
 
       if attributes.key?(:'expires_at')
         self.expires_at = attributes[:'expires_at']
+      else
+        self.expires_at = nil
       end
 
-      if attributes.key?(:'state')
-        self.state = attributes[:'state']
+      if attributes.key?(:'processed_at')
+        self.processed_at = attributes[:'processed_at']
       else
-        self.state = nil
+        self.processed_at = nil
       end
 
       if attributes.key?(:'error_message')
         self.error_message = attributes[:'error_message']
-      end
-
-      if attributes.key?(:'metadata')
-        self.metadata = attributes[:'metadata']
-      end
-
-      if attributes.key?(:'password')
-        self.password = attributes[:'password']
+      else
+        self.error_message = nil
       end
 
       if attributes.key?(:'submission_ids')
@@ -187,18 +197,36 @@ module DocSpring
         self.source_pdfs = nil
       end
 
-      if attributes.key?(:'download_url')
-        self.download_url = attributes[:'download_url']
+      if attributes.key?(:'metadata')
+        self.metadata = attributes[:'metadata']
+      else
+        self.metadata = nil
+      end
+
+      if attributes.key?(:'password')
+        self.password = attributes[:'password']
+      else
+        self.password = nil
       end
 
       if attributes.key?(:'pdf_hash')
         self.pdf_hash = attributes[:'pdf_hash']
+      else
+        self.pdf_hash = nil
+      end
+
+      if attributes.key?(:'download_url')
+        self.download_url = attributes[:'download_url']
+      else
+        self.download_url = nil
       end
 
       if attributes.key?(:'actions')
         if (value = attributes[:'actions']).is_a?(Array)
           self.actions = value
         end
+      else
+        self.actions = nil
       end
     end
 
@@ -207,16 +235,12 @@ module DocSpring
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @id.nil?
-        invalid_properties.push('invalid value for "id", id cannot be nil.')
+      if @state.nil?
+        invalid_properties.push('invalid value for "state", state cannot be nil.')
       end
 
       if @expired.nil?
         invalid_properties.push('invalid value for "expired", expired cannot be nil.')
-      end
-
-      if @state.nil?
-        invalid_properties.push('invalid value for "state", state cannot be nil.')
       end
 
       if @submission_ids.nil?
@@ -227,6 +251,14 @@ module DocSpring
         invalid_properties.push('invalid value for "source_pdfs", source_pdfs cannot be nil.')
       end
 
+      if @metadata.nil?
+        invalid_properties.push('invalid value for "metadata", metadata cannot be nil.')
+      end
+
+      if @actions.nil?
+        invalid_properties.push('invalid value for "actions", actions cannot be nil.')
+      end
+
       invalid_properties
     end
 
@@ -234,13 +266,14 @@ module DocSpring
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @id.nil?
-      return false if @expired.nil?
       return false if @state.nil?
       state_validator = EnumAttributeValidator.new('String', ["pending", "processed", "error"])
       return false unless state_validator.valid?(@state)
+      return false if @expired.nil?
       return false if @submission_ids.nil?
       return false if @source_pdfs.nil?
+      return false if @metadata.nil?
+      return false if @actions.nil?
       true
     end
 
@@ -260,17 +293,18 @@ module DocSpring
       return true if self.equal?(o)
       self.class == o.class &&
           id == o.id &&
+          state == o.state &&
           expired == o.expired &&
           expires_in == o.expires_in &&
           expires_at == o.expires_at &&
-          state == o.state &&
+          processed_at == o.processed_at &&
           error_message == o.error_message &&
-          metadata == o.metadata &&
-          password == o.password &&
           submission_ids == o.submission_ids &&
           source_pdfs == o.source_pdfs &&
-          download_url == o.download_url &&
+          metadata == o.metadata &&
+          password == o.password &&
           pdf_hash == o.pdf_hash &&
+          download_url == o.download_url &&
           actions == o.actions
     end
 
@@ -283,7 +317,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, expired, expires_in, expires_at, state, error_message, metadata, password, submission_ids, source_pdfs, download_url, pdf_hash, actions].hash
+      [id, state, expired, expires_in, expires_at, processed_at, error_message, submission_ids, source_pdfs, metadata, password, pdf_hash, download_url, actions].hash
     end
 
     # Builds the object from hash

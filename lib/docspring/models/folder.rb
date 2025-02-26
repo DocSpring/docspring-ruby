@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -51,6 +51,9 @@ module DocSpring
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
+        :'id',
+        :'name',
+        :'path',
         :'parent_folder_id'
       ])
     end
@@ -72,18 +75,26 @@ module DocSpring
 
       if attributes.key?(:'id')
         self.id = attributes[:'id']
+      else
+        self.id = nil
       end
 
       if attributes.key?(:'name')
         self.name = attributes[:'name']
+      else
+        self.name = nil
       end
 
       if attributes.key?(:'path')
         self.path = attributes[:'path']
+      else
+        self.path = nil
       end
 
       if attributes.key?(:'parent_folder_id')
         self.parent_folder_id = attributes[:'parent_folder_id']
+      else
+        self.parent_folder_id = nil
       end
     end
 

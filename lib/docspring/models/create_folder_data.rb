@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -32,7 +32,7 @@ module DocSpring
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'folder' => :'CreateFolderAttributes'
+        :'folder' => :'Object'
       }
     end
 

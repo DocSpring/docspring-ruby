@@ -4,7 +4,7 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **folder** | [**CreateFolderAttributes**](CreateFolderAttributes.md) |  |  |
+| **folder** | **Object** |  |  |
 
 ## Example
 

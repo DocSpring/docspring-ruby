@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -49,22 +49,22 @@ describe DocSpring::SubmissionAction do
     end
   end
 
-  describe 'test attribute "action_category"' do
-    it 'should work' do
-      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
-      # validator = Petstore::EnumTest::EnumAttributeValidator.new('String', ["notification", "file_upload"])
-      # validator.allowable_values.each do |value|
-      #   expect { instance.action_category = value }.not_to raise_error
-      # end
-    end
-  end
-
   describe 'test attribute "action_type"' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
       # validator = Petstore::EnumTest::EnumAttributeValidator.new('String', ["webhook", "slack_webhook", "email", "aws_s3_upload"])
       # validator.allowable_values.each do |value|
       #   expect { instance.action_type = value }.not_to raise_error
+      # end
+    end
+  end
+
+  describe 'test attribute "action_category"' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+      # validator = Petstore::EnumTest::EnumAttributeValidator.new('String', ["notification", "file_upload"])
+      # validator.allowable_values.each do |value|
+      #   expect { instance.action_category = value }.not_to raise_error
       # end
     end
   end

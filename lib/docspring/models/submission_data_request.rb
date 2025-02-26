@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -17,11 +17,9 @@ module DocSpring
   class SubmissionDataRequest
     attr_accessor :id
 
-    attr_accessor :submission_id
+    attr_accessor :email
 
     attr_accessor :name
-
-    attr_accessor :email
 
     attr_accessor :order
 
@@ -36,6 +34,8 @@ module DocSpring
     attr_accessor :viewed_at
 
     attr_accessor :completed_at
+
+    attr_accessor :data
 
     attr_accessor :auth_type
 
@@ -83,9 +83,8 @@ module DocSpring
     def self.attribute_map
       {
         :'id' => :'id',
-        :'submission_id' => :'submission_id',
-        :'name' => :'name',
         :'email' => :'email',
+        :'name' => :'name',
         :'order' => :'order',
         :'sort_order' => :'sort_order',
         :'fields' => :'fields',
@@ -93,6 +92,7 @@ module DocSpring
         :'state' => :'state',
         :'viewed_at' => :'viewed_at',
         :'completed_at' => :'completed_at',
+        :'data' => :'data',
         :'auth_type' => :'auth_type',
         :'auth_second_factor_type' => :'auth_second_factor_type',
         :'auth_provider' => :'auth_provider',
@@ -115,9 +115,8 @@ module DocSpring
     def self.openapi_types
       {
         :'id' => :'String',
-        :'submission_id' => :'String',
-        :'name' => :'String',
         :'email' => :'String',
+        :'name' => :'String',
         :'order' => :'Integer',
         :'sort_order' => :'Integer',
         :'fields' => :'Array<String>',
@@ -125,6 +124,7 @@ module DocSpring
         :'state' => :'String',
         :'viewed_at' => :'String',
         :'completed_at' => :'String',
+        :'data' => :'Object',
         :'auth_type' => :'String',
         :'auth_second_factor_type' => :'String',
         :'auth_provider' => :'String',
@@ -141,11 +141,15 @@ module DocSpring
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
-        :'name',
+        :'id',
         :'email',
+        :'name',
+        :'order',
         :'fields',
+        :'metadata',
         :'viewed_at',
         :'completed_at',
+        :'data',
         :'auth_provider',
         :'auth_session_started_at',
         :'auth_session_id_hash',
@@ -178,20 +182,16 @@ module DocSpring
         self.id = nil
       end
 
-      if attributes.key?(:'submission_id')
-        self.submission_id = attributes[:'submission_id']
+      if attributes.key?(:'email')
+        self.email = attributes[:'email']
+      else
+        self.email = nil
       end
 
       if attributes.key?(:'name')
         self.name = attributes[:'name']
       else
         self.name = nil
-      end
-
-      if attributes.key?(:'email')
-        self.email = attributes[:'email']
-      else
-        self.email = nil
       end
 
       if attributes.key?(:'order')
@@ -228,50 +228,80 @@ module DocSpring
 
       if attributes.key?(:'viewed_at')
         self.viewed_at = attributes[:'viewed_at']
+      else
+        self.viewed_at = nil
       end
 
       if attributes.key?(:'completed_at')
         self.completed_at = attributes[:'completed_at']
+      else
+        self.completed_at = nil
+      end
+
+      if attributes.key?(:'data')
+        self.data = attributes[:'data']
+      else
+        self.data = nil
       end
 
       if attributes.key?(:'auth_type')
         self.auth_type = attributes[:'auth_type']
+      else
+        self.auth_type = nil
       end
 
       if attributes.key?(:'auth_second_factor_type')
         self.auth_second_factor_type = attributes[:'auth_second_factor_type']
+      else
+        self.auth_second_factor_type = nil
       end
 
       if attributes.key?(:'auth_provider')
         self.auth_provider = attributes[:'auth_provider']
+      else
+        self.auth_provider = nil
       end
 
       if attributes.key?(:'auth_session_started_at')
         self.auth_session_started_at = attributes[:'auth_session_started_at']
+      else
+        self.auth_session_started_at = nil
       end
 
       if attributes.key?(:'auth_session_id_hash')
         self.auth_session_id_hash = attributes[:'auth_session_id_hash']
+      else
+        self.auth_session_id_hash = nil
       end
 
       if attributes.key?(:'auth_user_id_hash')
         self.auth_user_id_hash = attributes[:'auth_user_id_hash']
+      else
+        self.auth_user_id_hash = nil
       end
 
       if attributes.key?(:'auth_username_hash')
         self.auth_username_hash = attributes[:'auth_username_hash']
+      else
+        self.auth_username_hash = nil
       end
 
       if attributes.key?(:'auth_phone_number_hash')
         self.auth_phone_number_hash = attributes[:'auth_phone_number_hash']
+      else
+        self.auth_phone_number_hash = nil
       end
 
       if attributes.key?(:'ip_address')
         self.ip_address = attributes[:'ip_address']
+      else
+        self.ip_address = nil
       end
 
       if attributes.key?(:'user_agent')
         self.user_agent = attributes[:'user_agent']
+      else
+        self.user_agent = nil
       end
     end
 
@@ -280,24 +310,20 @@ module DocSpring
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @id.nil?
-        invalid_properties.push('invalid value for "id", id cannot be nil.')
-      end
-
-      if @order.nil?
-        invalid_properties.push('invalid value for "order", order cannot be nil.')
-      end
-
       if @sort_order.nil?
         invalid_properties.push('invalid value for "sort_order", sort_order cannot be nil.')
       end
 
-      if @metadata.nil?
-        invalid_properties.push('invalid value for "metadata", metadata cannot be nil.')
-      end
-
       if @state.nil?
         invalid_properties.push('invalid value for "state", state cannot be nil.')
+      end
+
+      if @auth_type.nil?
+        invalid_properties.push('invalid value for "auth_type", auth_type cannot be nil.')
+      end
+
+      if @auth_second_factor_type.nil?
+        invalid_properties.push('invalid value for "auth_second_factor_type", auth_second_factor_type cannot be nil.')
       end
 
       invalid_properties
@@ -307,15 +333,14 @@ module DocSpring
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @id.nil?
-      return false if @order.nil?
       return false if @sort_order.nil?
-      return false if @metadata.nil?
       return false if @state.nil?
       state_validator = EnumAttributeValidator.new('String', ["pending", "completed"])
       return false unless state_validator.valid?(@state)
+      return false if @auth_type.nil?
       auth_type_validator = EnumAttributeValidator.new('String', ["none", "password", "oauth", "email_link", "phone_number", "ldap", "saml"])
       return false unless auth_type_validator.valid?(@auth_type)
+      return false if @auth_second_factor_type.nil?
       auth_second_factor_type_validator = EnumAttributeValidator.new('String', ["none", "phone_number", "totp", "mobile_push", "security_key", "fingerprint"])
       return false unless auth_second_factor_type_validator.valid?(@auth_second_factor_type)
       true
@@ -357,9 +382,8 @@ module DocSpring
       return true if self.equal?(o)
       self.class == o.class &&
           id == o.id &&
-          submission_id == o.submission_id &&
-          name == o.name &&
           email == o.email &&
+          name == o.name &&
           order == o.order &&
           sort_order == o.sort_order &&
           fields == o.fields &&
@@ -367,6 +391,7 @@ module DocSpring
           state == o.state &&
           viewed_at == o.viewed_at &&
           completed_at == o.completed_at &&
+          data == o.data &&
           auth_type == o.auth_type &&
           auth_second_factor_type == o.auth_second_factor_type &&
           auth_provider == o.auth_provider &&
@@ -388,7 +413,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, submission_id, name, email, order, sort_order, fields, metadata, state, viewed_at, completed_at, auth_type, auth_second_factor_type, auth_provider, auth_session_started_at, auth_session_id_hash, auth_user_id_hash, auth_username_hash, auth_phone_number_hash, ip_address, user_agent].hash
+      [id, email, name, order, sort_order, fields, metadata, state, viewed_at, completed_at, data, auth_type, auth_second_factor_type, auth_provider, auth_session_started_at, auth_session_id_hash, auth_user_id_hash, auth_username_hash, auth_phone_number_hash, ip_address, user_agent].hash
     end
 
     # Builds the object from hash

@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -18,10 +18,6 @@ module DocSpring
     attr_accessor :event_type
 
     attr_accessor :message_type
-
-    attr_accessor :message_recipient
-
-    attr_accessor :occurred_at
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -49,9 +45,7 @@ module DocSpring
     def self.attribute_map
       {
         :'event_type' => :'event_type',
-        :'message_type' => :'message_type',
-        :'message_recipient' => :'message_recipient',
-        :'occurred_at' => :'occurred_at'
+        :'message_type' => :'message_type'
       }
     end
 
@@ -64,18 +58,14 @@ module DocSpring
     def self.openapi_types
       {
         :'event_type' => :'String',
-        :'message_type' => :'String',
-        :'message_recipient' => :'String',
-        :'occurred_at' => :'String'
+        :'message_type' => :'String'
       }
     end
 
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
-        :'message_type',
-        :'message_recipient',
-        :'occurred_at'
+        :'message_type'
       ])
     end
 
@@ -102,14 +92,6 @@ module DocSpring
 
       if attributes.key?(:'message_type')
         self.message_type = attributes[:'message_type']
-      end
-
-      if attributes.key?(:'message_recipient')
-        self.message_recipient = attributes[:'message_recipient']
-      end
-
-      if attributes.key?(:'occurred_at')
-        self.occurred_at = attributes[:'occurred_at']
       end
     end
 
@@ -163,9 +145,7 @@ module DocSpring
       return true if self.equal?(o)
       self.class == o.class &&
           event_type == o.event_type &&
-          message_type == o.message_type &&
-          message_recipient == o.message_recipient &&
-          occurred_at == o.occurred_at
+          message_type == o.message_type
     end
 
     # @see the `==` method
@@ -177,7 +157,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [event_type, message_type, message_recipient, occurred_at].hash
+      [event_type, message_type].hash
     end
 
     # Builds the object from hash

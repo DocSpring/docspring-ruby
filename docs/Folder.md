@@ -4,10 +4,10 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **id** | **String** |  | [optional] |
-| **name** | **String** |  | [optional] |
-| **path** | **String** |  | [optional] |
-| **parent_folder_id** | **String** |  | [optional] |
+| **id** | **String** |  |  |
+| **name** | **String** |  |  |
+| **path** | **String** |  |  |
+| **parent_folder_id** | **String** |  |  |
 
 ## Example
 

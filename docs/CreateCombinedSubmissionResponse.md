@@ -5,8 +5,8 @@
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **status** | **String** |  |  |
-| **errors** | **Array&lt;String&gt;** |  | [optional] |
 | **combined_submission** | [**CombinedSubmission**](CombinedSubmission.md) |  |  |
+| **errors** | **Array&lt;String&gt;** |  | [optional] |
 
 ## Example
 
@@ -15,8 +15,8 @@ require 'docspring'
 
 instance = DocSpring::CreateCombinedSubmissionResponse.new(
   status: null,
-  errors: null,
-  combined_submission: null
+  combined_submission: null,
+  errors: null
 )
 ```
 

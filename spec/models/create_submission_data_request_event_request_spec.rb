@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -44,18 +44,6 @@ describe DocSpring::CreateSubmissionDataRequestEventRequest do
       # validator.allowable_values.each do |value|
       #   expect { instance.message_type = value }.not_to raise_error
       # end
-    end
-  end
-
-  describe 'test attribute "message_recipient"' do
-    it 'should work' do
-      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
-    end
-  end
-
-  describe 'test attribute "occurred_at"' do
-    it 'should work' do
-      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
   end
 

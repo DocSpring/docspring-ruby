@@ -5,8 +5,8 @@
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **status** | **String** |  |  |
+| **submission** | [**SubmissionPreview**](SubmissionPreview.md) |  |  |
 | **errors** | **Array&lt;String&gt;** |  | [optional] |
-| **submission** | [**Submission**](Submission.md) |  |  |
 
 ## Example
 
@@ -15,8 +15,8 @@ require 'docspring'
 
 instance = DocSpring::CreateSubmissionResponse.new(
   status: null,
-  errors: null,
-  submission: null
+  submission: null,
+  errors: null
 )
 ```
 

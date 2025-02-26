@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -23,7 +23,7 @@ module DocSpring
     # @param template_id [String] 
     # @param data [AddFieldsData] 
     # @param [Hash] opts the optional parameters
-    # @return [AddFieldsTemplateResponse]
+    # @return [TemplateAddFieldsResponse]
     def add_fields_to_template(template_id, data, opts = {})
       data, _status_code, _headers = add_fields_to_template_with_http_info(template_id, data, opts)
       data
@@ -33,7 +33,7 @@ module DocSpring
     # @param template_id [String] 
     # @param data [AddFieldsData] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(AddFieldsTemplateResponse, Integer, Hash)>] AddFieldsTemplateResponse data, response status code and response headers
+    # @return [Array<(TemplateAddFieldsResponse, Integer, Hash)>] TemplateAddFieldsResponse data, response status code and response headers
     def add_fields_to_template_with_http_info(template_id, data, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.add_fields_to_template ...'
@@ -69,7 +69,7 @@ module DocSpring
       post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
 
       # return_type
-      return_type = opts[:debug_return_type] || 'AddFieldsTemplateResponse'
+      return_type = opts[:debug_return_type] || 'TemplateAddFieldsResponse'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -92,81 +92,10 @@ module DocSpring
     end
 
     # Generates multiple PDFs
-    # @param template_id [String] 
-    # @param data [Array<SubmissionData>] 
-    # @param [Hash] opts the optional parameters
-    # @return [Array<CreateSubmissionResponse>]
-    def batch_generate_pdf_v1(template_id, data, opts = {})
-      data, _status_code, _headers = batch_generate_pdf_v1_with_http_info(template_id, data, opts)
-      data
-    end
-
-    # Generates multiple PDFs
-    # @param template_id [String] 
-    # @param data [Array<SubmissionData>] 
-    # @param [Hash] opts the optional parameters
-    # @return [Array<(Array<CreateSubmissionResponse>, Integer, Hash)>] Array<CreateSubmissionResponse> data, response status code and response headers
-    def batch_generate_pdf_v1_with_http_info(template_id, data, opts = {})
-      if @api_client.config.debugging
-        @api_client.config.logger.debug 'Calling API: PDFApi.batch_generate_pdf_v1 ...'
-      end
-      # verify the required parameter 'template_id' is set
-      if @api_client.config.client_side_validation && template_id.nil?
-        fail ArgumentError, "Missing the required parameter 'template_id' when calling PDFApi.batch_generate_pdf_v1"
-      end
-      # verify the required parameter 'data' is set
-      if @api_client.config.client_side_validation && data.nil?
-        fail ArgumentError, "Missing the required parameter 'data' when calling PDFApi.batch_generate_pdf_v1"
-      end
-      # resource path
-      local_var_path = '/templates/{template_id}/submissions/batch'.sub('{' + 'template_id' + '}', CGI.escape(template_id.to_s))
-
-      # query parameters
-      query_params = opts[:query_params] || {}
-
-      # header parameters
-      header_params = opts[:header_params] || {}
-      # HTTP header 'Accept' (if needed)
-      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
-      # HTTP header 'Content-Type'
-      content_type = @api_client.select_header_content_type(['application/json'])
-      if !content_type.nil?
-          header_params['Content-Type'] = content_type
-      end
-
-      # form parameters
-      form_params = opts[:form_params] || {}
-
-      # http body (model)
-      post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
-
-      # return_type
-      return_type = opts[:debug_return_type] || 'Array<CreateSubmissionResponse>'
-
-      # auth_names
-      auth_names = opts[:debug_auth_names] || ['api_token_basic']
-
-      new_options = opts.merge(
-        :operation => :"PDFApi.batch_generate_pdf_v1",
-        :header_params => header_params,
-        :query_params => query_params,
-        :form_params => form_params,
-        :body => post_body,
-        :auth_names => auth_names,
-        :return_type => return_type
-      )
-
-      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
-      if @api_client.config.debugging
-        @api_client.config.logger.debug "API called: PDFApi#batch_generate_pdf_v1\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
-      end
-      return data, status_code, headers
-    end
-
-    # Generates multiple PDFs
     # @param data [SubmissionBatchData] 
     # @param [Hash] opts the optional parameters
-    # @return [CreateSubmissionBatchResponse]
+    # @option opts [Boolean] :wait Wait for submission batch to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) (default to true)
+    # @return [BatchGeneratePdfs201Response]
     def batch_generate_pdfs(data, opts = {})
       data, _status_code, _headers = batch_generate_pdfs_with_http_info(data, opts)
       data
@@ -175,7 +104,8 @@ module DocSpring
     # Generates multiple PDFs
     # @param data [SubmissionBatchData] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(CreateSubmissionBatchResponse, Integer, Hash)>] CreateSubmissionBatchResponse data, response status code and response headers
+    # @option opts [Boolean] :wait Wait for submission batch to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) (default to true)
+    # @return [Array<(BatchGeneratePdfs201Response, Integer, Hash)>] BatchGeneratePdfs201Response data, response status code and response headers
     def batch_generate_pdfs_with_http_info(data, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.batch_generate_pdfs ...'
@@ -189,6 +119,7 @@ module DocSpring
 
       # query parameters
       query_params = opts[:query_params] || {}
+      query_params[:'wait'] = opts[:'wait'] if !opts[:'wait'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}
@@ -207,7 +138,7 @@ module DocSpring
       post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
 
       # return_type
-      return_type = opts[:debug_return_type] || 'CreateSubmissionBatchResponse'
+      return_type = opts[:debug_return_type] || 'BatchGeneratePdfs201Response'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -298,6 +229,7 @@ module DocSpring
     # Merge generated PDFs together
     # @param data [CombinedSubmissionData] 
     # @param [Hash] opts the optional parameters
+    # @option opts [Boolean] :wait Wait for combined submission to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) (default to true)
     # @return [CreateCombinedSubmissionResponse]
     def combine_submissions(data, opts = {})
       data, _status_code, _headers = combine_submissions_with_http_info(data, opts)
@@ -307,6 +239,7 @@ module DocSpring
     # Merge generated PDFs together
     # @param data [CombinedSubmissionData] 
     # @param [Hash] opts the optional parameters
+    # @option opts [Boolean] :wait Wait for combined submission to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) (default to true)
     # @return [Array<(CreateCombinedSubmissionResponse, Integer, Hash)>] CreateCombinedSubmissionResponse data, response status code and response headers
     def combine_submissions_with_http_info(data, opts = {})
       if @api_client.config.debugging
@@ -321,6 +254,7 @@ module DocSpring
 
       # query parameters
       query_params = opts[:query_params] || {}
+      query_params[:'wait'] = opts[:'wait'] if !opts[:'wait'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}
@@ -363,30 +297,26 @@ module DocSpring
 
     # Copy a Template
     # @param template_id [String] 
-    # @param data [CopyTemplateData] 
     # @param [Hash] opts the optional parameters
-    # @return [Template]
-    def copy_template(template_id, data, opts = {})
-      data, _status_code, _headers = copy_template_with_http_info(template_id, data, opts)
+    # @option opts [CopyTemplateOptions] :options 
+    # @return [TemplatePreview]
+    def copy_template(template_id, opts = {})
+      data, _status_code, _headers = copy_template_with_http_info(template_id, opts)
       data
     end
 
     # Copy a Template
     # @param template_id [String] 
-    # @param data [CopyTemplateData] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
-    def copy_template_with_http_info(template_id, data, opts = {})
+    # @option opts [CopyTemplateOptions] :options 
+    # @return [Array<(TemplatePreview, Integer, Hash)>] TemplatePreview data, response status code and response headers
+    def copy_template_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.copy_template ...'
       end
       # verify the required parameter 'template_id' is set
       if @api_client.config.client_side_validation && template_id.nil?
         fail ArgumentError, "Missing the required parameter 'template_id' when calling PDFApi.copy_template"
-      end
-      # verify the required parameter 'data' is set
-      if @api_client.config.client_side_validation && data.nil?
-        fail ArgumentError, "Missing the required parameter 'data' when calling PDFApi.copy_template"
       end
       # resource path
       local_var_path = '/templates/{template_id}/copy'.sub('{' + 'template_id' + '}', CGI.escape(template_id.to_s))
@@ -408,10 +338,10 @@ module DocSpring
       form_params = opts[:form_params] || {}
 
       # http body (model)
-      post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(opts[:'options'])
 
       # return_type
-      return_type = opts[:debug_return_type] || 'Template'
+      return_type = opts[:debug_return_type] || 'TemplatePreview'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -574,6 +504,7 @@ module DocSpring
     # Creates a new data request token for form authentication
     # @param data_request_id [String] 
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :type 
     # @return [CreateSubmissionDataRequestTokenResponse]
     def create_data_request_token(data_request_id, opts = {})
       data, _status_code, _headers = create_data_request_token_with_http_info(data_request_id, opts)
@@ -583,6 +514,7 @@ module DocSpring
     # Creates a new data request token for form authentication
     # @param data_request_id [String] 
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :type 
     # @return [Array<(CreateSubmissionDataRequestTokenResponse, Integer, Hash)>] CreateSubmissionDataRequestTokenResponse data, response status code and response headers
     def create_data_request_token_with_http_info(data_request_id, opts = {})
       if @api_client.config.debugging
@@ -592,11 +524,16 @@ module DocSpring
       if @api_client.config.client_side_validation && data_request_id.nil?
         fail ArgumentError, "Missing the required parameter 'data_request_id' when calling PDFApi.create_data_request_token"
       end
+      allowable_values = ["api", "email"]
+      if @api_client.config.client_side_validation && opts[:'type'] && !allowable_values.include?(opts[:'type'])
+        fail ArgumentError, "invalid value for \"type\", must be one of #{allowable_values}"
+      end
       # resource path
       local_var_path = '/data_requests/{data_request_id}/tokens'.sub('{' + 'data_request_id' + '}', CGI.escape(data_request_id.to_s))
 
       # query parameters
       query_params = opts[:query_params] || {}
+      query_params[:'type'] = opts[:'type'] if !opts[:'type'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}
@@ -699,18 +636,18 @@ module DocSpring
     end
 
     # Create a new HTML template
-    # @param data [CreateHtmlTemplateData] 
+    # @param data [CreateHtmlTemplate] 
     # @param [Hash] opts the optional parameters
-    # @return [PendingTemplate]
+    # @return [TemplatePreview]
     def create_html_template(data, opts = {})
       data, _status_code, _headers = create_html_template_with_http_info(data, opts)
       data
     end
 
     # Create a new HTML template
-    # @param data [CreateHtmlTemplateData] 
+    # @param data [CreateHtmlTemplate] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(PendingTemplate, Integer, Hash)>] PendingTemplate data, response status code and response headers
+    # @return [Array<(TemplatePreview, Integer, Hash)>] TemplatePreview data, response status code and response headers
     def create_html_template_with_http_info(data, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.create_html_template ...'
@@ -720,7 +657,7 @@ module DocSpring
         fail ArgumentError, "Missing the required parameter 'data' when calling PDFApi.create_html_template"
       end
       # resource path
-      local_var_path = '/templates?desc=html'
+      local_var_path = '/templates?endpoint_description=html'
 
       # query parameters
       query_params = opts[:query_params] || {}
@@ -742,7 +679,7 @@ module DocSpring
       post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
 
       # return_type
-      return_type = opts[:debug_return_type] || 'PendingTemplate'
+      return_type = opts[:debug_return_type] || 'TemplatePreview'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -768,8 +705,10 @@ module DocSpring
     # @param template_document [File] 
     # @param template_name [String] 
     # @param [Hash] opts the optional parameters
+    # @option opts [Boolean] :wait Wait for template document to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) (default to true)
+    # @option opts [String] :template_description 
     # @option opts [String] :template_parent_folder_id 
-    # @return [PendingTemplate]
+    # @return [TemplatePreview]
     def create_pdf_template(template_document, template_name, opts = {})
       data, _status_code, _headers = create_pdf_template_with_http_info(template_document, template_name, opts)
       data
@@ -779,8 +718,10 @@ module DocSpring
     # @param template_document [File] 
     # @param template_name [String] 
     # @param [Hash] opts the optional parameters
+    # @option opts [Boolean] :wait Wait for template document to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) (default to true)
+    # @option opts [String] :template_description 
     # @option opts [String] :template_parent_folder_id 
-    # @return [Array<(PendingTemplate, Integer, Hash)>] PendingTemplate data, response status code and response headers
+    # @return [Array<(TemplatePreview, Integer, Hash)>] TemplatePreview data, response status code and response headers
     def create_pdf_template_with_http_info(template_document, template_name, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.create_pdf_template ...'
@@ -798,6 +739,7 @@ module DocSpring
 
       # query parameters
       query_params = opts[:query_params] || {}
+      query_params[:'wait'] = opts[:'wait'] if !opts[:'wait'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}
@@ -813,13 +755,14 @@ module DocSpring
       form_params = opts[:form_params] || {}
       form_params['template[document]'] = template_document
       form_params['template[name]'] = template_name
+      form_params['template[description]'] = opts[:'template_description'] if !opts[:'template_description'].nil?
       form_params['template[parent_folder_id]'] = opts[:'template_parent_folder_id'] if !opts[:'template_parent_folder_id'].nil?
 
       # http body (model)
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'PendingTemplate'
+      return_type = opts[:debug_return_type] || 'TemplatePreview'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -842,18 +785,18 @@ module DocSpring
     end
 
     # Create a new PDF template from a cached presign upload
-    # @param data [CreateTemplateFromUploadData] 
+    # @param data [CreatePdfTemplate] 
     # @param [Hash] opts the optional parameters
-    # @return [PendingTemplate]
+    # @return [TemplatePreview]
     def create_pdf_template_from_upload(data, opts = {})
       data, _status_code, _headers = create_pdf_template_from_upload_with_http_info(data, opts)
       data
     end
 
     # Create a new PDF template from a cached presign upload
-    # @param data [CreateTemplateFromUploadData] 
+    # @param data [CreatePdfTemplate] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(PendingTemplate, Integer, Hash)>] PendingTemplate data, response status code and response headers
+    # @return [Array<(TemplatePreview, Integer, Hash)>] TemplatePreview data, response status code and response headers
     def create_pdf_template_from_upload_with_http_info(data, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.create_pdf_template_from_upload ...'
@@ -863,7 +806,7 @@ module DocSpring
         fail ArgumentError, "Missing the required parameter 'data' when calling PDFApi.create_pdf_template_from_upload"
       end
       # resource path
-      local_var_path = '/templates?desc=cached_upload'
+      local_var_path = '/templates?endpoint_description=cached_upload'
 
       # query parameters
       query_params = opts[:query_params] || {}
@@ -885,7 +828,7 @@ module DocSpring
       post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
 
       # return_type
-      return_type = opts[:debug_return_type] || 'PendingTemplate'
+      return_type = opts[:debug_return_type] || 'TemplatePreview'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -971,8 +914,7 @@ module DocSpring
     # Delete a template
     # @param template_id [String] 
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version 
-    # @return [DeleteTemplateResponse]
+    # @return [SuccessMultipleErrorsResponse]
     def delete_template(template_id, opts = {})
       data, _status_code, _headers = delete_template_with_http_info(template_id, opts)
       data
@@ -981,8 +923,7 @@ module DocSpring
     # Delete a template
     # @param template_id [String] 
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version 
-    # @return [Array<(DeleteTemplateResponse, Integer, Hash)>] DeleteTemplateResponse data, response status code and response headers
+    # @return [Array<(SuccessMultipleErrorsResponse, Integer, Hash)>] SuccessMultipleErrorsResponse data, response status code and response headers
     def delete_template_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.delete_template ...'
@@ -996,7 +937,6 @@ module DocSpring
 
       # query parameters
       query_params = opts[:query_params] || {}
-      query_params[:'version'] = opts[:'version'] if !opts[:'version'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}
@@ -1010,7 +950,7 @@ module DocSpring
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'DeleteTemplateResponse'
+      return_type = opts[:debug_return_type] || 'SuccessMultipleErrorsResponse'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -1096,7 +1036,7 @@ module DocSpring
     # Expire a PDF submission
     # @param submission_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [Submission]
+    # @return [SubmissionPreview]
     def expire_submission(submission_id, opts = {})
       data, _status_code, _headers = expire_submission_with_http_info(submission_id, opts)
       data
@@ -1105,7 +1045,7 @@ module DocSpring
     # Expire a PDF submission
     # @param submission_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(Submission, Integer, Hash)>] Submission data, response status code and response headers
+    # @return [Array<(SubmissionPreview, Integer, Hash)>] SubmissionPreview data, response status code and response headers
     def expire_submission_with_http_info(submission_id, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.expire_submission ...'
@@ -1132,7 +1072,7 @@ module DocSpring
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'Submission'
+      return_type = opts[:debug_return_type] || 'SubmissionPreview'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -1156,8 +1096,9 @@ module DocSpring
 
     # Generates a new PDF
     # @param template_id [String] 
-    # @param submission [CreateSubmissionData] 
+    # @param submission [CreatePdfSubmissionData] 
     # @param [Hash] opts the optional parameters
+    # @option opts [Boolean] :wait Wait for submission to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) (default to true)
     # @return [CreateSubmissionResponse]
     def generate_pdf(template_id, submission, opts = {})
       data, _status_code, _headers = generate_pdf_with_http_info(template_id, submission, opts)
@@ -1166,8 +1107,9 @@ module DocSpring
 
     # Generates a new PDF
     # @param template_id [String] 
-    # @param submission [CreateSubmissionData] 
+    # @param submission [CreatePdfSubmissionData] 
     # @param [Hash] opts the optional parameters
+    # @option opts [Boolean] :wait Wait for submission to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) (default to true)
     # @return [Array<(CreateSubmissionResponse, Integer, Hash)>] CreateSubmissionResponse data, response status code and response headers
     def generate_pdf_with_http_info(template_id, submission, opts = {})
       if @api_client.config.debugging
@@ -1186,6 +1128,7 @@ module DocSpring
 
       # query parameters
       query_params = opts[:query_params] || {}
+      query_params[:'wait'] = opts[:'wait'] if !opts[:'wait'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}
@@ -1226,10 +1169,85 @@ module DocSpring
       return data, status_code, headers
     end
 
+    # Generates a new PDF for an HTML template
+    # @param template_id [String] 
+    # @param submission [CreateHtmlSubmissionData] 
+    # @param [Hash] opts the optional parameters
+    # @option opts [Boolean] :wait Wait for submission to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) (default to true)
+    # @return [CreateSubmissionResponse]
+    def generate_pdf_for_html_template(template_id, submission, opts = {})
+      data, _status_code, _headers = generate_pdf_for_html_template_with_http_info(template_id, submission, opts)
+      data
+    end
+
+    # Generates a new PDF for an HTML template
+    # @param template_id [String] 
+    # @param submission [CreateHtmlSubmissionData] 
+    # @param [Hash] opts the optional parameters
+    # @option opts [Boolean] :wait Wait for submission to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) (default to true)
+    # @return [Array<(CreateSubmissionResponse, Integer, Hash)>] CreateSubmissionResponse data, response status code and response headers
+    def generate_pdf_for_html_template_with_http_info(template_id, submission, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: PDFApi.generate_pdf_for_html_template ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling PDFApi.generate_pdf_for_html_template"
+      end
+      # verify the required parameter 'submission' is set
+      if @api_client.config.client_side_validation && submission.nil?
+        fail ArgumentError, "Missing the required parameter 'submission' when calling PDFApi.generate_pdf_for_html_template"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/submissions?endpoint_description=html_templates'.sub('{' + 'template_id' + '}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'wait'] = opts[:'wait'] if !opts[:'wait'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(submission)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'CreateSubmissionResponse'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"PDFApi.generate_pdf_for_html_template",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: PDFApi#generate_pdf_for_html_template\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Generated a preview PDF for partially completed data requests
     # @param submission_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [PreviewPdfResponse]
+    # @return [SuccessErrorResponse]
     def generate_preview(submission_id, opts = {})
       data, _status_code, _headers = generate_preview_with_http_info(submission_id, opts)
       data
@@ -1238,7 +1256,7 @@ module DocSpring
     # Generated a preview PDF for partially completed data requests
     # @param submission_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(PreviewPdfResponse, Integer, Hash)>] PreviewPdfResponse data, response status code and response headers
+    # @return [Array<(SuccessErrorResponse, Integer, Hash)>] SuccessErrorResponse data, response status code and response headers
     def generate_preview_with_http_info(submission_id, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.generate_preview ...'
@@ -1265,7 +1283,7 @@ module DocSpring
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'PreviewPdfResponse'
+      return_type = opts[:debug_return_type] || 'SuccessErrorResponse'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -1351,7 +1369,7 @@ module DocSpring
     # Look up a submission data request
     # @param data_request_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [SubmissionDataRequest]
+    # @return [SubmissionDataRequestShow]
     def get_data_request(data_request_id, opts = {})
       data, _status_code, _headers = get_data_request_with_http_info(data_request_id, opts)
       data
@@ -1360,7 +1378,7 @@ module DocSpring
     # Look up a submission data request
     # @param data_request_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(SubmissionDataRequest, Integer, Hash)>] SubmissionDataRequest data, response status code and response headers
+    # @return [Array<(SubmissionDataRequestShow, Integer, Hash)>] SubmissionDataRequestShow data, response status code and response headers
     def get_data_request_with_http_info(data_request_id, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.get_data_request ...'
@@ -1387,7 +1405,7 @@ module DocSpring
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'SubmissionDataRequest'
+      return_type = opts[:debug_return_type] || 'SubmissionDataRequestShow'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -1412,7 +1430,7 @@ module DocSpring
     # Fetch the full template attributes
     # @param template_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [FullTemplate]
+    # @return [Template]
     def get_full_template(template_id, opts = {})
       data, _status_code, _headers = get_full_template_with_http_info(template_id, opts)
       data
@@ -1421,7 +1439,7 @@ module DocSpring
     # Fetch the full template attributes
     # @param template_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(FullTemplate, Integer, Hash)>] FullTemplate data, response status code and response headers
+    # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def get_full_template_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.get_full_template ...'
@@ -1448,7 +1466,7 @@ module DocSpring
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'FullTemplate'
+      return_type = opts[:debug_return_type] || 'Template'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -1472,7 +1490,7 @@ module DocSpring
 
     # Get a presigned URL so that you can upload a file to our AWS S3 bucket
     # @param [Hash] opts the optional parameters
-    # @return [UploadPresign]
+    # @return [UploadPresignResponse]
     def get_presign_url(opts = {})
       data, _status_code, _headers = get_presign_url_with_http_info(opts)
       data
@@ -1480,7 +1498,7 @@ module DocSpring
 
     # Get a presigned URL so that you can upload a file to our AWS S3 bucket
     # @param [Hash] opts the optional parameters
-    # @return [Array<(UploadPresign, Integer, Hash)>] UploadPresign data, response status code and response headers
+    # @return [Array<(UploadPresignResponse, Integer, Hash)>] UploadPresignResponse data, response status code and response headers
     def get_presign_url_with_http_info(opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.get_presign_url ...'
@@ -1503,7 +1521,7 @@ module DocSpring
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'UploadPresign'
+      return_type = opts[:debug_return_type] || 'UploadPresignResponse'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -1593,7 +1611,7 @@ module DocSpring
     # @param submission_batch_id [String] 
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :include_submissions 
-    # @return [SubmissionBatch]
+    # @return [SubmissionBatchWithSubmissions]
     def get_submission_batch(submission_batch_id, opts = {})
       data, _status_code, _headers = get_submission_batch_with_http_info(submission_batch_id, opts)
       data
@@ -1603,7 +1621,7 @@ module DocSpring
     # @param submission_batch_id [String] 
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :include_submissions 
-    # @return [Array<(SubmissionBatch, Integer, Hash)>] SubmissionBatch data, response status code and response headers
+    # @return [Array<(SubmissionBatchWithSubmissions, Integer, Hash)>] SubmissionBatchWithSubmissions data, response status code and response headers
     def get_submission_batch_with_http_info(submission_batch_id, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.get_submission_batch ...'
@@ -1631,7 +1649,7 @@ module DocSpring
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'SubmissionBatch'
+      return_type = opts[:debug_return_type] || 'SubmissionBatchWithSubmissions'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -1656,7 +1674,7 @@ module DocSpring
     # Check the status of an uploaded template
     # @param template_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [Template]
+    # @return [TemplatePreview]
     def get_template(template_id, opts = {})
       data, _status_code, _headers = get_template_with_http_info(template_id, opts)
       data
@@ -1665,7 +1683,7 @@ module DocSpring
     # Check the status of an uploaded template
     # @param template_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
+    # @return [Array<(TemplatePreview, Integer, Hash)>] TemplatePreview data, response status code and response headers
     def get_template_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.get_template ...'
@@ -1692,7 +1710,7 @@ module DocSpring
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'Template'
+      return_type = opts[:debug_return_type] || 'TemplatePreview'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -1717,7 +1735,7 @@ module DocSpring
     # Fetch the JSON schema for a template
     # @param template_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [TemplateSchema]
+    # @return [JsonSchema]
     def get_template_schema(template_id, opts = {})
       data, _status_code, _headers = get_template_schema_with_http_info(template_id, opts)
       data
@@ -1726,7 +1744,7 @@ module DocSpring
     # Fetch the JSON schema for a template
     # @param template_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(TemplateSchema, Integer, Hash)>] TemplateSchema data, response status code and response headers
+    # @return [Array<(JsonSchema, Integer, Hash)>] JsonSchema data, response status code and response headers
     def get_template_schema_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.get_template_schema ...'
@@ -1753,7 +1771,7 @@ module DocSpring
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'TemplateSchema'
+      return_type = opts[:debug_return_type] || 'JsonSchema'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -2064,7 +2082,7 @@ module DocSpring
     # @option opts [String] :parent_folder_id Filter By Folder Id
     # @option opts [Integer] :page Default: 1
     # @option opts [Integer] :per_page Default: 50
-    # @return [Array<Template>]
+    # @return [Array<TemplatePreview>]
     def list_templates(opts = {})
       data, _status_code, _headers = list_templates_with_http_info(opts)
       data
@@ -2076,7 +2094,7 @@ module DocSpring
     # @option opts [String] :parent_folder_id Filter By Folder Id
     # @option opts [Integer] :page Default: 1
     # @option opts [Integer] :per_page Default: 50
-    # @return [Array<(Array<Template>, Integer, Hash)>] Array<Template> data, response status code and response headers
+    # @return [Array<(Array<TemplatePreview>, Integer, Hash)>] Array<TemplatePreview> data, response status code and response headers
     def list_templates_with_http_info(opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.list_templates ...'
@@ -2115,7 +2133,7 @@ module DocSpring
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'Array<Template>'
+      return_type = opts[:debug_return_type] || 'Array<TemplatePreview>'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -2213,7 +2231,7 @@ module DocSpring
     # @param template_id [String] 
     # @param data [MoveTemplateData] 
     # @param [Hash] opts the optional parameters
-    # @return [Template]
+    # @return [TemplatePreview]
     def move_template_to_folder(template_id, data, opts = {})
       data, _status_code, _headers = move_template_to_folder_with_http_info(template_id, data, opts)
       data
@@ -2223,7 +2241,7 @@ module DocSpring
     # @param template_id [String] 
     # @param data [MoveTemplateData] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
+    # @return [Array<(TemplatePreview, Integer, Hash)>] TemplatePreview data, response status code and response headers
     def move_template_to_folder_with_http_info(template_id, data, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.move_template_to_folder ...'
@@ -2259,7 +2277,7 @@ module DocSpring
       post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
 
       # return_type
-      return_type = opts[:debug_return_type] || 'Template'
+      return_type = opts[:debug_return_type] || 'TemplatePreview'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -2281,93 +2299,21 @@ module DocSpring
       return data, status_code, headers
     end
 
-    # Publish a template version
-    # @param template_id [String] 
-    # @param data [PublishVersionData] 
+    # Rename a folder
+    # @param folder_id [String] 
+    # @param data [RenameFolderData] 
     # @param [Hash] opts the optional parameters
-    # @return [PublishTemplateVersionResponse]
-    def publish_template_version(template_id, data, opts = {})
-      data, _status_code, _headers = publish_template_version_with_http_info(template_id, data, opts)
+    # @return [Folder]
+    def rename_folder(folder_id, data, opts = {})
+      data, _status_code, _headers = rename_folder_with_http_info(folder_id, data, opts)
       data
     end
 
-    # Publish a template version
-    # @param template_id [String] 
-    # @param data [PublishVersionData] 
-    # @param [Hash] opts the optional parameters
-    # @return [Array<(PublishTemplateVersionResponse, Integer, Hash)>] PublishTemplateVersionResponse data, response status code and response headers
-    def publish_template_version_with_http_info(template_id, data, opts = {})
-      if @api_client.config.debugging
-        @api_client.config.logger.debug 'Calling API: PDFApi.publish_template_version ...'
-      end
-      # verify the required parameter 'template_id' is set
-      if @api_client.config.client_side_validation && template_id.nil?
-        fail ArgumentError, "Missing the required parameter 'template_id' when calling PDFApi.publish_template_version"
-      end
-      # verify the required parameter 'data' is set
-      if @api_client.config.client_side_validation && data.nil?
-        fail ArgumentError, "Missing the required parameter 'data' when calling PDFApi.publish_template_version"
-      end
-      # resource path
-      local_var_path = '/templates/{template_id}/publish_version'.sub('{' + 'template_id' + '}', CGI.escape(template_id.to_s))
-
-      # query parameters
-      query_params = opts[:query_params] || {}
-
-      # header parameters
-      header_params = opts[:header_params] || {}
-      # HTTP header 'Accept' (if needed)
-      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
-      # HTTP header 'Content-Type'
-      content_type = @api_client.select_header_content_type(['application/json'])
-      if !content_type.nil?
-          header_params['Content-Type'] = content_type
-      end
-
-      # form parameters
-      form_params = opts[:form_params] || {}
-
-      # http body (model)
-      post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
-
-      # return_type
-      return_type = opts[:debug_return_type] || 'PublishTemplateVersionResponse'
-
-      # auth_names
-      auth_names = opts[:debug_auth_names] || ['api_token_basic']
-
-      new_options = opts.merge(
-        :operation => :"PDFApi.publish_template_version",
-        :header_params => header_params,
-        :query_params => query_params,
-        :form_params => form_params,
-        :body => post_body,
-        :auth_names => auth_names,
-        :return_type => return_type
-      )
-
-      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
-      if @api_client.config.debugging
-        @api_client.config.logger.debug "API called: PDFApi#publish_template_version\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
-      end
-      return data, status_code, headers
-    end
-
     # Rename a folder
     # @param folder_id [String] 
     # @param data [RenameFolderData] 
     # @param [Hash] opts the optional parameters
-    # @return [nil]
-    def rename_folder(folder_id, data, opts = {})
-      rename_folder_with_http_info(folder_id, data, opts)
-      nil
-    end
-
-    # Rename a folder
-    # @param folder_id [String] 
-    # @param data [RenameFolderData] 
-    # @param [Hash] opts the optional parameters
-    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    # @return [Array<(Folder, Integer, Hash)>] Folder data, response status code and response headers
     def rename_folder_with_http_info(folder_id, data, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.rename_folder ...'
@@ -2403,7 +2349,7 @@ module DocSpring
       post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
 
       # return_type
-      return_type = opts[:debug_return_type]
+      return_type = opts[:debug_return_type] || 'Folder'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -2425,81 +2371,9 @@ module DocSpring
       return data, status_code, headers
     end
 
-    # Restore a template version
-    # @param template_id [String] 
-    # @param data [RestoreVersionData] 
-    # @param [Hash] opts the optional parameters
-    # @return [RestoreTemplateVersionResponse]
-    def restore_template_version(template_id, data, opts = {})
-      data, _status_code, _headers = restore_template_version_with_http_info(template_id, data, opts)
-      data
-    end
-
-    # Restore a template version
-    # @param template_id [String] 
-    # @param data [RestoreVersionData] 
-    # @param [Hash] opts the optional parameters
-    # @return [Array<(RestoreTemplateVersionResponse, Integer, Hash)>] RestoreTemplateVersionResponse data, response status code and response headers
-    def restore_template_version_with_http_info(template_id, data, opts = {})
-      if @api_client.config.debugging
-        @api_client.config.logger.debug 'Calling API: PDFApi.restore_template_version ...'
-      end
-      # verify the required parameter 'template_id' is set
-      if @api_client.config.client_side_validation && template_id.nil?
-        fail ArgumentError, "Missing the required parameter 'template_id' when calling PDFApi.restore_template_version"
-      end
-      # verify the required parameter 'data' is set
-      if @api_client.config.client_side_validation && data.nil?
-        fail ArgumentError, "Missing the required parameter 'data' when calling PDFApi.restore_template_version"
-      end
-      # resource path
-      local_var_path = '/templates/{template_id}/restore_version'.sub('{' + 'template_id' + '}', CGI.escape(template_id.to_s))
-
-      # query parameters
-      query_params = opts[:query_params] || {}
-
-      # header parameters
-      header_params = opts[:header_params] || {}
-      # HTTP header 'Accept' (if needed)
-      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
-      # HTTP header 'Content-Type'
-      content_type = @api_client.select_header_content_type(['application/json'])
-      if !content_type.nil?
-          header_params['Content-Type'] = content_type
-      end
-
-      # form parameters
-      form_params = opts[:form_params] || {}
-
-      # http body (model)
-      post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
-
-      # return_type
-      return_type = opts[:debug_return_type] || 'RestoreTemplateVersionResponse'
-
-      # auth_names
-      auth_names = opts[:debug_auth_names] || ['api_token_basic']
-
-      new_options = opts.merge(
-        :operation => :"PDFApi.restore_template_version",
-        :header_params => header_params,
-        :query_params => query_params,
-        :form_params => form_params,
-        :body => post_body,
-        :auth_names => auth_names,
-        :return_type => return_type
-      )
-
-      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
-      if @api_client.config.debugging
-        @api_client.config.logger.debug "API called: PDFApi#restore_template_version\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
-      end
-      return data, status_code, headers
-    end
-
     # Test Authentication
     # @param [Hash] opts the optional parameters
-    # @return [AuthenticationSuccessResponse]
+    # @return [SuccessErrorResponse]
     def test_authentication(opts = {})
       data, _status_code, _headers = test_authentication_with_http_info(opts)
       data
@@ -2507,7 +2381,7 @@ module DocSpring
 
     # Test Authentication
     # @param [Hash] opts the optional parameters
-    # @return [Array<(AuthenticationSuccessResponse, Integer, Hash)>] AuthenticationSuccessResponse data, response status code and response headers
+    # @return [Array<(SuccessErrorResponse, Integer, Hash)>] SuccessErrorResponse data, response status code and response headers
     def test_authentication_with_http_info(opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.test_authentication ...'
@@ -2530,7 +2404,7 @@ module DocSpring
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'AuthenticationSuccessResponse'
+      return_type = opts[:debug_return_type] || 'SuccessErrorResponse'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -2556,7 +2430,7 @@ module DocSpring
     # @param data_request_id [String] 
     # @param data [UpdateSubmissionDataRequestData] 
     # @param [Hash] opts the optional parameters
-    # @return [UpdateDataRequestResponse]
+    # @return [CreateSubmissionDataRequestResponse]
     def update_data_request(data_request_id, data, opts = {})
       data, _status_code, _headers = update_data_request_with_http_info(data_request_id, data, opts)
       data
@@ -2566,7 +2440,7 @@ module DocSpring
     # @param data_request_id [String] 
     # @param data [UpdateSubmissionDataRequestData] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(UpdateDataRequestResponse, Integer, Hash)>] UpdateDataRequestResponse data, response status code and response headers
+    # @return [Array<(CreateSubmissionDataRequestResponse, Integer, Hash)>] CreateSubmissionDataRequestResponse data, response status code and response headers
     def update_data_request_with_http_info(data_request_id, data, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.update_data_request ...'
@@ -2602,7 +2476,7 @@ module DocSpring
       post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
 
       # return_type
-      return_type = opts[:debug_return_type] || 'UpdateDataRequestResponse'
+      return_type = opts[:debug_return_type] || 'CreateSubmissionDataRequestResponse'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -2626,9 +2500,9 @@ module DocSpring
 
     # Update a Template
     # @param template_id [String] 
-    # @param data [UpdateTemplateData] 
+    # @param data [UpdateHtmlTemplate] 
     # @param [Hash] opts the optional parameters
-    # @return [UpdateTemplateResponse]
+    # @return [SuccessMultipleErrorsResponse]
     def update_template(template_id, data, opts = {})
       data, _status_code, _headers = update_template_with_http_info(template_id, data, opts)
       data
@@ -2636,9 +2510,9 @@ module DocSpring
 
     # Update a Template
     # @param template_id [String] 
-    # @param data [UpdateTemplateData] 
+    # @param data [UpdateHtmlTemplate] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(UpdateTemplateResponse, Integer, Hash)>] UpdateTemplateResponse data, response status code and response headers
+    # @return [Array<(SuccessMultipleErrorsResponse, Integer, Hash)>] SuccessMultipleErrorsResponse data, response status code and response headers
     def update_template_with_http_info(template_id, data, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.update_template ...'
@@ -2674,7 +2548,7 @@ module DocSpring
       post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
 
       # return_type
-      return_type = opts[:debug_return_type] || 'UpdateTemplateResponse'
+      return_type = opts[:debug_return_type] || 'SuccessMultipleErrorsResponse'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']

@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -15,29 +15,11 @@ require 'time'
 
 module DocSpring
   class UpdateSubmissionDataRequestData
-    attr_accessor :auth_phone_number_hash
-
-    attr_accessor :auth_provider
-
-    attr_accessor :auth_second_factor_type
-
-    attr_accessor :auth_session_id_hash
-
-    attr_accessor :auth_session_started_at
-
     attr_accessor :auth_type
-
-    attr_accessor :auth_user_id_hash
-
-    attr_accessor :auth_username_hash
-
-    attr_accessor :email
 
     attr_accessor :fields
 
     attr_accessor :metadata
-
-    attr_accessor :name
 
     attr_accessor :order
 
@@ -66,18 +48,9 @@ module DocSpring
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
-        :'auth_phone_number_hash' => :'auth_phone_number_hash',
-        :'auth_provider' => :'auth_provider',
-        :'auth_second_factor_type' => :'auth_second_factor_type',
-        :'auth_session_id_hash' => :'auth_session_id_hash',
-        :'auth_session_started_at' => :'auth_session_started_at',
         :'auth_type' => :'auth_type',
-        :'auth_user_id_hash' => :'auth_user_id_hash',
-        :'auth_username_hash' => :'auth_username_hash',
-        :'email' => :'email',
         :'fields' => :'fields',
         :'metadata' => :'metadata',
-        :'name' => :'name',
         :'order' => :'order'
       }
     end
@@ -90,18 +63,9 @@ module DocSpring
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'auth_phone_number_hash' => :'String',
-        :'auth_provider' => :'String',
-        :'auth_second_factor_type' => :'String',
-        :'auth_session_id_hash' => :'String',
-        :'auth_session_started_at' => :'String',
         :'auth_type' => :'String',
-        :'auth_user_id_hash' => :'String',
-        :'auth_username_hash' => :'String',
-        :'email' => :'String',
         :'fields' => :'Array<String>',
         :'metadata' => :'Object',
-        :'name' => :'String',
         :'order' => :'Integer'
       }
     end
@@ -109,14 +73,6 @@ module DocSpring
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
-        :'auth_phone_number_hash',
-        :'auth_provider',
-        :'auth_session_id_hash',
-        :'auth_session_started_at',
-        :'auth_user_id_hash',
-        :'auth_username_hash',
-        :'email',
-        :'name',
       ])
     end
 
@@ -135,40 +91,8 @@ module DocSpring
         h[k.to_sym] = v
       }
 
-      if attributes.key?(:'auth_phone_number_hash')
-        self.auth_phone_number_hash = attributes[:'auth_phone_number_hash']
-      end
-
-      if attributes.key?(:'auth_provider')
-        self.auth_provider = attributes[:'auth_provider']
-      end
-
-      if attributes.key?(:'auth_second_factor_type')
-        self.auth_second_factor_type = attributes[:'auth_second_factor_type']
-      end
-
-      if attributes.key?(:'auth_session_id_hash')
-        self.auth_session_id_hash = attributes[:'auth_session_id_hash']
-      end
-
-      if attributes.key?(:'auth_session_started_at')
-        self.auth_session_started_at = attributes[:'auth_session_started_at']
-      end
-
       if attributes.key?(:'auth_type')
         self.auth_type = attributes[:'auth_type']
-      end
-
-      if attributes.key?(:'auth_user_id_hash')
-        self.auth_user_id_hash = attributes[:'auth_user_id_hash']
-      end
-
-      if attributes.key?(:'auth_username_hash')
-        self.auth_username_hash = attributes[:'auth_username_hash']
-      end
-
-      if attributes.key?(:'email')
-        self.email = attributes[:'email']
       end
 
       if attributes.key?(:'fields')
@@ -179,10 +103,6 @@ module DocSpring
 
       if attributes.key?(:'metadata')
         self.metadata = attributes[:'metadata']
-      end
-
-      if attributes.key?(:'name')
-        self.name = attributes[:'name']
       end
 
       if attributes.key?(:'order')
@@ -202,21 +122,9 @@ module DocSpring
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      auth_second_factor_type_validator = EnumAttributeValidator.new('String', ["none", "phone_number", "totp", "mobile_push", "security_key", "fingerprint"])
-      return false unless auth_second_factor_type_validator.valid?(@auth_second_factor_type)
       auth_type_validator = EnumAttributeValidator.new('String', ["none", "password", "oauth", "email_link", "phone_number", "ldap", "saml"])
       return false unless auth_type_validator.valid?(@auth_type)
       true
-    end
-
-    # Custom attribute writer method checking allowed values (enum).
-    # @param [Object] auth_second_factor_type Object to be assigned
-    def auth_second_factor_type=(auth_second_factor_type)
-      validator = EnumAttributeValidator.new('String', ["none", "phone_number", "totp", "mobile_push", "security_key", "fingerprint"])
-      unless validator.valid?(auth_second_factor_type)
-        fail ArgumentError, "invalid value for \"auth_second_factor_type\", must be one of #{validator.allowable_values}."
-      end
-      @auth_second_factor_type = auth_second_factor_type
     end
 
     # Custom attribute writer method checking allowed values (enum).
@@ -234,18 +142,9 @@ module DocSpring
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
-          auth_phone_number_hash == o.auth_phone_number_hash &&
-          auth_provider == o.auth_provider &&
-          auth_second_factor_type == o.auth_second_factor_type &&
-          auth_session_id_hash == o.auth_session_id_hash &&
-          auth_session_started_at == o.auth_session_started_at &&
           auth_type == o.auth_type &&
-          auth_user_id_hash == o.auth_user_id_hash &&
-          auth_username_hash == o.auth_username_hash &&
-          email == o.email &&
           fields == o.fields &&
           metadata == o.metadata &&
-          name == o.name &&
           order == o.order
     end
 
@@ -258,7 +157,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [auth_phone_number_hash, auth_provider, auth_second_factor_type, auth_session_id_hash, auth_session_started_at, auth_type, auth_user_id_hash, auth_username_hash, email, fields, metadata, name, order].hash
+      [auth_type, fields, metadata, order].hash
     end
 
     # Builds the object from hash

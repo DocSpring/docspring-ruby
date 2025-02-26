@@ -5,8 +5,8 @@
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **status** | **String** |  |  |
+| **custom_file** | [**CustomFile**](CustomFile.md) |  |  |
 | **errors** | **Array&lt;String&gt;** |  | [optional] |
-| **custom_file** | **Object** |  |  |
 
 ## Example
 
@@ -15,8 +15,8 @@ require 'docspring'
 
 instance = DocSpring::CreateCustomFileResponse.new(
   status: null,
-  errors: null,
-  custom_file: null
+  custom_file: null,
+  errors: null
 )
 ```
 

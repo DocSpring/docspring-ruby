@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -15,45 +15,97 @@ require 'time'
 
 module DocSpring
   class Template
-    attr_accessor :name
-
-    attr_accessor :description
-
-    attr_accessor :public_web_form
-
-    attr_accessor :public_submissions
-
-    attr_accessor :expire_submissions
-
-    attr_accessor :expire_after
-
-    attr_accessor :expiration_interval
+    attr_accessor :add_data_request_submission_id_footers
 
     attr_accessor :allow_additional_properties
 
-    attr_accessor :editable_submissions
+    attr_accessor :description
 
-    attr_accessor :locked
+    attr_accessor :document_filename
 
-    attr_accessor :webhook_url
+    attr_accessor :document_md5
 
-    attr_accessor :slack_webhook_url
+    attr_accessor :document_parse_error
 
-    attr_accessor :redirect_url
+    attr_accessor :document_processed
 
-    attr_accessor :id
-
-    attr_accessor :template_type
-
-    attr_accessor :page_dimensions
+    attr_accessor :document_state
 
     attr_accessor :document_url
 
-    attr_accessor :permanent_document_url
+    attr_accessor :editable_submissions
+
+    attr_accessor :embed_domains
+
+    attr_accessor :encrypt_pdfs_password
+
+    attr_accessor :encrypt_pdfs
+
+    attr_accessor :expiration_interval
+
+    attr_accessor :expire_after
+
+    attr_accessor :expire_submissions
+
+    attr_accessor :external_predefined_fields_template_id
+
+    attr_accessor :external_predefined_fields_template_name
+
+    attr_accessor :first_template
+
+    attr_accessor :id
+
+    attr_accessor :locked
+
+    attr_accessor :merge_audit_trail_pdf
+
+    attr_accessor :name
+
+    attr_accessor :page_count
+
+    attr_accessor :page_dimensions
+
+    attr_accessor :parent_folder_id
 
     attr_accessor :path
 
-    attr_accessor :parent_folder_id
+    attr_accessor :permanent_document_url
+
+    attr_accessor :public_submissions
+
+    attr_accessor :public_web_form
+
+    attr_accessor :redirect_url
+
+    attr_accessor :slack_webhook_url
+
+    attr_accessor :template_type
+
+    attr_accessor :updated_at
+
+    attr_accessor :webhook_url
+
+    attr_accessor :demo
+
+    attr_accessor :defaults
+
+    attr_accessor :field_order
+
+    attr_accessor :fields
+
+    attr_accessor :footer_html
+
+    attr_accessor :header_html
+
+    attr_accessor :html_engine_options
+
+    attr_accessor :html
+
+    attr_accessor :predefined_fields
+
+    attr_accessor :scss
+
+    attr_accessor :shared_field_data
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -80,26 +132,52 @@ module DocSpring
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
-        :'name' => :'name',
-        :'description' => :'description',
-        :'public_web_form' => :'public_web_form',
-        :'public_submissions' => :'public_submissions',
-        :'expire_submissions' => :'expire_submissions',
-        :'expire_after' => :'expire_after',
-        :'expiration_interval' => :'expiration_interval',
+        :'add_data_request_submission_id_footers' => :'add_data_request_submission_id_footers',
         :'allow_additional_properties' => :'allow_additional_properties',
-        :'editable_submissions' => :'editable_submissions',
-        :'locked' => :'locked',
-        :'webhook_url' => :'webhook_url',
-        :'slack_webhook_url' => :'slack_webhook_url',
-        :'redirect_url' => :'redirect_url',
-        :'id' => :'id',
-        :'template_type' => :'template_type',
-        :'page_dimensions' => :'page_dimensions',
+        :'description' => :'description',
+        :'document_filename' => :'document_filename',
+        :'document_md5' => :'document_md5',
+        :'document_parse_error' => :'document_parse_error',
+        :'document_processed' => :'document_processed',
+        :'document_state' => :'document_state',
         :'document_url' => :'document_url',
-        :'permanent_document_url' => :'permanent_document_url',
+        :'editable_submissions' => :'editable_submissions',
+        :'embed_domains' => :'embed_domains',
+        :'encrypt_pdfs_password' => :'encrypt_pdfs_password',
+        :'encrypt_pdfs' => :'encrypt_pdfs',
+        :'expiration_interval' => :'expiration_interval',
+        :'expire_after' => :'expire_after',
+        :'expire_submissions' => :'expire_submissions',
+        :'external_predefined_fields_template_id' => :'external_predefined_fields_template_id',
+        :'external_predefined_fields_template_name' => :'external_predefined_fields_template_name',
+        :'first_template' => :'first_template',
+        :'id' => :'id',
+        :'locked' => :'locked',
+        :'merge_audit_trail_pdf' => :'merge_audit_trail_pdf',
+        :'name' => :'name',
+        :'page_count' => :'page_count',
+        :'page_dimensions' => :'page_dimensions',
+        :'parent_folder_id' => :'parent_folder_id',
         :'path' => :'path',
-        :'parent_folder_id' => :'parent_folder_id'
+        :'permanent_document_url' => :'permanent_document_url',
+        :'public_submissions' => :'public_submissions',
+        :'public_web_form' => :'public_web_form',
+        :'redirect_url' => :'redirect_url',
+        :'slack_webhook_url' => :'slack_webhook_url',
+        :'template_type' => :'template_type',
+        :'updated_at' => :'updated_at',
+        :'webhook_url' => :'webhook_url',
+        :'demo' => :'demo',
+        :'defaults' => :'defaults',
+        :'field_order' => :'field_order',
+        :'fields' => :'fields',
+        :'footer_html' => :'footer_html',
+        :'header_html' => :'header_html',
+        :'html_engine_options' => :'html_engine_options',
+        :'html' => :'html',
+        :'predefined_fields' => :'predefined_fields',
+        :'scss' => :'scss',
+        :'shared_field_data' => :'shared_field_data'
       }
     end
 
@@ -111,41 +189,80 @@ module DocSpring
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'name' => :'String',
-        :'description' => :'String',
-        :'public_web_form' => :'Boolean',
-        :'public_submissions' => :'Boolean',
-        :'expire_submissions' => :'Boolean',
-        :'expire_after' => :'Float',
-        :'expiration_interval' => :'String',
+        :'add_data_request_submission_id_footers' => :'Boolean',
         :'allow_additional_properties' => :'Boolean',
-        :'editable_submissions' => :'Boolean',
-        :'locked' => :'Boolean',
-        :'webhook_url' => :'String',
-        :'slack_webhook_url' => :'String',
-        :'redirect_url' => :'String',
-        :'id' => :'String',
-        :'template_type' => :'String',
-        :'page_dimensions' => :'Array<Array<Float>>',
+        :'description' => :'String',
+        :'document_filename' => :'String',
+        :'document_md5' => :'String',
+        :'document_parse_error' => :'Boolean',
+        :'document_processed' => :'Boolean',
+        :'document_state' => :'String',
         :'document_url' => :'String',
-        :'permanent_document_url' => :'String',
+        :'editable_submissions' => :'Boolean',
+        :'embed_domains' => :'String',
+        :'encrypt_pdfs_password' => :'String',
+        :'encrypt_pdfs' => :'Boolean',
+        :'expiration_interval' => :'String',
+        :'expire_after' => :'Integer',
+        :'expire_submissions' => :'Boolean',
+        :'external_predefined_fields_template_id' => :'String',
+        :'external_predefined_fields_template_name' => :'String',
+        :'first_template' => :'Boolean',
+        :'id' => :'String',
+        :'locked' => :'Boolean',
+        :'merge_audit_trail_pdf' => :'Boolean',
+        :'name' => :'String',
+        :'page_count' => :'Integer',
+        :'page_dimensions' => :'Array<Array<Float>>',
+        :'parent_folder_id' => :'String',
         :'path' => :'String',
-        :'parent_folder_id' => :'String'
+        :'permanent_document_url' => :'String',
+        :'public_submissions' => :'Boolean',
+        :'public_web_form' => :'Boolean',
+        :'redirect_url' => :'String',
+        :'slack_webhook_url' => :'String',
+        :'template_type' => :'String',
+        :'updated_at' => :'String',
+        :'webhook_url' => :'String',
+        :'demo' => :'Boolean',
+        :'defaults' => :'Object',
+        :'field_order' => :'Array<Array<Float>>',
+        :'fields' => :'Object',
+        :'footer_html' => :'String',
+        :'header_html' => :'String',
+        :'html_engine_options' => :'Object',
+        :'html' => :'String',
+        :'predefined_fields' => :'Array<Object>',
+        :'scss' => :'String',
+        :'shared_field_data' => :'Object'
       }
     end
 
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
-        :'name',
         :'description',
-        :'webhook_url',
-        :'slack_webhook_url',
-        :'redirect_url',
-        :'page_dimensions',
+        :'document_filename',
+        :'document_md5',
         :'document_url',
+        :'embed_domains',
+        :'encrypt_pdfs_password',
+        :'external_predefined_fields_template_id',
+        :'external_predefined_fields_template_name',
+        :'id',
+        :'name',
+        :'page_dimensions',
+        :'parent_folder_id',
+        :'path',
         :'permanent_document_url',
-        :'parent_folder_id'
+        :'redirect_url',
+        :'slack_webhook_url',
+        :'updated_at',
+        :'webhook_url',
+        :'footer_html',
+        :'header_html',
+        :'html',
+        :'scss',
       ])
     end
 
@@ -164,46 +281,10 @@ module DocSpring
         h[k.to_sym] = v
       }
 
-      if attributes.key?(:'name')
-        self.name = attributes[:'name']
+      if attributes.key?(:'add_data_request_submission_id_footers')
+        self.add_data_request_submission_id_footers = attributes[:'add_data_request_submission_id_footers']
       else
-        self.name = nil
-      end
-
-      if attributes.key?(:'description')
-        self.description = attributes[:'description']
-      else
-        self.description = nil
-      end
-
-      if attributes.key?(:'public_web_form')
-        self.public_web_form = attributes[:'public_web_form']
-      else
-        self.public_web_form = nil
-      end
-
-      if attributes.key?(:'public_submissions')
-        self.public_submissions = attributes[:'public_submissions']
-      else
-        self.public_submissions = nil
-      end
-
-      if attributes.key?(:'expire_submissions')
-        self.expire_submissions = attributes[:'expire_submissions']
-      else
-        self.expire_submissions = nil
-      end
-
-      if attributes.key?(:'expire_after')
-        self.expire_after = attributes[:'expire_after']
-      else
-        self.expire_after = nil
-      end
-
-      if attributes.key?(:'expiration_interval')
-        self.expiration_interval = attributes[:'expiration_interval']
-      else
-        self.expiration_interval = nil
+        self.add_data_request_submission_id_footers = nil
       end
 
       if attributes.key?(:'allow_additional_properties')
@@ -212,34 +293,106 @@ module DocSpring
         self.allow_additional_properties = nil
       end
 
+      if attributes.key?(:'description')
+        self.description = attributes[:'description']
+      else
+        self.description = nil
+      end
+
+      if attributes.key?(:'document_filename')
+        self.document_filename = attributes[:'document_filename']
+      else
+        self.document_filename = nil
+      end
+
+      if attributes.key?(:'document_md5')
+        self.document_md5 = attributes[:'document_md5']
+      else
+        self.document_md5 = nil
+      end
+
+      if attributes.key?(:'document_parse_error')
+        self.document_parse_error = attributes[:'document_parse_error']
+      else
+        self.document_parse_error = nil
+      end
+
+      if attributes.key?(:'document_processed')
+        self.document_processed = attributes[:'document_processed']
+      else
+        self.document_processed = nil
+      end
+
+      if attributes.key?(:'document_state')
+        self.document_state = attributes[:'document_state']
+      else
+        self.document_state = nil
+      end
+
+      if attributes.key?(:'document_url')
+        self.document_url = attributes[:'document_url']
+      else
+        self.document_url = nil
+      end
+
       if attributes.key?(:'editable_submissions')
         self.editable_submissions = attributes[:'editable_submissions']
       else
         self.editable_submissions = nil
       end
 
-      if attributes.key?(:'locked')
-        self.locked = attributes[:'locked']
+      if attributes.key?(:'embed_domains')
+        self.embed_domains = attributes[:'embed_domains']
       else
-        self.locked = nil
+        self.embed_domains = nil
       end
 
-      if attributes.key?(:'webhook_url')
-        self.webhook_url = attributes[:'webhook_url']
+      if attributes.key?(:'encrypt_pdfs_password')
+        self.encrypt_pdfs_password = attributes[:'encrypt_pdfs_password']
       else
-        self.webhook_url = nil
+        self.encrypt_pdfs_password = nil
       end
 
-      if attributes.key?(:'slack_webhook_url')
-        self.slack_webhook_url = attributes[:'slack_webhook_url']
+      if attributes.key?(:'encrypt_pdfs')
+        self.encrypt_pdfs = attributes[:'encrypt_pdfs']
       else
-        self.slack_webhook_url = nil
+        self.encrypt_pdfs = nil
       end
 
-      if attributes.key?(:'redirect_url')
-        self.redirect_url = attributes[:'redirect_url']
+      if attributes.key?(:'expiration_interval')
+        self.expiration_interval = attributes[:'expiration_interval']
       else
-        self.redirect_url = nil
+        self.expiration_interval = nil
+      end
+
+      if attributes.key?(:'expire_after')
+        self.expire_after = attributes[:'expire_after']
+      else
+        self.expire_after = nil
+      end
+
+      if attributes.key?(:'expire_submissions')
+        self.expire_submissions = attributes[:'expire_submissions']
+      else
+        self.expire_submissions = nil
+      end
+
+      if attributes.key?(:'external_predefined_fields_template_id')
+        self.external_predefined_fields_template_id = attributes[:'external_predefined_fields_template_id']
+      else
+        self.external_predefined_fields_template_id = nil
+      end
+
+      if attributes.key?(:'external_predefined_fields_template_name')
+        self.external_predefined_fields_template_name = attributes[:'external_predefined_fields_template_name']
+      else
+        self.external_predefined_fields_template_name = nil
+      end
+
+      if attributes.key?(:'first_template')
+        self.first_template = attributes[:'first_template']
+      else
+        self.first_template = nil
       end
 
       if attributes.key?(:'id')
@@ -248,10 +401,28 @@ module DocSpring
         self.id = nil
       end
 
-      if attributes.key?(:'template_type')
-        self.template_type = attributes[:'template_type']
+      if attributes.key?(:'locked')
+        self.locked = attributes[:'locked']
       else
-        self.template_type = nil
+        self.locked = nil
+      end
+
+      if attributes.key?(:'merge_audit_trail_pdf')
+        self.merge_audit_trail_pdf = attributes[:'merge_audit_trail_pdf']
+      else
+        self.merge_audit_trail_pdf = nil
+      end
+
+      if attributes.key?(:'name')
+        self.name = attributes[:'name']
+      else
+        self.name = nil
+      end
+
+      if attributes.key?(:'page_count')
+        self.page_count = attributes[:'page_count']
+      else
+        self.page_count = nil
       end
 
       if attributes.key?(:'page_dimensions')
@@ -262,16 +433,10 @@ module DocSpring
         self.page_dimensions = nil
       end
 
-      if attributes.key?(:'document_url')
-        self.document_url = attributes[:'document_url']
+      if attributes.key?(:'parent_folder_id')
+        self.parent_folder_id = attributes[:'parent_folder_id']
       else
-        self.document_url = nil
-      end
-
-      if attributes.key?(:'permanent_document_url')
-        self.permanent_document_url = attributes[:'permanent_document_url']
-      else
-        self.permanent_document_url = nil
+        self.parent_folder_id = nil
       end
 
       if attributes.key?(:'path')
@@ -280,10 +445,122 @@ module DocSpring
         self.path = nil
       end
 
-      if attributes.key?(:'parent_folder_id')
-        self.parent_folder_id = attributes[:'parent_folder_id']
+      if attributes.key?(:'permanent_document_url')
+        self.permanent_document_url = attributes[:'permanent_document_url']
       else
-        self.parent_folder_id = nil
+        self.permanent_document_url = nil
+      end
+
+      if attributes.key?(:'public_submissions')
+        self.public_submissions = attributes[:'public_submissions']
+      else
+        self.public_submissions = nil
+      end
+
+      if attributes.key?(:'public_web_form')
+        self.public_web_form = attributes[:'public_web_form']
+      else
+        self.public_web_form = nil
+      end
+
+      if attributes.key?(:'redirect_url')
+        self.redirect_url = attributes[:'redirect_url']
+      else
+        self.redirect_url = nil
+      end
+
+      if attributes.key?(:'slack_webhook_url')
+        self.slack_webhook_url = attributes[:'slack_webhook_url']
+      else
+        self.slack_webhook_url = nil
+      end
+
+      if attributes.key?(:'template_type')
+        self.template_type = attributes[:'template_type']
+      else
+        self.template_type = nil
+      end
+
+      if attributes.key?(:'updated_at')
+        self.updated_at = attributes[:'updated_at']
+      else
+        self.updated_at = nil
+      end
+
+      if attributes.key?(:'webhook_url')
+        self.webhook_url = attributes[:'webhook_url']
+      else
+        self.webhook_url = nil
+      end
+
+      if attributes.key?(:'demo')
+        self.demo = attributes[:'demo']
+      else
+        self.demo = nil
+      end
+
+      if attributes.key?(:'defaults')
+        self.defaults = attributes[:'defaults']
+      else
+        self.defaults = nil
+      end
+
+      if attributes.key?(:'field_order')
+        if (value = attributes[:'field_order']).is_a?(Array)
+          self.field_order = value
+        end
+      else
+        self.field_order = nil
+      end
+
+      if attributes.key?(:'fields')
+        self.fields = attributes[:'fields']
+      else
+        self.fields = nil
+      end
+
+      if attributes.key?(:'footer_html')
+        self.footer_html = attributes[:'footer_html']
+      else
+        self.footer_html = nil
+      end
+
+      if attributes.key?(:'header_html')
+        self.header_html = attributes[:'header_html']
+      else
+        self.header_html = nil
+      end
+
+      if attributes.key?(:'html_engine_options')
+        self.html_engine_options = attributes[:'html_engine_options']
+      else
+        self.html_engine_options = nil
+      end
+
+      if attributes.key?(:'html')
+        self.html = attributes[:'html']
+      else
+        self.html = nil
+      end
+
+      if attributes.key?(:'predefined_fields')
+        if (value = attributes[:'predefined_fields']).is_a?(Array)
+          self.predefined_fields = value
+        end
+      else
+        self.predefined_fields = nil
+      end
+
+      if attributes.key?(:'scss')
+        self.scss = attributes[:'scss']
+      else
+        self.scss = nil
+      end
+
+      if attributes.key?(:'shared_field_data')
+        self.shared_field_data = attributes[:'shared_field_data']
+      else
+        self.shared_field_data = nil
       end
     end
 
@@ -292,48 +569,100 @@ module DocSpring
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @public_web_form.nil?
-        invalid_properties.push('invalid value for "public_web_form", public_web_form cannot be nil.')
-      end
-
-      if @public_submissions.nil?
-        invalid_properties.push('invalid value for "public_submissions", public_submissions cannot be nil.')
-      end
-
-      if @expire_submissions.nil?
-        invalid_properties.push('invalid value for "expire_submissions", expire_submissions cannot be nil.')
-      end
-
-      if @expire_after.nil?
-        invalid_properties.push('invalid value for "expire_after", expire_after cannot be nil.')
-      end
-
-      if @expiration_interval.nil?
-        invalid_properties.push('invalid value for "expiration_interval", expiration_interval cannot be nil.')
+      if @add_data_request_submission_id_footers.nil?
+        invalid_properties.push('invalid value for "add_data_request_submission_id_footers", add_data_request_submission_id_footers cannot be nil.')
       end
 
       if @allow_additional_properties.nil?
         invalid_properties.push('invalid value for "allow_additional_properties", allow_additional_properties cannot be nil.')
       end
 
+      if @document_parse_error.nil?
+        invalid_properties.push('invalid value for "document_parse_error", document_parse_error cannot be nil.')
+      end
+
+      if @document_processed.nil?
+        invalid_properties.push('invalid value for "document_processed", document_processed cannot be nil.')
+      end
+
+      if @document_state.nil?
+        invalid_properties.push('invalid value for "document_state", document_state cannot be nil.')
+      end
+
       if @editable_submissions.nil?
         invalid_properties.push('invalid value for "editable_submissions", editable_submissions cannot be nil.')
+      end
+
+      if @encrypt_pdfs.nil?
+        invalid_properties.push('invalid value for "encrypt_pdfs", encrypt_pdfs cannot be nil.')
+      end
+
+      if @expiration_interval.nil?
+        invalid_properties.push('invalid value for "expiration_interval", expiration_interval cannot be nil.')
+      end
+
+      if @expire_after.nil?
+        invalid_properties.push('invalid value for "expire_after", expire_after cannot be nil.')
+      end
+
+      if @expire_submissions.nil?
+        invalid_properties.push('invalid value for "expire_submissions", expire_submissions cannot be nil.')
+      end
+
+      if @first_template.nil?
+        invalid_properties.push('invalid value for "first_template", first_template cannot be nil.')
       end
 
       if @locked.nil?
         invalid_properties.push('invalid value for "locked", locked cannot be nil.')
       end
 
-      if @id.nil?
-        invalid_properties.push('invalid value for "id", id cannot be nil.')
+      if @merge_audit_trail_pdf.nil?
+        invalid_properties.push('invalid value for "merge_audit_trail_pdf", merge_audit_trail_pdf cannot be nil.')
+      end
+
+      if @page_count.nil?
+        invalid_properties.push('invalid value for "page_count", page_count cannot be nil.')
+      end
+
+      if @public_submissions.nil?
+        invalid_properties.push('invalid value for "public_submissions", public_submissions cannot be nil.')
+      end
+
+      if @public_web_form.nil?
+        invalid_properties.push('invalid value for "public_web_form", public_web_form cannot be nil.')
       end
 
       if @template_type.nil?
         invalid_properties.push('invalid value for "template_type", template_type cannot be nil.')
       end
 
-      if @path.nil?
-        invalid_properties.push('invalid value for "path", path cannot be nil.')
+      if @demo.nil?
+        invalid_properties.push('invalid value for "demo", demo cannot be nil.')
+      end
+
+      if @defaults.nil?
+        invalid_properties.push('invalid value for "defaults", defaults cannot be nil.')
+      end
+
+      if @field_order.nil?
+        invalid_properties.push('invalid value for "field_order", field_order cannot be nil.')
+      end
+
+      if @fields.nil?
+        invalid_properties.push('invalid value for "fields", fields cannot be nil.')
+      end
+
+      if @html_engine_options.nil?
+        invalid_properties.push('invalid value for "html_engine_options", html_engine_options cannot be nil.')
+      end
+
+      if @predefined_fields.nil?
+        invalid_properties.push('invalid value for "predefined_fields", predefined_fields cannot be nil.')
+      end
+
+      if @shared_field_data.nil?
+        invalid_properties.push('invalid value for "shared_field_data", shared_field_data cannot be nil.')
       end
 
       invalid_properties
@@ -343,30 +672,55 @@ module DocSpring
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @public_web_form.nil?
-      return false if @public_submissions.nil?
-      return false if @expire_submissions.nil?
-      return false if @expire_after.nil?
-      return false if @expiration_interval.nil?
-      expiration_interval_validator = EnumAttributeValidator.new('String', ["minutes", "hours", "days"])
-      return false unless expiration_interval_validator.valid?(@expiration_interval)
+      return false if @add_data_request_submission_id_footers.nil?
       return false if @allow_additional_properties.nil?
+      return false if @document_parse_error.nil?
+      return false if @document_processed.nil?
+      return false if @document_state.nil?
+      document_state_validator = EnumAttributeValidator.new('String', ["pending", "processed", "password_required", "malformed_pdf", "unknown_error"])
+      return false unless document_state_validator.valid?(@document_state)
       return false if @editable_submissions.nil?
+      return false if @encrypt_pdfs.nil?
+      return false if @expiration_interval.nil?
+      return false if @expire_after.nil?
+      return false if @expire_submissions.nil?
+      return false if @first_template.nil?
       return false if @locked.nil?
-      return false if @id.nil?
+      return false if @merge_audit_trail_pdf.nil?
+      return false if @page_count.nil?
+      return false if @public_submissions.nil?
+      return false if @public_web_form.nil?
       return false if @template_type.nil?
-      return false if @path.nil?
+      template_type_validator = EnumAttributeValidator.new('String', ["pdf", "html"])
+      return false unless template_type_validator.valid?(@template_type)
+      return false if @demo.nil?
+      return false if @defaults.nil?
+      return false if @field_order.nil?
+      return false if @fields.nil?
+      return false if @html_engine_options.nil?
+      return false if @predefined_fields.nil?
+      return false if @shared_field_data.nil?
       true
     end
 
     # Custom attribute writer method checking allowed values (enum).
-    # @param [Object] expiration_interval Object to be assigned
-    def expiration_interval=(expiration_interval)
-      validator = EnumAttributeValidator.new('String', ["minutes", "hours", "days"])
-      unless validator.valid?(expiration_interval)
-        fail ArgumentError, "invalid value for \"expiration_interval\", must be one of #{validator.allowable_values}."
+    # @param [Object] document_state Object to be assigned
+    def document_state=(document_state)
+      validator = EnumAttributeValidator.new('String', ["pending", "processed", "password_required", "malformed_pdf", "unknown_error"])
+      unless validator.valid?(document_state)
+        fail ArgumentError, "invalid value for \"document_state\", must be one of #{validator.allowable_values}."
       end
-      @expiration_interval = expiration_interval
+      @document_state = document_state
+    end
+
+    # Custom attribute writer method checking allowed values (enum).
+    # @param [Object] template_type Object to be assigned
+    def template_type=(template_type)
+      validator = EnumAttributeValidator.new('String', ["pdf", "html"])
+      unless validator.valid?(template_type)
+        fail ArgumentError, "invalid value for \"template_type\", must be one of #{validator.allowable_values}."
+      end
+      @template_type = template_type
     end
 
     # Checks equality by comparing each attribute.
@@ -374,26 +728,52 @@ module DocSpring
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
-          name == o.name &&
-          description == o.description &&
-          public_web_form == o.public_web_form &&
-          public_submissions == o.public_submissions &&
-          expire_submissions == o.expire_submissions &&
-          expire_after == o.expire_after &&
-          expiration_interval == o.expiration_interval &&
+          add_data_request_submission_id_footers == o.add_data_request_submission_id_footers &&
           allow_additional_properties == o.allow_additional_properties &&
-          editable_submissions == o.editable_submissions &&
-          locked == o.locked &&
-          webhook_url == o.webhook_url &&
-          slack_webhook_url == o.slack_webhook_url &&
-          redirect_url == o.redirect_url &&
-          id == o.id &&
-          template_type == o.template_type &&
-          page_dimensions == o.page_dimensions &&
+          description == o.description &&
+          document_filename == o.document_filename &&
+          document_md5 == o.document_md5 &&
+          document_parse_error == o.document_parse_error &&
+          document_processed == o.document_processed &&
+          document_state == o.document_state &&
           document_url == o.document_url &&
-          permanent_document_url == o.permanent_document_url &&
+          editable_submissions == o.editable_submissions &&
+          embed_domains == o.embed_domains &&
+          encrypt_pdfs_password == o.encrypt_pdfs_password &&
+          encrypt_pdfs == o.encrypt_pdfs &&
+          expiration_interval == o.expiration_interval &&
+          expire_after == o.expire_after &&
+          expire_submissions == o.expire_submissions &&
+          external_predefined_fields_template_id == o.external_predefined_fields_template_id &&
+          external_predefined_fields_template_name == o.external_predefined_fields_template_name &&
+          first_template == o.first_template &&
+          id == o.id &&
+          locked == o.locked &&
+          merge_audit_trail_pdf == o.merge_audit_trail_pdf &&
+          name == o.name &&
+          page_count == o.page_count &&
+          page_dimensions == o.page_dimensions &&
+          parent_folder_id == o.parent_folder_id &&
           path == o.path &&
-          parent_folder_id == o.parent_folder_id
+          permanent_document_url == o.permanent_document_url &&
+          public_submissions == o.public_submissions &&
+          public_web_form == o.public_web_form &&
+          redirect_url == o.redirect_url &&
+          slack_webhook_url == o.slack_webhook_url &&
+          template_type == o.template_type &&
+          updated_at == o.updated_at &&
+          webhook_url == o.webhook_url &&
+          demo == o.demo &&
+          defaults == o.defaults &&
+          field_order == o.field_order &&
+          fields == o.fields &&
+          footer_html == o.footer_html &&
+          header_html == o.header_html &&
+          html_engine_options == o.html_engine_options &&
+          html == o.html &&
+          predefined_fields == o.predefined_fields &&
+          scss == o.scss &&
+          shared_field_data == o.shared_field_data
     end
 
     # @see the `==` method
@@ -405,7 +785,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [name, description, public_web_form, public_submissions, expire_submissions, expire_after, expiration_interval, allow_additional_properties, editable_submissions, locked, webhook_url, slack_webhook_url, redirect_url, id, template_type, page_dimensions, document_url, permanent_document_url, path, parent_folder_id].hash
+      [add_data_request_submission_id_footers, allow_additional_properties, description, document_filename, document_md5, document_parse_error, document_processed, document_state, document_url, editable_submissions, embed_domains, encrypt_pdfs_password, encrypt_pdfs, expiration_interval, expire_after, expire_submissions, external_predefined_fields_template_id, external_predefined_fields_template_name, first_template, id, locked, merge_audit_trail_pdf, name, page_count, page_dimensions, parent_folder_id, path, permanent_document_url, public_submissions, public_web_form, redirect_url, slack_webhook_url, template_type, updated_at, webhook_url, demo, defaults, field_order, fields, footer_html, header_html, html_engine_options, html, predefined_fields, scss, shared_field_data].hash
     end
 
     # Builds the object from hash

@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -32,7 +32,7 @@ module DocSpring
     # @option config [Configuration] Configuration for initializing the object, default to Configuration.default
     def initialize(config = Configuration.default)
       @config = config
-      @user_agent = "docspring-ruby-#{VERSION}"
+      @user_agent = "docspring-ruby-3.0.0"
       @default_headers = {
         'Content-Type' => 'application/json',
         'User-Agent' => @user_agent
@@ -64,30 +64,10 @@ module DocSpring
           fail ApiError.new(:code => 0,
                             :message => response.return_message)
         else
-          # <--------------- BEGIN DOCSPRING CUSTOMIZATION ----------------->
-          # Description: Custom error handling for API responses
-          exception_message = nil
-          response_json = JSON.parse(response.body) rescue nil
-          if response_json.is_a? Hash
-            if response_json['errors'].is_a? Array
-              response_errors = response_json['errors'].join(', ')
-            elsif response_json['error']
-              response_errors = response_json['error']
-            end
-            if response_errors
-              exception_message = "#{response.status_message}: #{response_errors}"
-            end
-          end
-
-          unless exception_message
-            exception_message = "#{response.status_message}: [Could not parse errors from response body]"
-          end
-
           fail ApiError.new(:code => response.code,
                             :response_headers => response.headers,
                             :response_body => response.body),
-               exception_message
-          # <--------------- END DOCSPRING CUSTOMIZATION ----------------->
+               response.status_message
         end
       end
 

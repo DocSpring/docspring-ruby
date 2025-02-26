@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -17,9 +17,9 @@ module DocSpring
   class CreateSubmissionResponse
     attr_accessor :status
 
-    attr_accessor :errors
-
     attr_accessor :submission
+
+    attr_accessor :errors
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -47,8 +47,8 @@ module DocSpring
     def self.attribute_map
       {
         :'status' => :'status',
-        :'errors' => :'errors',
-        :'submission' => :'submission'
+        :'submission' => :'submission',
+        :'errors' => :'errors'
       }
     end
 
@@ -61,8 +61,8 @@ module DocSpring
     def self.openapi_types
       {
         :'status' => :'String',
-        :'errors' => :'Array<String>',
-        :'submission' => :'Submission'
+        :'submission' => :'SubmissionPreview',
+        :'errors' => :'Array<String>'
       }
     end
 
@@ -93,16 +93,16 @@ module DocSpring
         self.status = nil
       end
 
-      if attributes.key?(:'errors')
-        if (value = attributes[:'errors']).is_a?(Array)
-          self.errors = value
-        end
-      end
-
       if attributes.key?(:'submission')
         self.submission = attributes[:'submission']
       else
         self.submission = nil
+      end
+
+      if attributes.key?(:'errors')
+        if (value = attributes[:'errors']).is_a?(Array)
+          self.errors = value
+        end
       end
     end
 
@@ -149,8 +149,8 @@ module DocSpring
       return true if self.equal?(o)
       self.class == o.class &&
           status == o.status &&
-          errors == o.errors &&
-          submission == o.submission
+          submission == o.submission &&
+          errors == o.errors
     end
 
     # @see the `==` method
@@ -162,7 +162,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [status, errors, submission].hash
+      [status, submission, errors].hash
     end
 
     # Builds the object from hash

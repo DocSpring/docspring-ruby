@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -28,6 +28,28 @@ module DocSpring
     attr_accessor :message_recipient
 
     attr_accessor :occurred_at
+
+    class EnumAttributeValidator
+      attr_reader :datatype
+      attr_reader :allowable_values
+
+      def initialize(datatype, allowable_values)
+        @allowable_values = allowable_values.map do |value|
+          case datatype.to_s
+          when /Integer/i
+            value.to_i
+          when /Float/i
+            value.to_f
+          else
+            value
+          end
+        end
+      end
+
+      def valid?(value)
+        !value || allowable_values.include?(value)
+      end
+    end
 
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
@@ -63,8 +85,11 @@ module DocSpring
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
-        :'message_type',
+        :'id',
+        :'submission_id',
+        :'submission_data_request_id',
         :'message_recipient',
+        :'occurred_at'
       ])
     end
 
@@ -131,24 +156,12 @@ module DocSpring
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @id.nil?
-        invalid_properties.push('invalid value for "id", id cannot be nil.')
-      end
-
-      if @submission_id.nil?
-        invalid_properties.push('invalid value for "submission_id", submission_id cannot be nil.')
-      end
-
-      if @submission_data_request_id.nil?
-        invalid_properties.push('invalid value for "submission_data_request_id", submission_data_request_id cannot be nil.')
-      end
-
       if @event_type.nil?
         invalid_properties.push('invalid value for "event_type", event_type cannot be nil.')
       end
 
-      if @occurred_at.nil?
-        invalid_properties.push('invalid value for "occurred_at", occurred_at cannot be nil.')
+      if @message_type.nil?
+        invalid_properties.push('invalid value for "message_type", message_type cannot be nil.')
       end
 
       invalid_properties
@@ -158,12 +171,33 @@ module DocSpring
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @id.nil?
-      return false if @submission_id.nil?
-      return false if @submission_data_request_id.nil?
       return false if @event_type.nil?
-      return false if @occurred_at.nil?
+      event_type_validator = EnumAttributeValidator.new('String', ["send_request", "view_request", "accepted_terms", "decline_request", "sign_request", "all_completed"])
+      return false unless event_type_validator.valid?(@event_type)
+      return false if @message_type.nil?
+      message_type_validator = EnumAttributeValidator.new('String', ["email", "sms", "fax", "mail", "slack", "msteams", "discord", "telegram", "whatsapp"])
+      return false unless message_type_validator.valid?(@message_type)
       true
+    end
+
+    # Custom attribute writer method checking allowed values (enum).
+    # @param [Object] event_type Object to be assigned
+    def event_type=(event_type)
+      validator = EnumAttributeValidator.new('String', ["send_request", "view_request", "accepted_terms", "decline_request", "sign_request", "all_completed"])
+      unless validator.valid?(event_type)
+        fail ArgumentError, "invalid value for \"event_type\", must be one of #{validator.allowable_values}."
+      end
+      @event_type = event_type
+    end
+
+    # Custom attribute writer method checking allowed values (enum).
+    # @param [Object] message_type Object to be assigned
+    def message_type=(message_type)
+      validator = EnumAttributeValidator.new('String', ["email", "sms", "fax", "mail", "slack", "msteams", "discord", "telegram", "whatsapp"])
+      unless validator.valid?(message_type)
+        fail ArgumentError, "invalid value for \"message_type\", must be one of #{validator.allowable_values}."
+      end
+      @message_type = message_type
     end
 
     # Checks equality by comparing each attribute.

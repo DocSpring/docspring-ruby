@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -12,11 +12,6 @@ Generator version: 7.11.0
 
 module DocSpring
   class Configuration
-    # <--------------- BEGIN DOCSPRING CUSTOMIZATION ----------------->
-    # Description: Add SCHEME_REGEX constant to extract scheme from host
-    SCHEME_REGEX = /^(https?):\/\//
-    # <--------------- END DOCSPRING CUSTOMIZATION ----------------->
-
     # Defines url scheme
     attr_accessor :scheme
 
@@ -54,10 +49,6 @@ module DocSpring
     #   config.api_key_prefix['api_key'] = 'Token'
     attr_accessor :api_key_prefix
 
-    # <--------------- BEGIN DOCSPRING CUSTOMIZATION ----------------->
-    # Description: Note that we also add a getter/setter for api_token_id and api_token_secret,
-    # aliases for username and password.
-    # <--------------- END DOCSPRING CUSTOMIZATION ----------------->
     # Defines the username used with HTTP basic authentication.
     #
     # @return [String]
@@ -167,7 +158,7 @@ module DocSpring
 
     def initialize
       @scheme = 'https'
-      @host = 'api.docspring.com'
+      @host = 'sync.api.docspring.com'
       @base_path = '/api/v1'
       @server_index = nil
       @server_operation_index = {}
@@ -188,27 +179,8 @@ module DocSpring
       @force_ending_format = false
       @logger = defined?(Rails) ? Rails.logger : Logger.new(STDOUT)
 
-      # <--------------- BEGIN DOCSPRING CUSTOMIZATION ----------------->
-      # Description: Use ENV variables by default if they are provided.
-      @username = ENV['DOCSPRING_TOKEN_ID']
-      @password = ENV['DOCSPRING_TOKEN_SECRET']
-      # <--------------- END DOCSPRING CUSTOMIZATION ----------------->
-
       yield(self) if block_given?
     end
-
-    # <--------------- BEGIN DOCSPRING CUSTOMIZATION ----------------->
-    # Description: Add getter/setter for api_token_id and api_token_secret, aliases for username and password
-    def api_token_id=(api_token_id)
-      @username = api_token_id
-    end
-    alias api_token_id username
-
-    def api_token_secret=(api_token_secret)
-      @password = api_token_secret
-    end
-    alias api_token_secret password
-    # <--------------- END DOCSPRING CUSTOMIZATION ----------------->
 
     # The default Configuration object.
     def self.default
@@ -225,12 +197,8 @@ module DocSpring
     end
 
     def host=(host)
-      # <--------------- BEGIN DOCSPRING CUSTOMIZATION ----------------->
-      # Decription: Set scheme automatically when setting host from a URL
-      @scheme = host[SCHEME_REGEX, 1] if host.match?(SCHEME_REGEX)
       # remove http(s):// and anything after a slash
-      @host = host.sub(SCHEME_REGEX, '').split('/').first
-      # <--------------- END DOCSPRING CUSTOMIZATION ----------------->
+      @host = host.sub(/https?:\/\//, '').split('/').first
     end
 
     def base_path=(base_path)
@@ -290,7 +258,7 @@ module DocSpring
     def server_settings
       [
         {
-          url: "https://api.docspring.com/api/v1",
+          url: "https://sync.api.docspring.com/api/v1",
           description: "No description provided",
         }
       ]

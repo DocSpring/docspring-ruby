@@ -1,11 +1,10 @@
 # DocSpring::PDFApi
 
-All URIs are relative to *https://api.docspring.com/api/v1*
+All URIs are relative to *https://sync.api.docspring.com/api/v1*
 
 | Method | HTTP request | Description |
 | ------ | ------------ | ----------- |
 | [**add_fields_to_template**](PDFApi.md#add_fields_to_template) | **PUT** /templates/{template_id}/add_fields | Add new fields to a Template |
-| [**batch_generate_pdf_v1**](PDFApi.md#batch_generate_pdf_v1) | **POST** /templates/{template_id}/submissions/batch | Generates multiple PDFs |
 | [**batch_generate_pdfs**](PDFApi.md#batch_generate_pdfs) | **POST** /submissions/batches | Generates multiple PDFs |
 | [**combine_pdfs**](PDFApi.md#combine_pdfs) | **POST** /combined_submissions?v&#x3D;2 | Merge submission PDFs, template PDFs, or custom files |
 | [**combine_submissions**](PDFApi.md#combine_submissions) | **POST** /combined_submissions | Merge generated PDFs together |
@@ -14,14 +13,15 @@ All URIs are relative to *https://api.docspring.com/api/v1*
 | [**create_data_request_event**](PDFApi.md#create_data_request_event) | **POST** /data_requests/{data_request_id}/events | Creates a new event for emailing a signee a request for signature |
 | [**create_data_request_token**](PDFApi.md#create_data_request_token) | **POST** /data_requests/{data_request_id}/tokens | Creates a new data request token for form authentication |
 | [**create_folder**](PDFApi.md#create_folder) | **POST** /folders/ | Create a folder |
-| [**create_html_template**](PDFApi.md#create_html_template) | **POST** /templates?desc&#x3D;html | Create a new HTML template |
+| [**create_html_template**](PDFApi.md#create_html_template) | **POST** /templates?endpoint_description&#x3D;html | Create a new HTML template |
 | [**create_pdf_template**](PDFApi.md#create_pdf_template) | **POST** /templates | Create a new PDF template with a form POST file upload |
-| [**create_pdf_template_from_upload**](PDFApi.md#create_pdf_template_from_upload) | **POST** /templates?desc&#x3D;cached_upload | Create a new PDF template from a cached presign upload |
+| [**create_pdf_template_from_upload**](PDFApi.md#create_pdf_template_from_upload) | **POST** /templates?endpoint_description&#x3D;cached_upload | Create a new PDF template from a cached presign upload |
 | [**delete_folder**](PDFApi.md#delete_folder) | **DELETE** /folders/{folder_id} | Delete a folder |
 | [**delete_template**](PDFApi.md#delete_template) | **DELETE** /templates/{template_id} | Delete a template |
 | [**expire_combined_submission**](PDFApi.md#expire_combined_submission) | **DELETE** /combined_submissions/{combined_submission_id} | Expire a combined submission |
 | [**expire_submission**](PDFApi.md#expire_submission) | **DELETE** /submissions/{submission_id} | Expire a PDF submission |
 | [**generate_pdf**](PDFApi.md#generate_pdf) | **POST** /templates/{template_id}/submissions | Generates a new PDF |
+| [**generate_pdf_for_html_template**](PDFApi.md#generate_pdf_for_html_template) | **POST** /templates/{template_id}/submissions?endpoint_description&#x3D;html_templates | Generates a new PDF for an HTML template |
 | [**generate_preview**](PDFApi.md#generate_preview) | **POST** /submissions/{submission_id}/generate_preview | Generated a preview PDF for partially completed data requests |
 | [**get_combined_submission**](PDFApi.md#get_combined_submission) | **GET** /combined_submissions/{combined_submission_id} | Check the status of a combined submission (merged PDFs) |
 | [**get_data_request**](PDFApi.md#get_data_request) | **GET** /data_requests/{data_request_id} | Look up a submission data request |
@@ -38,9 +38,7 @@ All URIs are relative to *https://api.docspring.com/api/v1*
 | [**list_templates**](PDFApi.md#list_templates) | **GET** /templates | Get a list of all templates |
 | [**move_folder_to_folder**](PDFApi.md#move_folder_to_folder) | **POST** /folders/{folder_id}/move | Move a folder |
 | [**move_template_to_folder**](PDFApi.md#move_template_to_folder) | **POST** /templates/{template_id}/move | Move Template to folder |
-| [**publish_template_version**](PDFApi.md#publish_template_version) | **POST** /templates/{template_id}/publish_version | Publish a template version |
 | [**rename_folder**](PDFApi.md#rename_folder) | **POST** /folders/{folder_id}/rename | Rename a folder |
-| [**restore_template_version**](PDFApi.md#restore_template_version) | **POST** /templates/{template_id}/restore_version | Restore a template version |
 | [**test_authentication**](PDFApi.md#test_authentication) | **GET** /authentication | Test Authentication |
 | [**update_data_request**](PDFApi.md#update_data_request) | **PUT** /data_requests/{data_request_id} | Update a submission data request |
 | [**update_template**](PDFApi.md#update_template) | **PUT** /templates/{template_id} | Update a Template |
@@ -48,7 +46,7 @@ All URIs are relative to *https://api.docspring.com/api/v1*
 
 ## add_fields_to_template
 
-> <AddFieldsTemplateResponse> add_fields_to_template(template_id, data)
+> <TemplateAddFieldsResponse> add_fields_to_template(template_id, data)
 
 Add new fields to a Template
 
@@ -65,7 +63,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000002' # String | 
+template_id = 'tpl_1234567890abcdef02' # String | 
 data = DocSpring::AddFieldsData.new({fields: [3.56]}) # AddFieldsData | 
 
 begin
@@ -81,7 +79,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<AddFieldsTemplateResponse>, Integer, Hash)> add_fields_to_template_with_http_info(template_id, data)
+> <Array(<TemplateAddFieldsResponse>, Integer, Hash)> add_fields_to_template_with_http_info(template_id, data)
 
 ```ruby
 begin
@@ -89,7 +87,7 @@ begin
   data, status_code, headers = api_instance.add_fields_to_template_with_http_info(template_id, data)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <AddFieldsTemplateResponse>
+  p data # => <TemplateAddFieldsResponse>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->add_fields_to_template_with_http_info: #{e}"
 end
@@ -104,77 +102,7 @@ end
 
 ### Return type
 
-[**AddFieldsTemplateResponse**](AddFieldsTemplateResponse.md)
-
-### Authorization
-
-[api_token_basic](../README.md#api_token_basic)
-
-### HTTP request headers
-
-- **Content-Type**: application/json
-- **Accept**: application/json
-
-
-## batch_generate_pdf_v1
-
-> <Array<CreateSubmissionResponse>> batch_generate_pdf_v1(template_id, data)
-
-Generates multiple PDFs
-
-### Examples
-
-```ruby
-require 'time'
-require 'docspring'
-# setup authorization
-DocSpring.configure do |config|
-  # Configure HTTP basic authorization: api_token_basic
-  config.username = 'YOUR USERNAME'
-  config.password = 'YOUR PASSWORD'
-end
-
-api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000001' # String | 
-data = [DocSpring::SubmissionData.new({data: 3.56})] # Array<SubmissionData> | 
-
-begin
-  # Generates multiple PDFs
-  result = api_instance.batch_generate_pdf_v1(template_id, data)
-  p result
-rescue DocSpring::ApiError => e
-  puts "Error when calling PDFApi->batch_generate_pdf_v1: #{e}"
-end
-```
-
-#### Using the batch_generate_pdf_v1_with_http_info variant
-
-This returns an Array which contains the response data, status code and headers.
-
-> <Array(<Array<CreateSubmissionResponse>>, Integer, Hash)> batch_generate_pdf_v1_with_http_info(template_id, data)
-
-```ruby
-begin
-  # Generates multiple PDFs
-  data, status_code, headers = api_instance.batch_generate_pdf_v1_with_http_info(template_id, data)
-  p status_code # => 2xx
-  p headers # => { ... }
-  p data # => <Array<CreateSubmissionResponse>>
-rescue DocSpring::ApiError => e
-  puts "Error when calling PDFApi->batch_generate_pdf_v1_with_http_info: #{e}"
-end
-```
-
-### Parameters
-
-| Name | Type | Description | Notes |
-| ---- | ---- | ----------- | ----- |
-| **template_id** | **String** |  |  |
-| **data** | [**Array&lt;SubmissionData&gt;**](SubmissionData.md) |  |  |
-
-### Return type
-
-[**Array&lt;CreateSubmissionResponse&gt;**](CreateSubmissionResponse.md)
+[**TemplateAddFieldsResponse**](TemplateAddFieldsResponse.md)
 
 ### Authorization
 
@@ -188,7 +116,7 @@ end
 
 ## batch_generate_pdfs
 
-> <CreateSubmissionBatchResponse> batch_generate_pdfs(data)
+> <BatchGeneratePdfs201Response> batch_generate_pdfs(data, opts)
 
 Generates multiple PDFs
 
@@ -205,11 +133,14 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-data = DocSpring::SubmissionBatchData.new({submissions: [DocSpring::SubmissionDataBatchRequest.new({data: 3.56, template_id: 'template_id_example'})]}) # SubmissionBatchData | 
+data = DocSpring::SubmissionBatchData.new({submissions: [3.56]}) # SubmissionBatchData | 
+opts = {
+  wait: true # Boolean | Wait for submission batch to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain)
+}
 
 begin
   # Generates multiple PDFs
-  result = api_instance.batch_generate_pdfs(data)
+  result = api_instance.batch_generate_pdfs(data, opts)
   p result
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->batch_generate_pdfs: #{e}"
@@ -220,15 +151,15 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<CreateSubmissionBatchResponse>, Integer, Hash)> batch_generate_pdfs_with_http_info(data)
+> <Array(<BatchGeneratePdfs201Response>, Integer, Hash)> batch_generate_pdfs_with_http_info(data, opts)
 
 ```ruby
 begin
   # Generates multiple PDFs
-  data, status_code, headers = api_instance.batch_generate_pdfs_with_http_info(data)
+  data, status_code, headers = api_instance.batch_generate_pdfs_with_http_info(data, opts)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <CreateSubmissionBatchResponse>
+  p data # => <BatchGeneratePdfs201Response>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->batch_generate_pdfs_with_http_info: #{e}"
 end
@@ -239,10 +170,11 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **data** | [**SubmissionBatchData**](SubmissionBatchData.md) |  |  |
+| **wait** | **Boolean** | Wait for submission batch to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) | [optional][default to true] |
 
 ### Return type
 
-[**CreateSubmissionBatchResponse**](CreateSubmissionBatchResponse.md)
+[**BatchGeneratePdfs201Response**](BatchGeneratePdfs201Response.md)
 
 ### Authorization
 
@@ -324,7 +256,7 @@ end
 
 ## combine_submissions
 
-> <CreateCombinedSubmissionResponse> combine_submissions(data)
+> <CreateCombinedSubmissionResponse> combine_submissions(data, opts)
 
 Merge generated PDFs together
 
@@ -342,10 +274,13 @@ end
 
 api_instance = DocSpring::PDFApi.new
 data = DocSpring::CombinedSubmissionData.new({submission_ids: ['submission_ids_example']}) # CombinedSubmissionData | 
+opts = {
+  wait: true # Boolean | Wait for combined submission to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain)
+}
 
 begin
   # Merge generated PDFs together
-  result = api_instance.combine_submissions(data)
+  result = api_instance.combine_submissions(data, opts)
   p result
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->combine_submissions: #{e}"
@@ -356,12 +291,12 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<CreateCombinedSubmissionResponse>, Integer, Hash)> combine_submissions_with_http_info(data)
+> <Array(<CreateCombinedSubmissionResponse>, Integer, Hash)> combine_submissions_with_http_info(data, opts)
 
 ```ruby
 begin
   # Merge generated PDFs together
-  data, status_code, headers = api_instance.combine_submissions_with_http_info(data)
+  data, status_code, headers = api_instance.combine_submissions_with_http_info(data, opts)
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <CreateCombinedSubmissionResponse>
@@ -375,6 +310,7 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **data** | [**CombinedSubmissionData**](CombinedSubmissionData.md) |  |  |
+| **wait** | **Boolean** | Wait for combined submission to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) | [optional][default to true] |
 
 ### Return type
 
@@ -392,7 +328,7 @@ end
 
 ## copy_template
 
-> <Template> copy_template(template_id, data)
+> <TemplatePreview> copy_template(template_id, opts)
 
 Copy a Template
 
@@ -409,12 +345,14 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000001' # String | 
-data = DocSpring::CopyTemplateData.new({parent_folder_id: 'parent_folder_id_example'}) # CopyTemplateData | 
+template_id = 'tpl_1234567890abcdef01' # String | 
+opts = {
+  options: DocSpring::CopyTemplateOptions.new({parent_folder_id: 'parent_folder_id_example'}) # CopyTemplateOptions | 
+}
 
 begin
   # Copy a Template
-  result = api_instance.copy_template(template_id, data)
+  result = api_instance.copy_template(template_id, opts)
   p result
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->copy_template: #{e}"
@@ -425,15 +363,15 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<Template>, Integer, Hash)> copy_template_with_http_info(template_id, data)
+> <Array(<TemplatePreview>, Integer, Hash)> copy_template_with_http_info(template_id, opts)
 
 ```ruby
 begin
   # Copy a Template
-  data, status_code, headers = api_instance.copy_template_with_http_info(template_id, data)
+  data, status_code, headers = api_instance.copy_template_with_http_info(template_id, opts)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <Template>
+  p data # => <TemplatePreview>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->copy_template_with_http_info: #{e}"
 end
@@ -444,11 +382,11 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **template_id** | **String** |  |  |
-| **data** | [**CopyTemplateData**](CopyTemplateData.md) |  |  |
+| **options** | [**CopyTemplateOptions**](CopyTemplateOptions.md) |  | [optional] |
 
 ### Return type
 
-[**Template**](Template.md)
+[**TemplatePreview**](TemplatePreview.md)
 
 ### Authorization
 
@@ -547,7 +485,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-data_request_id = 'drq_000000000000000001' # String | 
+data_request_id = 'drq_1234567890abcdef01' # String | 
 event = DocSpring::CreateSubmissionDataRequestEventRequest.new({event_type: 'send_request'}) # CreateSubmissionDataRequestEventRequest | 
 
 begin
@@ -600,7 +538,7 @@ end
 
 ## create_data_request_token
 
-> <CreateSubmissionDataRequestTokenResponse> create_data_request_token(data_request_id)
+> <CreateSubmissionDataRequestTokenResponse> create_data_request_token(data_request_id, opts)
 
 Creates a new data request token for form authentication
 
@@ -617,11 +555,14 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-data_request_id = 'drq_000000000000000001' # String | 
+data_request_id = 'drq_1234567890abcdef01' # String | 
+opts = {
+  type: 'api' # String | 
+}
 
 begin
   # Creates a new data request token for form authentication
-  result = api_instance.create_data_request_token(data_request_id)
+  result = api_instance.create_data_request_token(data_request_id, opts)
   p result
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->create_data_request_token: #{e}"
@@ -632,12 +573,12 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<CreateSubmissionDataRequestTokenResponse>, Integer, Hash)> create_data_request_token_with_http_info(data_request_id)
+> <Array(<CreateSubmissionDataRequestTokenResponse>, Integer, Hash)> create_data_request_token_with_http_info(data_request_id, opts)
 
 ```ruby
 begin
   # Creates a new data request token for form authentication
-  data, status_code, headers = api_instance.create_data_request_token_with_http_info(data_request_id)
+  data, status_code, headers = api_instance.create_data_request_token_with_http_info(data_request_id, opts)
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <CreateSubmissionDataRequestTokenResponse>
@@ -651,6 +592,7 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **data_request_id** | **String** |  |  |
+| **type** | **String** |  | [optional] |
 
 ### Return type
 
@@ -685,7 +627,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-data = DocSpring::CreateFolderData.new({folder: DocSpring::CreateFolderAttributes.new({name: 'name_example'})}) # CreateFolderData | 
+data = DocSpring::CreateFolderData.new({folder: 3.56}) # CreateFolderData | 
 
 begin
   # Create a folder
@@ -736,7 +678,7 @@ end
 
 ## create_html_template
 
-> <PendingTemplate> create_html_template(data)
+> <TemplatePreview> create_html_template(data)
 
 Create a new HTML template
 
@@ -753,7 +695,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-data = DocSpring::CreateHtmlTemplateData.new({template: DocSpring::HtmlTemplateData.new({name: 'name_example'})}) # CreateHtmlTemplateData | 
+data = DocSpring::CreateHtmlTemplate.new({template: 3.56}) # CreateHtmlTemplate | 
 
 begin
   # Create a new HTML template
@@ -768,7 +710,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<PendingTemplate>, Integer, Hash)> create_html_template_with_http_info(data)
+> <Array(<TemplatePreview>, Integer, Hash)> create_html_template_with_http_info(data)
 
 ```ruby
 begin
@@ -776,7 +718,7 @@ begin
   data, status_code, headers = api_instance.create_html_template_with_http_info(data)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <PendingTemplate>
+  p data # => <TemplatePreview>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->create_html_template_with_http_info: #{e}"
 end
@@ -786,11 +728,11 @@ end
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **data** | [**CreateHtmlTemplateData**](CreateHtmlTemplateData.md) |  |  |
+| **data** | [**CreateHtmlTemplate**](CreateHtmlTemplate.md) |  |  |
 
 ### Return type
 
-[**PendingTemplate**](PendingTemplate.md)
+[**TemplatePreview**](TemplatePreview.md)
 
 ### Authorization
 
@@ -804,7 +746,7 @@ end
 
 ## create_pdf_template
 
-> <PendingTemplate> create_pdf_template(template_document, template_name, opts)
+> <TemplatePreview> create_pdf_template(template_document, template_name, opts)
 
 Create a new PDF template with a form POST file upload
 
@@ -824,6 +766,8 @@ api_instance = DocSpring::PDFApi.new
 template_document = File.new('/path/to/some/file') # File | 
 template_name = 'template_name_example' # String | 
 opts = {
+  wait: true, # Boolean | Wait for template document to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain)
+  template_description: 'template_description_example', # String | 
   template_parent_folder_id: 'template_parent_folder_id_example' # String | 
 }
 
@@ -840,7 +784,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<PendingTemplate>, Integer, Hash)> create_pdf_template_with_http_info(template_document, template_name, opts)
+> <Array(<TemplatePreview>, Integer, Hash)> create_pdf_template_with_http_info(template_document, template_name, opts)
 
 ```ruby
 begin
@@ -848,7 +792,7 @@ begin
   data, status_code, headers = api_instance.create_pdf_template_with_http_info(template_document, template_name, opts)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <PendingTemplate>
+  p data # => <TemplatePreview>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->create_pdf_template_with_http_info: #{e}"
 end
@@ -860,11 +804,13 @@ end
 | ---- | ---- | ----------- | ----- |
 | **template_document** | **File** |  |  |
 | **template_name** | **String** |  |  |
+| **wait** | **Boolean** | Wait for template document to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) | [optional][default to true] |
+| **template_description** | **String** |  | [optional] |
 | **template_parent_folder_id** | **String** |  | [optional] |
 
 ### Return type
 
-[**PendingTemplate**](PendingTemplate.md)
+[**TemplatePreview**](TemplatePreview.md)
 
 ### Authorization
 
@@ -878,7 +824,7 @@ end
 
 ## create_pdf_template_from_upload
 
-> <PendingTemplate> create_pdf_template_from_upload(data)
+> <TemplatePreview> create_pdf_template_from_upload(data)
 
 Create a new PDF template from a cached presign upload
 
@@ -895,7 +841,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-data = DocSpring::CreateTemplateFromUploadData.new({template: DocSpring::UploadTemplateData.new({name: 'name_example'})}) # CreateTemplateFromUploadData | 
+data = DocSpring::CreatePdfTemplate.new({template: 3.56}) # CreatePdfTemplate | 
 
 begin
   # Create a new PDF template from a cached presign upload
@@ -910,7 +856,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<PendingTemplate>, Integer, Hash)> create_pdf_template_from_upload_with_http_info(data)
+> <Array(<TemplatePreview>, Integer, Hash)> create_pdf_template_from_upload_with_http_info(data)
 
 ```ruby
 begin
@@ -918,7 +864,7 @@ begin
   data, status_code, headers = api_instance.create_pdf_template_from_upload_with_http_info(data)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <PendingTemplate>
+  p data # => <TemplatePreview>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->create_pdf_template_from_upload_with_http_info: #{e}"
 end
@@ -928,11 +874,11 @@ end
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **data** | [**CreateTemplateFromUploadData**](CreateTemplateFromUploadData.md) |  |  |
+| **data** | [**CreatePdfTemplate**](CreatePdfTemplate.md) |  |  |
 
 ### Return type
 
-[**PendingTemplate**](PendingTemplate.md)
+[**TemplatePreview**](TemplatePreview.md)
 
 ### Authorization
 
@@ -963,7 +909,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-folder_id = 'fld_0000000000000000001' # String | 
+folder_id = 'fld_1234567890abcdef01' # String | 
 
 begin
   # Delete a folder
@@ -1014,7 +960,7 @@ end
 
 ## delete_template
 
-> <DeleteTemplateResponse> delete_template(template_id, opts)
+> <SuccessMultipleErrorsResponse> delete_template(template_id)
 
 Delete a template
 
@@ -1031,14 +977,11 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000001' # String | 
-opts = {
-  version: '0.1.0' # String | 
-}
+template_id = 'tpl_1234567890abcdef01' # String | 
 
 begin
   # Delete a template
-  result = api_instance.delete_template(template_id, opts)
+  result = api_instance.delete_template(template_id)
   p result
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->delete_template: #{e}"
@@ -1049,15 +992,15 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<DeleteTemplateResponse>, Integer, Hash)> delete_template_with_http_info(template_id, opts)
+> <Array(<SuccessMultipleErrorsResponse>, Integer, Hash)> delete_template_with_http_info(template_id)
 
 ```ruby
 begin
   # Delete a template
-  data, status_code, headers = api_instance.delete_template_with_http_info(template_id, opts)
+  data, status_code, headers = api_instance.delete_template_with_http_info(template_id)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <DeleteTemplateResponse>
+  p data # => <SuccessMultipleErrorsResponse>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->delete_template_with_http_info: #{e}"
 end
@@ -1068,11 +1011,10 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **template_id** | **String** |  |  |
-| **version** | **String** |  | [optional] |
 
 ### Return type
 
-[**DeleteTemplateResponse**](DeleteTemplateResponse.md)
+[**SuccessMultipleErrorsResponse**](SuccessMultipleErrorsResponse.md)
 
 ### Authorization
 
@@ -1103,7 +1045,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-combined_submission_id = 'com_0000000000000000001' # String | 
+combined_submission_id = 'com_1234567890abcdef01' # String | 
 
 begin
   # Expire a combined submission
@@ -1154,7 +1096,7 @@ end
 
 ## expire_submission
 
-> <Submission> expire_submission(submission_id)
+> <SubmissionPreview> expire_submission(submission_id)
 
 Expire a PDF submission
 
@@ -1171,7 +1113,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-submission_id = 'sub_000000000000000001' # String | 
+submission_id = 'sub_1234567890abcdef01' # String | 
 
 begin
   # Expire a PDF submission
@@ -1186,7 +1128,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<Submission>, Integer, Hash)> expire_submission_with_http_info(submission_id)
+> <Array(<SubmissionPreview>, Integer, Hash)> expire_submission_with_http_info(submission_id)
 
 ```ruby
 begin
@@ -1194,7 +1136,7 @@ begin
   data, status_code, headers = api_instance.expire_submission_with_http_info(submission_id)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <Submission>
+  p data # => <SubmissionPreview>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->expire_submission_with_http_info: #{e}"
 end
@@ -1208,7 +1150,7 @@ end
 
 ### Return type
 
-[**Submission**](Submission.md)
+[**SubmissionPreview**](SubmissionPreview.md)
 
 ### Authorization
 
@@ -1222,7 +1164,7 @@ end
 
 ## generate_pdf
 
-> <CreateSubmissionResponse> generate_pdf(template_id, submission)
+> <CreateSubmissionResponse> generate_pdf(template_id, submission, opts)
 
 Generates a new PDF
 
@@ -1239,12 +1181,15 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000001' # String | 
-submission = DocSpring::CreateSubmissionData.new({data: 3.56}) # CreateSubmissionData | 
+template_id = 'tpl_1234567890abcdef01' # String | 
+submission = DocSpring::CreatePdfSubmissionData.new({data: 3.56}) # CreatePdfSubmissionData | 
+opts = {
+  wait: true # Boolean | Wait for submission to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain)
+}
 
 begin
   # Generates a new PDF
-  result = api_instance.generate_pdf(template_id, submission)
+  result = api_instance.generate_pdf(template_id, submission, opts)
   p result
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->generate_pdf: #{e}"
@@ -1255,12 +1200,12 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<CreateSubmissionResponse>, Integer, Hash)> generate_pdf_with_http_info(template_id, submission)
+> <Array(<CreateSubmissionResponse>, Integer, Hash)> generate_pdf_with_http_info(template_id, submission, opts)
 
 ```ruby
 begin
   # Generates a new PDF
-  data, status_code, headers = api_instance.generate_pdf_with_http_info(template_id, submission)
+  data, status_code, headers = api_instance.generate_pdf_with_http_info(template_id, submission, opts)
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <CreateSubmissionResponse>
@@ -1274,7 +1219,82 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **template_id** | **String** |  |  |
-| **submission** | [**CreateSubmissionData**](CreateSubmissionData.md) |  |  |
+| **submission** | [**CreatePdfSubmissionData**](CreatePdfSubmissionData.md) |  |  |
+| **wait** | **Boolean** | Wait for submission to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) | [optional][default to true] |
+
+### Return type
+
+[**CreateSubmissionResponse**](CreateSubmissionResponse.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
+## generate_pdf_for_html_template
+
+> <CreateSubmissionResponse> generate_pdf_for_html_template(template_id, submission, opts)
+
+Generates a new PDF for an HTML template
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::PDFApi.new
+template_id = 'tpl_HTML567890abcdef01' # String | 
+submission = DocSpring::CreateHtmlSubmissionData.new # CreateHtmlSubmissionData | 
+opts = {
+  wait: true # Boolean | Wait for submission to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain)
+}
+
+begin
+  # Generates a new PDF for an HTML template
+  result = api_instance.generate_pdf_for_html_template(template_id, submission, opts)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling PDFApi->generate_pdf_for_html_template: #{e}"
+end
+```
+
+#### Using the generate_pdf_for_html_template_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<CreateSubmissionResponse>, Integer, Hash)> generate_pdf_for_html_template_with_http_info(template_id, submission, opts)
+
+```ruby
+begin
+  # Generates a new PDF for an HTML template
+  data, status_code, headers = api_instance.generate_pdf_for_html_template_with_http_info(template_id, submission, opts)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <CreateSubmissionResponse>
+rescue DocSpring::ApiError => e
+  puts "Error when calling PDFApi->generate_pdf_for_html_template_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **template_id** | **String** |  |  |
+| **submission** | [**CreateHtmlSubmissionData**](CreateHtmlSubmissionData.md) |  |  |
+| **wait** | **Boolean** | Wait for submission to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) | [optional][default to true] |
 
 ### Return type
 
@@ -1292,7 +1312,7 @@ end
 
 ## generate_preview
 
-> <PreviewPdfResponse> generate_preview(submission_id)
+> <SuccessErrorResponse> generate_preview(submission_id)
 
 Generated a preview PDF for partially completed data requests
 
@@ -1309,7 +1329,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-submission_id = 'sub_00000000000000001' # String | 
+submission_id = 'sub_1234567890abcdef01' # String | 
 
 begin
   # Generated a preview PDF for partially completed data requests
@@ -1324,7 +1344,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<PreviewPdfResponse>, Integer, Hash)> generate_preview_with_http_info(submission_id)
+> <Array(<SuccessErrorResponse>, Integer, Hash)> generate_preview_with_http_info(submission_id)
 
 ```ruby
 begin
@@ -1332,7 +1352,7 @@ begin
   data, status_code, headers = api_instance.generate_preview_with_http_info(submission_id)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <PreviewPdfResponse>
+  p data # => <SuccessErrorResponse>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->generate_preview_with_http_info: #{e}"
 end
@@ -1346,7 +1366,7 @@ end
 
 ### Return type
 
-[**PreviewPdfResponse**](PreviewPdfResponse.md)
+[**SuccessErrorResponse**](SuccessErrorResponse.md)
 
 ### Authorization
 
@@ -1377,7 +1397,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-combined_submission_id = 'com_0000000000000000001' # String | 
+combined_submission_id = 'com_1234567890abcdef01' # String | 
 
 begin
   # Check the status of a combined submission (merged PDFs)
@@ -1428,7 +1448,7 @@ end
 
 ## get_data_request
 
-> <SubmissionDataRequest> get_data_request(data_request_id)
+> <SubmissionDataRequestShow> get_data_request(data_request_id)
 
 Look up a submission data request
 
@@ -1445,7 +1465,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-data_request_id = 'drq_000000000000000001' # String | 
+data_request_id = 'drq_1234567890abcdef01' # String | 
 
 begin
   # Look up a submission data request
@@ -1460,7 +1480,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<SubmissionDataRequest>, Integer, Hash)> get_data_request_with_http_info(data_request_id)
+> <Array(<SubmissionDataRequestShow>, Integer, Hash)> get_data_request_with_http_info(data_request_id)
 
 ```ruby
 begin
@@ -1468,7 +1488,7 @@ begin
   data, status_code, headers = api_instance.get_data_request_with_http_info(data_request_id)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <SubmissionDataRequest>
+  p data # => <SubmissionDataRequestShow>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->get_data_request_with_http_info: #{e}"
 end
@@ -1482,7 +1502,7 @@ end
 
 ### Return type
 
-[**SubmissionDataRequest**](SubmissionDataRequest.md)
+[**SubmissionDataRequestShow**](SubmissionDataRequestShow.md)
 
 ### Authorization
 
@@ -1496,7 +1516,7 @@ end
 
 ## get_full_template
 
-> <FullTemplate> get_full_template(template_id)
+> <Template> get_full_template(template_id)
 
 Fetch the full template attributes
 
@@ -1513,7 +1533,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000001' # String | 
+template_id = 'tpl_1234567890abcdef01' # String | 
 
 begin
   # Fetch the full template attributes
@@ -1528,7 +1548,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<FullTemplate>, Integer, Hash)> get_full_template_with_http_info(template_id)
+> <Array(<Template>, Integer, Hash)> get_full_template_with_http_info(template_id)
 
 ```ruby
 begin
@@ -1536,7 +1556,7 @@ begin
   data, status_code, headers = api_instance.get_full_template_with_http_info(template_id)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <FullTemplate>
+  p data # => <Template>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->get_full_template_with_http_info: #{e}"
 end
@@ -1550,7 +1570,7 @@ end
 
 ### Return type
 
-[**FullTemplate**](FullTemplate.md)
+[**Template**](Template.md)
 
 ### Authorization
 
@@ -1564,7 +1584,7 @@ end
 
 ## get_presign_url
 
-> <UploadPresign> get_presign_url
+> <UploadPresignResponse> get_presign_url
 
 Get a presigned URL so that you can upload a file to our AWS S3 bucket
 
@@ -1595,7 +1615,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<UploadPresign>, Integer, Hash)> get_presign_url_with_http_info
+> <Array(<UploadPresignResponse>, Integer, Hash)> get_presign_url_with_http_info
 
 ```ruby
 begin
@@ -1603,7 +1623,7 @@ begin
   data, status_code, headers = api_instance.get_presign_url_with_http_info
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <UploadPresign>
+  p data # => <UploadPresignResponse>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->get_presign_url_with_http_info: #{e}"
 end
@@ -1615,7 +1635,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**UploadPresign**](UploadPresign.md)
+[**UploadPresignResponse**](UploadPresignResponse.md)
 
 ### Authorization
 
@@ -1646,7 +1666,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-submission_id = 'sub_000000000000000001' # String | 
+submission_id = 'sub_1234567890abcdef01' # String | 
 opts = {
   include_data: true # Boolean | 
 }
@@ -1701,7 +1721,7 @@ end
 
 ## get_submission_batch
 
-> <SubmissionBatch> get_submission_batch(submission_batch_id, opts)
+> <SubmissionBatchWithSubmissions> get_submission_batch(submission_batch_id, opts)
 
 Check the status of a submission batch job
 
@@ -1718,7 +1738,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-submission_batch_id = 'sbb_000000000000000001' # String | 
+submission_batch_id = 'sbb_1234567890abcdef01' # String | 
 opts = {
   include_submissions: true # Boolean | 
 }
@@ -1736,7 +1756,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<SubmissionBatch>, Integer, Hash)> get_submission_batch_with_http_info(submission_batch_id, opts)
+> <Array(<SubmissionBatchWithSubmissions>, Integer, Hash)> get_submission_batch_with_http_info(submission_batch_id, opts)
 
 ```ruby
 begin
@@ -1744,7 +1764,7 @@ begin
   data, status_code, headers = api_instance.get_submission_batch_with_http_info(submission_batch_id, opts)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <SubmissionBatch>
+  p data # => <SubmissionBatchWithSubmissions>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->get_submission_batch_with_http_info: #{e}"
 end
@@ -1759,7 +1779,7 @@ end
 
 ### Return type
 
-[**SubmissionBatch**](SubmissionBatch.md)
+[**SubmissionBatchWithSubmissions**](SubmissionBatchWithSubmissions.md)
 
 ### Authorization
 
@@ -1773,7 +1793,7 @@ end
 
 ## get_template
 
-> <Template> get_template(template_id)
+> <TemplatePreview> get_template(template_id)
 
 Check the status of an uploaded template
 
@@ -1790,7 +1810,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000001' # String | 
+template_id = 'tpl_1234567890abcdef01' # String | 
 
 begin
   # Check the status of an uploaded template
@@ -1805,7 +1825,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<Template>, Integer, Hash)> get_template_with_http_info(template_id)
+> <Array(<TemplatePreview>, Integer, Hash)> get_template_with_http_info(template_id)
 
 ```ruby
 begin
@@ -1813,7 +1833,7 @@ begin
   data, status_code, headers = api_instance.get_template_with_http_info(template_id)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <Template>
+  p data # => <TemplatePreview>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->get_template_with_http_info: #{e}"
 end
@@ -1827,7 +1847,7 @@ end
 
 ### Return type
 
-[**Template**](Template.md)
+[**TemplatePreview**](TemplatePreview.md)
 
 ### Authorization
 
@@ -1841,7 +1861,7 @@ end
 
 ## get_template_schema
 
-> <TemplateSchema> get_template_schema(template_id)
+> <JsonSchema> get_template_schema(template_id)
 
 Fetch the JSON schema for a template
 
@@ -1858,7 +1878,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000001' # String | 
+template_id = 'tpl_1234567890abcdef01' # String | 
 
 begin
   # Fetch the JSON schema for a template
@@ -1873,7 +1893,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<TemplateSchema>, Integer, Hash)> get_template_schema_with_http_info(template_id)
+> <Array(<JsonSchema>, Integer, Hash)> get_template_schema_with_http_info(template_id)
 
 ```ruby
 begin
@@ -1881,7 +1901,7 @@ begin
   data, status_code, headers = api_instance.get_template_schema_with_http_info(template_id)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <TemplateSchema>
+  p data # => <JsonSchema>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->get_template_schema_with_http_info: #{e}"
 end
@@ -1895,7 +1915,7 @@ end
 
 ### Return type
 
-[**TemplateSchema**](TemplateSchema.md)
+[**JsonSchema**](JsonSchema.md)
 
 ### Authorization
 
@@ -1999,7 +2019,7 @@ end
 
 api_instance = DocSpring::PDFApi.new
 opts = {
-  parent_folder_id: 'fld_0000000000000000002' # String | Filter By Folder Id
+  parent_folder_id: 'fld_1234567890abcdef02' # String | Filter By Folder Id
 }
 
 begin
@@ -2069,7 +2089,7 @@ end
 
 api_instance = DocSpring::PDFApi.new
 opts = {
-  cursor: 'sub_list_000012', # String | 
+  cursor: 'sub_1234567890abcdef12', # String | 
   limit: 3, # Float | 
   created_after: '2019-01-01T09:00:00-05:00', # String | 
   created_before: '2020-01-01T09:00:00.000+0200', # String | 
@@ -2148,7 +2168,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000002' # String | 
+template_id = 'tpl_1234567890abcdef02' # String | 
 opts = {
   cursor: 'cursor_example', # String | 
   limit: 8.14, # Float | 
@@ -2213,7 +2233,7 @@ end
 
 ## list_templates
 
-> <Array<Template>> list_templates(opts)
+> <Array<TemplatePreview>> list_templates(opts)
 
 Get a list of all templates
 
@@ -2232,7 +2252,7 @@ end
 api_instance = DocSpring::PDFApi.new
 opts = {
   query: '2', # String | Search By Name
-  parent_folder_id: 'fld_000000000000000001', # String | Filter By Folder Id
+  parent_folder_id: 'fld_1234567890abcdef01', # String | Filter By Folder Id
   page: 2, # Integer | Default: 1
   per_page: 1 # Integer | Default: 50
 }
@@ -2250,7 +2270,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<Array<Template>>, Integer, Hash)> list_templates_with_http_info(opts)
+> <Array(<Array<TemplatePreview>>, Integer, Hash)> list_templates_with_http_info(opts)
 
 ```ruby
 begin
@@ -2258,7 +2278,7 @@ begin
   data, status_code, headers = api_instance.list_templates_with_http_info(opts)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <Array<Template>>
+  p data # => <Array<TemplatePreview>>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->list_templates_with_http_info: #{e}"
 end
@@ -2275,7 +2295,7 @@ end
 
 ### Return type
 
-[**Array&lt;Template&gt;**](Template.md)
+[**Array&lt;TemplatePreview&gt;**](TemplatePreview.md)
 
 ### Authorization
 
@@ -2306,7 +2326,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-folder_id = 'fld_0000000000000000001' # String | 
+folder_id = 'fld_1234567890abcdef01' # String | 
 data = DocSpring::MoveFolderData.new # MoveFolderData | 
 
 begin
@@ -2359,7 +2379,7 @@ end
 
 ## move_template_to_folder
 
-> <Template> move_template_to_folder(template_id, data)
+> <TemplatePreview> move_template_to_folder(template_id, data)
 
 Move Template to folder
 
@@ -2376,7 +2396,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000001' # String | 
+template_id = 'tpl_1234567890abcdef01' # String | 
 data = DocSpring::MoveTemplateData.new({parent_folder_id: 'parent_folder_id_example'}) # MoveTemplateData | 
 
 begin
@@ -2392,7 +2412,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<Template>, Integer, Hash)> move_template_to_folder_with_http_info(template_id, data)
+> <Array(<TemplatePreview>, Integer, Hash)> move_template_to_folder_with_http_info(template_id, data)
 
 ```ruby
 begin
@@ -2400,7 +2420,7 @@ begin
   data, status_code, headers = api_instance.move_template_to_folder_with_http_info(template_id, data)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <Template>
+  p data # => <TemplatePreview>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->move_template_to_folder_with_http_info: #{e}"
 end
@@ -2415,77 +2435,7 @@ end
 
 ### Return type
 
-[**Template**](Template.md)
-
-### Authorization
-
-[api_token_basic](../README.md#api_token_basic)
-
-### HTTP request headers
-
-- **Content-Type**: application/json
-- **Accept**: application/json
-
-
-## publish_template_version
-
-> <PublishTemplateVersionResponse> publish_template_version(template_id, data)
-
-Publish a template version
-
-### Examples
-
-```ruby
-require 'time'
-require 'docspring'
-# setup authorization
-DocSpring.configure do |config|
-  # Configure HTTP basic authorization: api_token_basic
-  config.username = 'YOUR USERNAME'
-  config.password = 'YOUR PASSWORD'
-end
-
-api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000001' # String | 
-data = DocSpring::PublishVersionData.new({version_type: 'version_type_example'}) # PublishVersionData | 
-
-begin
-  # Publish a template version
-  result = api_instance.publish_template_version(template_id, data)
-  p result
-rescue DocSpring::ApiError => e
-  puts "Error when calling PDFApi->publish_template_version: #{e}"
-end
-```
-
-#### Using the publish_template_version_with_http_info variant
-
-This returns an Array which contains the response data, status code and headers.
-
-> <Array(<PublishTemplateVersionResponse>, Integer, Hash)> publish_template_version_with_http_info(template_id, data)
-
-```ruby
-begin
-  # Publish a template version
-  data, status_code, headers = api_instance.publish_template_version_with_http_info(template_id, data)
-  p status_code # => 2xx
-  p headers # => { ... }
-  p data # => <PublishTemplateVersionResponse>
-rescue DocSpring::ApiError => e
-  puts "Error when calling PDFApi->publish_template_version_with_http_info: #{e}"
-end
-```
-
-### Parameters
-
-| Name | Type | Description | Notes |
-| ---- | ---- | ----------- | ----- |
-| **template_id** | **String** |  |  |
-| **data** | [**PublishVersionData**](PublishVersionData.md) |  |  |
-
-### Return type
-
-[**PublishTemplateVersionResponse**](PublishTemplateVersionResponse.md)
+[**TemplatePreview**](TemplatePreview.md)
 
 ### Authorization
 
@@ -2499,7 +2449,7 @@ end
 
 ## rename_folder
 
-> rename_folder(folder_id, data)
+> <Folder> rename_folder(folder_id, data)
 
 Rename a folder
 
@@ -2516,12 +2466,13 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-folder_id = 'fld_0000000000000000001' # String | 
+folder_id = 'fld_1234567890abcdef01' # String | 
 data = DocSpring::RenameFolderData.new({name: 'name_example'}) # RenameFolderData | 
 
 begin
   # Rename a folder
-  api_instance.rename_folder(folder_id, data)
+  result = api_instance.rename_folder(folder_id, data)
+  p result
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->rename_folder: #{e}"
 end
@@ -2529,9 +2480,9 @@ end
 
 #### Using the rename_folder_with_http_info variant
 
-This returns an Array which contains the response data (`nil` in this case), status code and headers.
+This returns an Array which contains the response data, status code and headers.
 
-> <Array(nil, Integer, Hash)> rename_folder_with_http_info(folder_id, data)
+> <Array(<Folder>, Integer, Hash)> rename_folder_with_http_info(folder_id, data)
 
 ```ruby
 begin
@@ -2539,7 +2490,7 @@ begin
   data, status_code, headers = api_instance.rename_folder_with_http_info(folder_id, data)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => nil
+  p data # => <Folder>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->rename_folder_with_http_info: #{e}"
 end
@@ -2554,77 +2505,7 @@ end
 
 ### Return type
 
-nil (empty response body)
-
-### Authorization
-
-[api_token_basic](../README.md#api_token_basic)
-
-### HTTP request headers
-
-- **Content-Type**: application/json
-- **Accept**: application/json
-
-
-## restore_template_version
-
-> <RestoreTemplateVersionResponse> restore_template_version(template_id, data)
-
-Restore a template version
-
-### Examples
-
-```ruby
-require 'time'
-require 'docspring'
-# setup authorization
-DocSpring.configure do |config|
-  # Configure HTTP basic authorization: api_token_basic
-  config.username = 'YOUR USERNAME'
-  config.password = 'YOUR PASSWORD'
-end
-
-api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000001' # String | 
-data = DocSpring::RestoreVersionData.new({version: 'version_example'}) # RestoreVersionData | 
-
-begin
-  # Restore a template version
-  result = api_instance.restore_template_version(template_id, data)
-  p result
-rescue DocSpring::ApiError => e
-  puts "Error when calling PDFApi->restore_template_version: #{e}"
-end
-```
-
-#### Using the restore_template_version_with_http_info variant
-
-This returns an Array which contains the response data, status code and headers.
-
-> <Array(<RestoreTemplateVersionResponse>, Integer, Hash)> restore_template_version_with_http_info(template_id, data)
-
-```ruby
-begin
-  # Restore a template version
-  data, status_code, headers = api_instance.restore_template_version_with_http_info(template_id, data)
-  p status_code # => 2xx
-  p headers # => { ... }
-  p data # => <RestoreTemplateVersionResponse>
-rescue DocSpring::ApiError => e
-  puts "Error when calling PDFApi->restore_template_version_with_http_info: #{e}"
-end
-```
-
-### Parameters
-
-| Name | Type | Description | Notes |
-| ---- | ---- | ----------- | ----- |
-| **template_id** | **String** |  |  |
-| **data** | [**RestoreVersionData**](RestoreVersionData.md) |  |  |
-
-### Return type
-
-[**RestoreTemplateVersionResponse**](RestoreTemplateVersionResponse.md)
+[**Folder**](Folder.md)
 
 ### Authorization
 
@@ -2638,7 +2519,7 @@ end
 
 ## test_authentication
 
-> <AuthenticationSuccessResponse> test_authentication
+> <SuccessErrorResponse> test_authentication
 
 Test Authentication
 
@@ -2669,7 +2550,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<AuthenticationSuccessResponse>, Integer, Hash)> test_authentication_with_http_info
+> <Array(<SuccessErrorResponse>, Integer, Hash)> test_authentication_with_http_info
 
 ```ruby
 begin
@@ -2677,7 +2558,7 @@ begin
   data, status_code, headers = api_instance.test_authentication_with_http_info
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <AuthenticationSuccessResponse>
+  p data # => <SuccessErrorResponse>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->test_authentication_with_http_info: #{e}"
 end
@@ -2689,7 +2570,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**AuthenticationSuccessResponse**](AuthenticationSuccessResponse.md)
+[**SuccessErrorResponse**](SuccessErrorResponse.md)
 
 ### Authorization
 
@@ -2703,7 +2584,7 @@ This endpoint does not need any parameter.
 
 ## update_data_request
 
-> <UpdateDataRequestResponse> update_data_request(data_request_id, data)
+> <CreateSubmissionDataRequestResponse> update_data_request(data_request_id, data)
 
 Update a submission data request
 
@@ -2720,7 +2601,7 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-data_request_id = 'drq_000000000000000001' # String | 
+data_request_id = 'drq_1234567890abcdef01' # String | 
 data = DocSpring::UpdateSubmissionDataRequestData.new # UpdateSubmissionDataRequestData | 
 
 begin
@@ -2736,7 +2617,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<UpdateDataRequestResponse>, Integer, Hash)> update_data_request_with_http_info(data_request_id, data)
+> <Array(<CreateSubmissionDataRequestResponse>, Integer, Hash)> update_data_request_with_http_info(data_request_id, data)
 
 ```ruby
 begin
@@ -2744,7 +2625,7 @@ begin
   data, status_code, headers = api_instance.update_data_request_with_http_info(data_request_id, data)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <UpdateDataRequestResponse>
+  p data # => <CreateSubmissionDataRequestResponse>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->update_data_request_with_http_info: #{e}"
 end
@@ -2759,7 +2640,7 @@ end
 
 ### Return type
 
-[**UpdateDataRequestResponse**](UpdateDataRequestResponse.md)
+[**CreateSubmissionDataRequestResponse**](CreateSubmissionDataRequestResponse.md)
 
 ### Authorization
 
@@ -2773,7 +2654,7 @@ end
 
 ## update_template
 
-> <UpdateTemplateResponse> update_template(template_id, data)
+> <SuccessMultipleErrorsResponse> update_template(template_id, data)
 
 Update a Template
 
@@ -2790,8 +2671,8 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::PDFApi.new
-template_id = 'tpl_000000000000000003' # String | 
-data = DocSpring::UpdateTemplateData.new({template: DocSpring::TemplateData.new}) # UpdateTemplateData | 
+template_id = 'tpl_1234567890abcdef03' # String | 
+data = DocSpring::UpdateHtmlTemplate.new({template: 3.56}) # UpdateHtmlTemplate | 
 
 begin
   # Update a Template
@@ -2806,7 +2687,7 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<UpdateTemplateResponse>, Integer, Hash)> update_template_with_http_info(template_id, data)
+> <Array(<SuccessMultipleErrorsResponse>, Integer, Hash)> update_template_with_http_info(template_id, data)
 
 ```ruby
 begin
@@ -2814,7 +2695,7 @@ begin
   data, status_code, headers = api_instance.update_template_with_http_info(template_id, data)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <UpdateTemplateResponse>
+  p data # => <SuccessMultipleErrorsResponse>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->update_template_with_http_info: #{e}"
 end
@@ -2825,11 +2706,11 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **template_id** | **String** |  |  |
-| **data** | [**UpdateTemplateData**](UpdateTemplateData.md) |  |  |
+| **data** | [**UpdateHtmlTemplate**](UpdateHtmlTemplate.md) |  |  |
 
 ### Return type
 
-[**UpdateTemplateResponse**](UpdateTemplateResponse.md)
+[**SuccessMultipleErrorsResponse**](SuccessMultipleErrorsResponse.md)
 
 ### Authorization
 

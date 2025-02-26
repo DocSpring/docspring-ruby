@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -15,11 +15,9 @@ require 'time'
 
 module DocSpring
   class Submission
-    attr_accessor :id
+    attr_accessor :batch_id
 
-    attr_accessor :template_id
-
-    attr_accessor :test
+    attr_accessor :data_requests
 
     attr_accessor :editable
 
@@ -27,13 +25,21 @@ module DocSpring
 
     attr_accessor :expires_at
 
+    attr_accessor :id
+
+    attr_accessor :json_schema_errors
+
+    attr_accessor :metadata
+
+    attr_accessor :password
+
     attr_accessor :processed_at
 
     attr_accessor :state
 
-    attr_accessor :data
+    attr_accessor :template_id
 
-    attr_accessor :metadata
+    attr_accessor :test
 
     attr_accessor :truncated_text
 
@@ -43,15 +49,19 @@ module DocSpring
 
     attr_accessor :permanent_download_url
 
-    attr_accessor :batch_id
+    attr_accessor :preview_download_url
 
-    attr_accessor :data_requests
+    attr_accessor :preview_generated_at
+
+    attr_accessor :audit_trail_download_url
 
     attr_accessor :actions
 
     attr_accessor :source
 
     attr_accessor :referrer
+
+    attr_accessor :data
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -78,25 +88,30 @@ module DocSpring
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
-        :'id' => :'id',
-        :'template_id' => :'template_id',
-        :'test' => :'test',
+        :'batch_id' => :'batch_id',
+        :'data_requests' => :'data_requests',
         :'editable' => :'editable',
         :'expired' => :'expired',
         :'expires_at' => :'expires_at',
+        :'id' => :'id',
+        :'json_schema_errors' => :'json_schema_errors',
+        :'metadata' => :'metadata',
+        :'password' => :'password',
         :'processed_at' => :'processed_at',
         :'state' => :'state',
-        :'data' => :'data',
-        :'metadata' => :'metadata',
+        :'template_id' => :'template_id',
+        :'test' => :'test',
         :'truncated_text' => :'truncated_text',
         :'pdf_hash' => :'pdf_hash',
         :'download_url' => :'download_url',
         :'permanent_download_url' => :'permanent_download_url',
-        :'batch_id' => :'batch_id',
-        :'data_requests' => :'data_requests',
+        :'preview_download_url' => :'preview_download_url',
+        :'preview_generated_at' => :'preview_generated_at',
+        :'audit_trail_download_url' => :'audit_trail_download_url',
         :'actions' => :'actions',
         :'source' => :'source',
-        :'referrer' => :'referrer'
+        :'referrer' => :'referrer',
+        :'data' => :'data'
       }
     end
 
@@ -108,41 +123,53 @@ module DocSpring
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'id' => :'String',
-        :'template_id' => :'String',
-        :'test' => :'Boolean',
+        :'batch_id' => :'String',
+        :'data_requests' => :'Array<SubmissionDataRequest>',
         :'editable' => :'Boolean',
         :'expired' => :'Boolean',
         :'expires_at' => :'String',
+        :'id' => :'String',
+        :'json_schema_errors' => :'Array<String>',
+        :'metadata' => :'Object',
+        :'password' => :'String',
         :'processed_at' => :'String',
         :'state' => :'String',
-        :'data' => :'Object',
-        :'metadata' => :'Object',
+        :'template_id' => :'String',
+        :'test' => :'Boolean',
         :'truncated_text' => :'Object',
         :'pdf_hash' => :'String',
         :'download_url' => :'String',
         :'permanent_download_url' => :'String',
-        :'batch_id' => :'String',
-        :'data_requests' => :'Array<SubmissionDataRequest>',
+        :'preview_download_url' => :'String',
+        :'preview_generated_at' => :'String',
+        :'audit_trail_download_url' => :'String',
         :'actions' => :'Array<SubmissionAction>',
         :'source' => :'String',
-        :'referrer' => :'String'
+        :'referrer' => :'String',
+        :'data' => :'Object'
       }
     end
 
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
+        :'batch_id',
         :'editable',
         :'expires_at',
+        :'id',
+        :'json_schema_errors',
+        :'password',
         :'processed_at',
-        :'data',
+        :'template_id',
+        :'truncated_text',
         :'pdf_hash',
         :'download_url',
         :'permanent_download_url',
-        :'batch_id',
-        :'source',
-        :'referrer'
+        :'preview_download_url',
+        :'preview_generated_at',
+        :'audit_trail_download_url',
+        :'referrer',
+        :'data'
       ])
     end
 
@@ -161,24 +188,24 @@ module DocSpring
         h[k.to_sym] = v
       }
 
-      if attributes.key?(:'id')
-        self.id = attributes[:'id']
+      if attributes.key?(:'batch_id')
+        self.batch_id = attributes[:'batch_id']
       else
-        self.id = nil
+        self.batch_id = nil
       end
 
-      if attributes.key?(:'template_id')
-        self.template_id = attributes[:'template_id']
-      end
-
-      if attributes.key?(:'test')
-        self.test = attributes[:'test']
+      if attributes.key?(:'data_requests')
+        if (value = attributes[:'data_requests']).is_a?(Array)
+          self.data_requests = value
+        end
       else
-        self.test = nil
+        self.data_requests = nil
       end
 
       if attributes.key?(:'editable')
         self.editable = attributes[:'editable']
+      else
+        self.editable = nil
       end
 
       if attributes.key?(:'expired')
@@ -189,10 +216,40 @@ module DocSpring
 
       if attributes.key?(:'expires_at')
         self.expires_at = attributes[:'expires_at']
+      else
+        self.expires_at = nil
+      end
+
+      if attributes.key?(:'id')
+        self.id = attributes[:'id']
+      else
+        self.id = nil
+      end
+
+      if attributes.key?(:'json_schema_errors')
+        if (value = attributes[:'json_schema_errors']).is_a?(Array)
+          self.json_schema_errors = value
+        end
+      else
+        self.json_schema_errors = nil
+      end
+
+      if attributes.key?(:'metadata')
+        self.metadata = attributes[:'metadata']
+      else
+        self.metadata = nil
+      end
+
+      if attributes.key?(:'password')
+        self.password = attributes[:'password']
+      else
+        self.password = nil
       end
 
       if attributes.key?(:'processed_at')
         self.processed_at = attributes[:'processed_at']
+      else
+        self.processed_at = nil
       end
 
       if attributes.key?(:'state')
@@ -201,52 +258,84 @@ module DocSpring
         self.state = nil
       end
 
-      if attributes.key?(:'data')
-        self.data = attributes[:'data']
+      if attributes.key?(:'template_id')
+        self.template_id = attributes[:'template_id']
+      else
+        self.template_id = nil
       end
 
-      if attributes.key?(:'metadata')
-        self.metadata = attributes[:'metadata']
+      if attributes.key?(:'test')
+        self.test = attributes[:'test']
+      else
+        self.test = nil
       end
 
       if attributes.key?(:'truncated_text')
         self.truncated_text = attributes[:'truncated_text']
+      else
+        self.truncated_text = nil
       end
 
       if attributes.key?(:'pdf_hash')
         self.pdf_hash = attributes[:'pdf_hash']
+      else
+        self.pdf_hash = nil
       end
 
       if attributes.key?(:'download_url')
         self.download_url = attributes[:'download_url']
+      else
+        self.download_url = nil
       end
 
       if attributes.key?(:'permanent_download_url')
         self.permanent_download_url = attributes[:'permanent_download_url']
+      else
+        self.permanent_download_url = nil
       end
 
-      if attributes.key?(:'batch_id')
-        self.batch_id = attributes[:'batch_id']
+      if attributes.key?(:'preview_download_url')
+        self.preview_download_url = attributes[:'preview_download_url']
+      else
+        self.preview_download_url = nil
       end
 
-      if attributes.key?(:'data_requests')
-        if (value = attributes[:'data_requests']).is_a?(Array)
-          self.data_requests = value
-        end
+      if attributes.key?(:'preview_generated_at')
+        self.preview_generated_at = attributes[:'preview_generated_at']
+      else
+        self.preview_generated_at = nil
+      end
+
+      if attributes.key?(:'audit_trail_download_url')
+        self.audit_trail_download_url = attributes[:'audit_trail_download_url']
+      else
+        self.audit_trail_download_url = nil
       end
 
       if attributes.key?(:'actions')
         if (value = attributes[:'actions']).is_a?(Array)
           self.actions = value
         end
+      else
+        self.actions = nil
       end
 
       if attributes.key?(:'source')
         self.source = attributes[:'source']
+      else
+        self.source = nil
       end
 
       if attributes.key?(:'referrer')
         self.referrer = attributes[:'referrer']
+      else
+        self.referrer = nil
+      end
+
+      if attributes.key?(:'data')
+        self.data = attributes[:'data']
+      else
+        self.data = nil
       end
     end
 
@@ -255,20 +344,32 @@ module DocSpring
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @id.nil?
-        invalid_properties.push('invalid value for "id", id cannot be nil.')
-      end
-
-      if @test.nil?
-        invalid_properties.push('invalid value for "test", test cannot be nil.')
+      if @data_requests.nil?
+        invalid_properties.push('invalid value for "data_requests", data_requests cannot be nil.')
       end
 
       if @expired.nil?
         invalid_properties.push('invalid value for "expired", expired cannot be nil.')
       end
 
+      if @metadata.nil?
+        invalid_properties.push('invalid value for "metadata", metadata cannot be nil.')
+      end
+
       if @state.nil?
         invalid_properties.push('invalid value for "state", state cannot be nil.')
+      end
+
+      if @test.nil?
+        invalid_properties.push('invalid value for "test", test cannot be nil.')
+      end
+
+      if @actions.nil?
+        invalid_properties.push('invalid value for "actions", actions cannot be nil.')
+      end
+
+      if @source.nil?
+        invalid_properties.push('invalid value for "source", source cannot be nil.')
       end
 
       invalid_properties
@@ -278,12 +379,17 @@ module DocSpring
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @id.nil?
-      return false if @test.nil?
+      return false if @data_requests.nil?
       return false if @expired.nil?
+      return false if @metadata.nil?
       return false if @state.nil?
       state_validator = EnumAttributeValidator.new('String', ["pending", "processed", "invalid_data", "error", "image_download_failed", "image_processing_failed", "waiting_for_data_requests", "syntax_error", "account_suspended", "license_revoked", "accidental"])
       return false unless state_validator.valid?(@state)
+      return false if @test.nil?
+      return false if @actions.nil?
+      return false if @source.nil?
+      source_validator = EnumAttributeValidator.new('String', ["api", "web", "reprocess", "webhook"])
+      return false unless source_validator.valid?(@source)
       true
     end
 
@@ -297,30 +403,45 @@ module DocSpring
       @state = state
     end
 
+    # Custom attribute writer method checking allowed values (enum).
+    # @param [Object] source Object to be assigned
+    def source=(source)
+      validator = EnumAttributeValidator.new('String', ["api", "web", "reprocess", "webhook"])
+      unless validator.valid?(source)
+        fail ArgumentError, "invalid value for \"source\", must be one of #{validator.allowable_values}."
+      end
+      @source = source
+    end
+
     # Checks equality by comparing each attribute.
     # @param [Object] Object to be compared
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
-          id == o.id &&
-          template_id == o.template_id &&
-          test == o.test &&
+          batch_id == o.batch_id &&
+          data_requests == o.data_requests &&
           editable == o.editable &&
           expired == o.expired &&
           expires_at == o.expires_at &&
+          id == o.id &&
+          json_schema_errors == o.json_schema_errors &&
+          metadata == o.metadata &&
+          password == o.password &&
           processed_at == o.processed_at &&
           state == o.state &&
-          data == o.data &&
-          metadata == o.metadata &&
+          template_id == o.template_id &&
+          test == o.test &&
           truncated_text == o.truncated_text &&
           pdf_hash == o.pdf_hash &&
           download_url == o.download_url &&
           permanent_download_url == o.permanent_download_url &&
-          batch_id == o.batch_id &&
-          data_requests == o.data_requests &&
+          preview_download_url == o.preview_download_url &&
+          preview_generated_at == o.preview_generated_at &&
+          audit_trail_download_url == o.audit_trail_download_url &&
           actions == o.actions &&
           source == o.source &&
-          referrer == o.referrer
+          referrer == o.referrer &&
+          data == o.data
     end
 
     # @see the `==` method
@@ -332,7 +453,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, template_id, test, editable, expired, expires_at, processed_at, state, data, metadata, truncated_text, pdf_hash, download_url, permanent_download_url, batch_id, data_requests, actions, source, referrer].hash
+      [batch_id, data_requests, editable, expired, expires_at, id, json_schema_errors, metadata, password, processed_at, state, template_id, test, truncated_text, pdf_hash, download_url, permanent_download_url, preview_download_url, preview_generated_at, audit_trail_download_url, actions, source, referrer, data].hash
     end
 
     # Builds the object from hash

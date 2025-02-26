@@ -4,25 +4,30 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **id** | **String** |  |  |
-| **template_id** | **String** |  | [optional] |
-| **test** | **Boolean** |  |  |
-| **editable** | **Boolean** |  | [optional] |
+| **batch_id** | **String** |  |  |
+| **data_requests** | [**Array&lt;SubmissionDataRequest&gt;**](SubmissionDataRequest.md) |  |  |
+| **editable** | **Boolean** |  |  |
 | **expired** | **Boolean** |  |  |
-| **expires_at** | **String** |  | [optional] |
-| **processed_at** | **String** |  | [optional] |
+| **expires_at** | **String** |  |  |
+| **id** | **String** |  |  |
+| **json_schema_errors** | **Array&lt;String&gt;** |  |  |
+| **metadata** | **Object** |  |  |
+| **password** | **String** |  |  |
+| **processed_at** | **String** |  |  |
 | **state** | **String** |  |  |
-| **data** | **Object** |  | [optional] |
-| **metadata** | **Object** |  | [optional] |
-| **truncated_text** | **Object** |  | [optional] |
-| **pdf_hash** | **String** |  | [optional] |
-| **download_url** | **String** |  | [optional] |
-| **permanent_download_url** | **String** |  | [optional] |
-| **batch_id** | **String** |  | [optional] |
-| **data_requests** | [**Array&lt;SubmissionDataRequest&gt;**](SubmissionDataRequest.md) |  | [optional] |
-| **actions** | [**Array&lt;SubmissionAction&gt;**](SubmissionAction.md) |  | [optional] |
-| **source** | **String** |  | [optional] |
-| **referrer** | **String** |  | [optional] |
+| **template_id** | **String** |  |  |
+| **test** | **Boolean** |  |  |
+| **truncated_text** | **Object** |  |  |
+| **pdf_hash** | **String** |  |  |
+| **download_url** | **String** |  |  |
+| **permanent_download_url** | **String** |  |  |
+| **preview_download_url** | **String** |  |  |
+| **preview_generated_at** | **String** |  |  |
+| **audit_trail_download_url** | **String** |  |  |
+| **actions** | [**Array&lt;SubmissionAction&gt;**](SubmissionAction.md) |  |  |
+| **source** | **String** |  |  |
+| **referrer** | **String** |  |  |
+| **data** | **Object** |  |  |
 
 ## Example
 
@@ -30,25 +35,30 @@
 require 'docspring'
 
 instance = DocSpring::Submission.new(
-  id: null,
-  template_id: null,
-  test: null,
+  batch_id: null,
+  data_requests: null,
   editable: null,
   expired: null,
   expires_at: null,
+  id: null,
+  json_schema_errors: null,
+  metadata: null,
+  password: null,
   processed_at: null,
   state: null,
-  data: null,
-  metadata: null,
+  template_id: null,
+  test: null,
   truncated_text: null,
   pdf_hash: null,
   download_url: null,
   permanent_download_url: null,
-  batch_id: null,
-  data_requests: null,
+  preview_download_url: null,
+  preview_generated_at: null,
+  audit_trail_download_url: null,
   actions: null,
   source: null,
-  referrer: null
+  referrer: null,
+  data: null
 )
 ```
 

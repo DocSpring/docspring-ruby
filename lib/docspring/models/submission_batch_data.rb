@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -19,10 +19,6 @@ module DocSpring
 
     attr_accessor :submissions
 
-    attr_accessor :template_id
-
-    attr_accessor :template_version
-
     attr_accessor :test
 
     # Attribute mapping from ruby-style variable name to JSON key.
@@ -30,8 +26,6 @@ module DocSpring
       {
         :'metadata' => :'metadata',
         :'submissions' => :'submissions',
-        :'template_id' => :'template_id',
-        :'template_version' => :'template_version',
         :'test' => :'test'
       }
     end
@@ -45,9 +39,7 @@ module DocSpring
     def self.openapi_types
       {
         :'metadata' => :'Object',
-        :'submissions' => :'Array<SubmissionDataBatchRequest>',
-        :'template_id' => :'String',
-        :'template_version' => :'String',
+        :'submissions' => :'Array<Object>',
         :'test' => :'Boolean'
       }
     end
@@ -55,8 +47,6 @@ module DocSpring
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
-        :'template_id',
-        :'template_version',
       ])
     end
 
@@ -85,14 +75,6 @@ module DocSpring
         end
       else
         self.submissions = nil
-      end
-
-      if attributes.key?(:'template_id')
-        self.template_id = attributes[:'template_id']
-      end
-
-      if attributes.key?(:'template_version')
-        self.template_version = attributes[:'template_version']
       end
 
       if attributes.key?(:'test')
@@ -127,8 +109,6 @@ module DocSpring
       self.class == o.class &&
           metadata == o.metadata &&
           submissions == o.submissions &&
-          template_id == o.template_id &&
-          template_version == o.template_version &&
           test == o.test
     end
 
@@ -141,7 +121,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [metadata, submissions, template_id, template_version, test].hash
+      [metadata, submissions, test].hash
     end
 
     # Builds the object from hash

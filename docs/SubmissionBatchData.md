@@ -5,9 +5,7 @@
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **metadata** | **Object** |  | [optional] |
-| **submissions** | [**Array&lt;SubmissionDataBatchRequest&gt;**](SubmissionDataBatchRequest.md) |  |  |
-| **template_id** | **String** |  | [optional] |
-| **template_version** | **String** |  | [optional] |
+| **submissions** | **Array&lt;Object&gt;** |  |  |
 | **test** | **Boolean** |  | [optional] |
 
 ## Example
@@ -18,8 +16,6 @@ require 'docspring'
 instance = DocSpring::SubmissionBatchData.new(
   metadata: null,
   submissions: null,
-  template_id: null,
-  template_version: null,
   test: null
 )
 ```

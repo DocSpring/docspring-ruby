@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -21,9 +21,9 @@ module DocSpring
 
     attr_accessor :state
 
-    attr_accessor :action_category
-
     attr_accessor :action_type
+
+    attr_accessor :action_category
 
     attr_accessor :result_data
 
@@ -55,8 +55,8 @@ module DocSpring
         :'id' => :'id',
         :'integration_id' => :'integration_id',
         :'state' => :'state',
-        :'action_category' => :'action_category',
         :'action_type' => :'action_type',
+        :'action_category' => :'action_category',
         :'result_data' => :'result_data'
       }
     end
@@ -72,8 +72,8 @@ module DocSpring
         :'id' => :'String',
         :'integration_id' => :'String',
         :'state' => :'String',
-        :'action_category' => :'String',
         :'action_type' => :'String',
+        :'action_category' => :'String',
         :'result_data' => :'Object'
       }
     end
@@ -81,6 +81,7 @@ module DocSpring
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
+        :'id',
         :'integration_id',
       ])
     end
@@ -118,16 +119,16 @@ module DocSpring
         self.state = nil
       end
 
-      if attributes.key?(:'action_category')
-        self.action_category = attributes[:'action_category']
-      else
-        self.action_category = nil
-      end
-
       if attributes.key?(:'action_type')
         self.action_type = attributes[:'action_type']
       else
         self.action_type = nil
+      end
+
+      if attributes.key?(:'action_category')
+        self.action_category = attributes[:'action_category']
+      else
+        self.action_category = nil
       end
 
       if attributes.key?(:'result_data')
@@ -142,20 +143,16 @@ module DocSpring
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @id.nil?
-        invalid_properties.push('invalid value for "id", id cannot be nil.')
-      end
-
       if @state.nil?
         invalid_properties.push('invalid value for "state", state cannot be nil.')
       end
 
-      if @action_category.nil?
-        invalid_properties.push('invalid value for "action_category", action_category cannot be nil.')
-      end
-
       if @action_type.nil?
         invalid_properties.push('invalid value for "action_type", action_type cannot be nil.')
+      end
+
+      if @action_category.nil?
+        invalid_properties.push('invalid value for "action_category", action_category cannot be nil.')
       end
 
       if @result_data.nil?
@@ -169,16 +166,15 @@ module DocSpring
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @id.nil?
       return false if @state.nil?
       state_validator = EnumAttributeValidator.new('String', ["pending", "processed", "failed", "error"])
       return false unless state_validator.valid?(@state)
-      return false if @action_category.nil?
-      action_category_validator = EnumAttributeValidator.new('String', ["notification", "file_upload"])
-      return false unless action_category_validator.valid?(@action_category)
       return false if @action_type.nil?
       action_type_validator = EnumAttributeValidator.new('String', ["webhook", "slack_webhook", "email", "aws_s3_upload"])
       return false unless action_type_validator.valid?(@action_type)
+      return false if @action_category.nil?
+      action_category_validator = EnumAttributeValidator.new('String', ["notification", "file_upload"])
+      return false unless action_category_validator.valid?(@action_category)
       return false if @result_data.nil?
       true
     end
@@ -194,16 +190,6 @@ module DocSpring
     end
 
     # Custom attribute writer method checking allowed values (enum).
-    # @param [Object] action_category Object to be assigned
-    def action_category=(action_category)
-      validator = EnumAttributeValidator.new('String', ["notification", "file_upload"])
-      unless validator.valid?(action_category)
-        fail ArgumentError, "invalid value for \"action_category\", must be one of #{validator.allowable_values}."
-      end
-      @action_category = action_category
-    end
-
-    # Custom attribute writer method checking allowed values (enum).
     # @param [Object] action_type Object to be assigned
     def action_type=(action_type)
       validator = EnumAttributeValidator.new('String', ["webhook", "slack_webhook", "email", "aws_s3_upload"])
@@ -211,6 +197,16 @@ module DocSpring
         fail ArgumentError, "invalid value for \"action_type\", must be one of #{validator.allowable_values}."
       end
       @action_type = action_type
+    end
+
+    # Custom attribute writer method checking allowed values (enum).
+    # @param [Object] action_category Object to be assigned
+    def action_category=(action_category)
+      validator = EnumAttributeValidator.new('String', ["notification", "file_upload"])
+      unless validator.valid?(action_category)
+        fail ArgumentError, "invalid value for \"action_category\", must be one of #{validator.allowable_values}."
+      end
+      @action_category = action_category
     end
 
     # Checks equality by comparing each attribute.
@@ -221,8 +217,8 @@ module DocSpring
           id == o.id &&
           integration_id == o.integration_id &&
           state == o.state &&
-          action_category == o.action_category &&
           action_type == o.action_type &&
+          action_category == o.action_category &&
           result_data == o.result_data
     end
 
@@ -235,7 +231,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, integration_id, state, action_category, action_type, result_data].hash
+      [id, integration_id, state, action_type, action_category, result_data].hash
     end
 
     # Builds the object from hash

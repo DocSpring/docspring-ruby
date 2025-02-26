@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -48,12 +48,20 @@ describe DocSpring::SubmissionDataRequestEvent do
   describe 'test attribute "event_type"' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+      # validator = Petstore::EnumTest::EnumAttributeValidator.new('String', ["send_request", "view_request", "accepted_terms", "decline_request", "sign_request", "all_completed"])
+      # validator.allowable_values.each do |value|
+      #   expect { instance.event_type = value }.not_to raise_error
+      # end
     end
   end
 
   describe 'test attribute "message_type"' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+      # validator = Petstore::EnumTest::EnumAttributeValidator.new('String', ["email", "sms", "fax", "mail", "slack", "msteams", "discord", "telegram", "whatsapp"])
+      # validator.allowable_values.each do |value|
+      #   expect { instance.message_type = value }.not_to raise_error
+      # end
     end
   end
 

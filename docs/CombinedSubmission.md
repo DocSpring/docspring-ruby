@@ -5,18 +5,19 @@
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **id** | **String** |  |  |
-| **expired** | **Boolean** |  |  |
-| **expires_in** | **Integer** |  | [optional] |
-| **expires_at** | **String** |  | [optional] |
 | **state** | **String** |  |  |
-| **error_message** | **String** |  | [optional] |
-| **metadata** | **Object** |  | [optional] |
-| **password** | **String** |  | [optional] |
+| **expired** | **Boolean** |  |  |
+| **expires_in** | **Integer** |  |  |
+| **expires_at** | **String** |  |  |
+| **processed_at** | **String** |  |  |
+| **error_message** | **String** |  |  |
 | **submission_ids** | **Array&lt;String&gt;** |  |  |
 | **source_pdfs** | **Array&lt;Object&gt;** |  |  |
-| **download_url** | **String** |  | [optional] |
-| **pdf_hash** | **String** |  | [optional] |
-| **actions** | [**Array&lt;CombinedSubmissionAction&gt;**](CombinedSubmissionAction.md) |  | [optional] |
+| **metadata** | **Object** |  |  |
+| **password** | **String** |  |  |
+| **pdf_hash** | **String** |  |  |
+| **download_url** | **String** |  |  |
+| **actions** | [**Array&lt;CombinedSubmissionAction&gt;**](CombinedSubmissionAction.md) |  |  |
 
 ## Example
 
@@ -25,17 +26,18 @@ require 'docspring'
 
 instance = DocSpring::CombinedSubmission.new(
   id: null,
+  state: null,
   expired: null,
   expires_in: null,
   expires_at: null,
-  state: null,
+  processed_at: null,
   error_message: null,
-  metadata: null,
-  password: null,
   submission_ids: null,
   source_pdfs: null,
-  download_url: null,
+  metadata: null,
+  password: null,
   pdf_hash: null,
+  download_url: null,
   actions: null
 )
 ```

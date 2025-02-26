@@ -1,7 +1,7 @@
 =begin
-#API v1
+#DocSpring API
 
-#DocSpring is a service that helps you fill out and sign PDF templates.
+#DocSpring provides an API that helps you fill out and sign PDF templates.
 
 The version of the OpenAPI document: v1
 
@@ -54,12 +54,6 @@ RSpec.configure do |config|
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
   end
-
-  # <--------------- BEGIN DOCSPRING CUSTOMIZATION ----------------->
-  # Description: Tweak some RSpec options to make it easier to focus on failing tests
-  config.filter_run :focus
-  config.run_all_when_everything_filtered = true
-  # <--------------- END DOCSPRING CUSTOMIZATION ----------------->
 
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
