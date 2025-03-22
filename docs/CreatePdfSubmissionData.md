@@ -12,6 +12,7 @@
 | **metadata** | **Object** |  | [optional] |
 | **password** | **String** |  | [optional] |
 | **test** | **Boolean** |  | [optional] |
+| **version** | **String** |  | [optional] |
 
 ## Example
 
@@ -26,7 +27,8 @@ instance = DocSpring::CreatePdfSubmissionData.new(
   field_overrides: null,
   metadata: null,
   password: null,
-  test: null
+  test: null,
+  version: null
 )
 ```
 

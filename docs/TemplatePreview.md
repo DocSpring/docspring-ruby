@@ -38,8 +38,14 @@
 | **slack_webhook_url** | **String** |  |  |
 | **template_type** | **String** |  |  |
 | **updated_at** | **String** |  |  |
+| **version_published_at** | **String** |  |  |
+| **version** | **String** |  |  |
 | **webhook_url** | **String** |  |  |
 | **demo** | **Boolean** |  |  |
+| **latest_version** | **String** |  |  |
+| **last_changed_at** | **String** |  |  |
+| **last_changed_by_type** | **String** |  |  |
+| **last_changed_by_id** | **String** |  |  |
 
 ## Example
 
@@ -81,8 +87,14 @@ instance = DocSpring::TemplatePreview.new(
   slack_webhook_url: null,
   template_type: null,
   updated_at: null,
+  version_published_at: null,
+  version: null,
   webhook_url: null,
-  demo: null
+  demo: null,
+  latest_version: null,
+  last_changed_at: null,
+  last_changed_by_type: null,
+  last_changed_by_id: null
 )
 ```
 

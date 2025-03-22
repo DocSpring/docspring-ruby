@@ -25,7 +25,7 @@ All URIs are relative to *https://sync.api.docspring.com/api/v1*
 | [**generate_preview**](PDFApi.md#generate_preview) | **POST** /submissions/{submission_id}/generate_preview | Generated a preview PDF for partially completed data requests |
 | [**get_combined_submission**](PDFApi.md#get_combined_submission) | **GET** /combined_submissions/{combined_submission_id} | Check the status of a combined submission (merged PDFs) |
 | [**get_data_request**](PDFApi.md#get_data_request) | **GET** /data_requests/{data_request_id} | Look up a submission data request |
-| [**get_full_template**](PDFApi.md#get_full_template) | **GET** /templates/{template_id}?full&#x3D;true | Fetch the full template attributes |
+| [**get_full_template**](PDFApi.md#get_full_template) | **GET** /templates/{template_id}?full&#x3D;true | Fetch the full attributes for a PDF template |
 | [**get_presign_url**](PDFApi.md#get_presign_url) | **GET** /uploads/presign | Get a presigned URL so that you can upload a file to our AWS S3 bucket |
 | [**get_submission**](PDFApi.md#get_submission) | **GET** /submissions/{submission_id} | Check the status of a PDF |
 | [**get_submission_batch**](PDFApi.md#get_submission_batch) | **GET** /submissions/batches/{submission_batch_id} | Check the status of a submission batch job |
@@ -38,7 +38,9 @@ All URIs are relative to *https://sync.api.docspring.com/api/v1*
 | [**list_templates**](PDFApi.md#list_templates) | **GET** /templates | Get a list of all templates |
 | [**move_folder_to_folder**](PDFApi.md#move_folder_to_folder) | **POST** /folders/{folder_id}/move | Move a folder |
 | [**move_template_to_folder**](PDFApi.md#move_template_to_folder) | **POST** /templates/{template_id}/move | Move Template to folder |
+| [**publish_template_version**](PDFApi.md#publish_template_version) | **POST** /templates/{template_id}/publish_version | Publish a template version |
 | [**rename_folder**](PDFApi.md#rename_folder) | **POST** /folders/{folder_id}/rename | Rename a folder |
+| [**restore_template_version**](PDFApi.md#restore_template_version) | **POST** /templates/{template_id}/restore_version | Restore a template version |
 | [**test_authentication**](PDFApi.md#test_authentication) | **GET** /authentication | Test Authentication |
 | [**update_data_request**](PDFApi.md#update_data_request) | **PUT** /data_requests/{data_request_id} | Update a submission data request |
 | [**update_template**](PDFApi.md#update_template) | **PUT** /templates/{template_id} | Update a Template |
@@ -960,7 +962,7 @@ end
 
 ## delete_template
 
-> <SuccessMultipleErrorsResponse> delete_template(template_id)
+> <TemplateDeleteResponse> delete_template(template_id, opts)
 
 Delete a template
 
@@ -978,10 +980,13 @@ end
 
 api_instance = DocSpring::PDFApi.new
 template_id = 'tpl_1234567890abcdef01' # String | 
+opts = {
+  version: '0.1.0' # String | 
+}
 
 begin
   # Delete a template
-  result = api_instance.delete_template(template_id)
+  result = api_instance.delete_template(template_id, opts)
   p result
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->delete_template: #{e}"
@@ -992,15 +997,15 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<SuccessMultipleErrorsResponse>, Integer, Hash)> delete_template_with_http_info(template_id)
+> <Array(<TemplateDeleteResponse>, Integer, Hash)> delete_template_with_http_info(template_id, opts)
 
 ```ruby
 begin
   # Delete a template
-  data, status_code, headers = api_instance.delete_template_with_http_info(template_id)
+  data, status_code, headers = api_instance.delete_template_with_http_info(template_id, opts)
   p status_code # => 2xx
   p headers # => { ... }
-  p data # => <SuccessMultipleErrorsResponse>
+  p data # => <TemplateDeleteResponse>
 rescue DocSpring::ApiError => e
   puts "Error when calling PDFApi->delete_template_with_http_info: #{e}"
 end
@@ -1011,10 +1016,11 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **template_id** | **String** |  |  |
+| **version** | **String** |  | [optional] |
 
 ### Return type
 
-[**SuccessMultipleErrorsResponse**](SuccessMultipleErrorsResponse.md)
+[**TemplateDeleteResponse**](TemplateDeleteResponse.md)
 
 ### Authorization
 
@@ -1518,7 +1524,7 @@ end
 
 > <Template> get_full_template(template_id)
 
-Fetch the full template attributes
+Fetch the full attributes for a PDF template
 
 ### Examples
 
@@ -1536,7 +1542,7 @@ api_instance = DocSpring::PDFApi.new
 template_id = 'tpl_1234567890abcdef01' # String | 
 
 begin
-  # Fetch the full template attributes
+  # Fetch the full attributes for a PDF template
   result = api_instance.get_full_template(template_id)
   p result
 rescue DocSpring::ApiError => e
@@ -1552,7 +1558,7 @@ This returns an Array which contains the response data, status code and headers.
 
 ```ruby
 begin
-  # Fetch the full template attributes
+  # Fetch the full attributes for a PDF template
   data, status_code, headers = api_instance.get_full_template_with_http_info(template_id)
   p status_code # => 2xx
   p headers # => { ... }
@@ -2447,6 +2453,76 @@ end
 - **Accept**: application/json
 
 
+## publish_template_version
+
+> <TemplatePublishVersionResponse> publish_template_version(template_id, data)
+
+Publish a template version
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::PDFApi.new
+template_id = 'tpl_1234567890abcdef01' # String | 
+data = DocSpring::PublishVersionData.new({version_type: 'version_type_example'}) # PublishVersionData | 
+
+begin
+  # Publish a template version
+  result = api_instance.publish_template_version(template_id, data)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling PDFApi->publish_template_version: #{e}"
+end
+```
+
+#### Using the publish_template_version_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<TemplatePublishVersionResponse>, Integer, Hash)> publish_template_version_with_http_info(template_id, data)
+
+```ruby
+begin
+  # Publish a template version
+  data, status_code, headers = api_instance.publish_template_version_with_http_info(template_id, data)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <TemplatePublishVersionResponse>
+rescue DocSpring::ApiError => e
+  puts "Error when calling PDFApi->publish_template_version_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **template_id** | **String** |  |  |
+| **data** | [**PublishVersionData**](PublishVersionData.md) |  |  |
+
+### Return type
+
+[**TemplatePublishVersionResponse**](TemplatePublishVersionResponse.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
 ## rename_folder
 
 > <Folder> rename_folder(folder_id, data)
@@ -2506,6 +2582,76 @@ end
 ### Return type
 
 [**Folder**](Folder.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
+## restore_template_version
+
+> <SuccessErrorResponse> restore_template_version(template_id, data)
+
+Restore a template version
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::PDFApi.new
+template_id = 'tpl_1234567890abcdef01' # String | 
+data = DocSpring::RestoreVersionData.new({version: 'version_example'}) # RestoreVersionData | 
+
+begin
+  # Restore a template version
+  result = api_instance.restore_template_version(template_id, data)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling PDFApi->restore_template_version: #{e}"
+end
+```
+
+#### Using the restore_template_version_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<SuccessErrorResponse>, Integer, Hash)> restore_template_version_with_http_info(template_id, data)
+
+```ruby
+begin
+  # Restore a template version
+  data, status_code, headers = api_instance.restore_template_version_with_http_info(template_id, data)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <SuccessErrorResponse>
+rescue DocSpring::ApiError => e
+  puts "Error when calling PDFApi->restore_template_version_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **template_id** | **String** |  |  |
+| **data** | [**RestoreVersionData**](RestoreVersionData.md) |  |  |
+
+### Return type
+
+[**SuccessErrorResponse**](SuccessErrorResponse.md)
 
 ### Authorization
 

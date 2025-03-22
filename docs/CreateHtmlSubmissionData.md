@@ -13,6 +13,7 @@
 | **metadata** | **Object** |  | [optional] |
 | **password** | **String** |  | [optional] |
 | **test** | **Boolean** |  | [optional] |
+| **version** | **String** |  | [optional] |
 
 ## Example
 
@@ -28,7 +29,8 @@ instance = DocSpring::CreateHtmlSubmissionData.new(
   html: null,
   metadata: null,
   password: null,
-  test: null
+  test: null,
+  version: null
 )
 ```
 

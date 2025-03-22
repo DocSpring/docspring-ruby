@@ -88,6 +88,7 @@ module DocSpring
         :'id',
         :'submission_id',
         :'submission_data_request_id',
+        :'message_type',
         :'message_recipient',
         :'occurred_at'
       ])
@@ -160,10 +161,6 @@ module DocSpring
         invalid_properties.push('invalid value for "event_type", event_type cannot be nil.')
       end
 
-      if @message_type.nil?
-        invalid_properties.push('invalid value for "message_type", message_type cannot be nil.')
-      end
-
       invalid_properties
     end
 
@@ -174,7 +171,6 @@ module DocSpring
       return false if @event_type.nil?
       event_type_validator = EnumAttributeValidator.new('String', ["send_request", "view_request", "accepted_terms", "decline_request", "sign_request", "all_completed"])
       return false unless event_type_validator.valid?(@event_type)
-      return false if @message_type.nil?
       message_type_validator = EnumAttributeValidator.new('String', ["email", "sms", "fax", "mail", "slack", "msteams", "discord", "telegram", "whatsapp"])
       return false unless message_type_validator.valid?(@message_type)
       true

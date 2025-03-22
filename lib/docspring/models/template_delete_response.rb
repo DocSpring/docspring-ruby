@@ -14,18 +14,14 @@ require 'date'
 require 'time'
 
 module DocSpring
-  class CombinedSubmissionAction
-    attr_accessor :id
+  class TemplateDeleteResponse
+    attr_accessor :status
 
-    attr_accessor :integration_id
+    attr_accessor :errors
 
-    attr_accessor :state
+    attr_accessor :latest_version
 
-    attr_accessor :action_type
-
-    attr_accessor :action_category
-
-    attr_accessor :result_data
+    attr_accessor :versions
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -52,12 +48,10 @@ module DocSpring
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
-        :'id' => :'id',
-        :'integration_id' => :'integration_id',
-        :'state' => :'state',
-        :'action_type' => :'action_type',
-        :'action_category' => :'action_category',
-        :'result_data' => :'result_data'
+        :'status' => :'status',
+        :'errors' => :'errors',
+        :'latest_version' => :'latest_version',
+        :'versions' => :'versions'
       }
     end
 
@@ -69,21 +63,17 @@ module DocSpring
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'id' => :'String',
-        :'integration_id' => :'String',
-        :'state' => :'String',
-        :'action_type' => :'String',
-        :'action_category' => :'String',
-        :'result_data' => :'Object'
+        :'status' => :'String',
+        :'errors' => :'Array<String>',
+        :'latest_version' => :'String',
+        :'versions' => :'Array<Object>'
       }
     end
 
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
-        :'id',
-        :'integration_id',
-        :'action_type',
+        :'latest_version',
       ])
     end
 
@@ -91,51 +81,37 @@ module DocSpring
     # @param [Hash] attributes Model attributes in the form of hash
     def initialize(attributes = {})
       if (!attributes.is_a?(Hash))
-        fail ArgumentError, "The input argument (attributes) must be a hash in `DocSpring::CombinedSubmissionAction` initialize method"
+        fail ArgumentError, "The input argument (attributes) must be a hash in `DocSpring::TemplateDeleteResponse` initialize method"
       end
 
       # check to see if the attribute exists and convert string to symbol for hash key
       attributes = attributes.each_with_object({}) { |(k, v), h|
         if (!self.class.attribute_map.key?(k.to_sym))
-          fail ArgumentError, "`#{k}` is not a valid attribute in `DocSpring::CombinedSubmissionAction`. Please check the name to make sure it's valid. List of attributes: " + self.class.attribute_map.keys.inspect
+          fail ArgumentError, "`#{k}` is not a valid attribute in `DocSpring::TemplateDeleteResponse`. Please check the name to make sure it's valid. List of attributes: " + self.class.attribute_map.keys.inspect
         end
         h[k.to_sym] = v
       }
 
-      if attributes.key?(:'id')
-        self.id = attributes[:'id']
+      if attributes.key?(:'status')
+        self.status = attributes[:'status']
       else
-        self.id = nil
+        self.status = nil
       end
 
-      if attributes.key?(:'integration_id')
-        self.integration_id = attributes[:'integration_id']
-      else
-        self.integration_id = nil
+      if attributes.key?(:'errors')
+        if (value = attributes[:'errors']).is_a?(Array)
+          self.errors = value
+        end
       end
 
-      if attributes.key?(:'state')
-        self.state = attributes[:'state']
-      else
-        self.state = nil
+      if attributes.key?(:'latest_version')
+        self.latest_version = attributes[:'latest_version']
       end
 
-      if attributes.key?(:'action_type')
-        self.action_type = attributes[:'action_type']
-      else
-        self.action_type = nil
-      end
-
-      if attributes.key?(:'action_category')
-        self.action_category = attributes[:'action_category']
-      else
-        self.action_category = nil
-      end
-
-      if attributes.key?(:'result_data')
-        self.result_data = attributes[:'result_data']
-      else
-        self.result_data = nil
+      if attributes.key?(:'versions')
+        if (value = attributes[:'versions']).is_a?(Array)
+          self.versions = value
+        end
       end
     end
 
@@ -144,16 +120,8 @@ module DocSpring
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @state.nil?
-        invalid_properties.push('invalid value for "state", state cannot be nil.')
-      end
-
-      if @action_category.nil?
-        invalid_properties.push('invalid value for "action_category", action_category cannot be nil.')
-      end
-
-      if @result_data.nil?
-        invalid_properties.push('invalid value for "result_data", result_data cannot be nil.')
+      if @status.nil?
+        invalid_properties.push('invalid value for "status", status cannot be nil.')
       end
 
       invalid_properties
@@ -163,46 +131,20 @@ module DocSpring
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @state.nil?
-      state_validator = EnumAttributeValidator.new('String', ["pending", "processed", "failed", "error"])
-      return false unless state_validator.valid?(@state)
-      action_type_validator = EnumAttributeValidator.new('String', ["webhook", "slack_webhook", "email", "aws_s3_upload"])
-      return false unless action_type_validator.valid?(@action_type)
-      return false if @action_category.nil?
-      action_category_validator = EnumAttributeValidator.new('String', ["notification", "file_upload"])
-      return false unless action_category_validator.valid?(@action_category)
-      return false if @result_data.nil?
+      return false if @status.nil?
+      status_validator = EnumAttributeValidator.new('String', ["success", "error"])
+      return false unless status_validator.valid?(@status)
       true
     end
 
     # Custom attribute writer method checking allowed values (enum).
-    # @param [Object] state Object to be assigned
-    def state=(state)
-      validator = EnumAttributeValidator.new('String', ["pending", "processed", "failed", "error"])
-      unless validator.valid?(state)
-        fail ArgumentError, "invalid value for \"state\", must be one of #{validator.allowable_values}."
+    # @param [Object] status Object to be assigned
+    def status=(status)
+      validator = EnumAttributeValidator.new('String', ["success", "error"])
+      unless validator.valid?(status)
+        fail ArgumentError, "invalid value for \"status\", must be one of #{validator.allowable_values}."
       end
-      @state = state
-    end
-
-    # Custom attribute writer method checking allowed values (enum).
-    # @param [Object] action_type Object to be assigned
-    def action_type=(action_type)
-      validator = EnumAttributeValidator.new('String', ["webhook", "slack_webhook", "email", "aws_s3_upload"])
-      unless validator.valid?(action_type)
-        fail ArgumentError, "invalid value for \"action_type\", must be one of #{validator.allowable_values}."
-      end
-      @action_type = action_type
-    end
-
-    # Custom attribute writer method checking allowed values (enum).
-    # @param [Object] action_category Object to be assigned
-    def action_category=(action_category)
-      validator = EnumAttributeValidator.new('String', ["notification", "file_upload"])
-      unless validator.valid?(action_category)
-        fail ArgumentError, "invalid value for \"action_category\", must be one of #{validator.allowable_values}."
-      end
-      @action_category = action_category
+      @status = status
     end
 
     # Checks equality by comparing each attribute.
@@ -210,12 +152,10 @@ module DocSpring
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
-          id == o.id &&
-          integration_id == o.integration_id &&
-          state == o.state &&
-          action_type == o.action_type &&
-          action_category == o.action_category &&
-          result_data == o.result_data
+          status == o.status &&
+          errors == o.errors &&
+          latest_version == o.latest_version &&
+          versions == o.versions
     end
 
     # @see the `==` method
@@ -227,7 +167,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, integration_id, state, action_type, action_category, result_data].hash
+      [status, errors, latest_version, versions].hash
     end
 
     # Builds the object from hash

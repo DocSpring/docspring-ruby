@@ -914,7 +914,8 @@ module DocSpring
     # Delete a template
     # @param template_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [SuccessMultipleErrorsResponse]
+    # @option opts [String] :version 
+    # @return [TemplateDeleteResponse]
     def delete_template(template_id, opts = {})
       data, _status_code, _headers = delete_template_with_http_info(template_id, opts)
       data
@@ -923,7 +924,8 @@ module DocSpring
     # Delete a template
     # @param template_id [String] 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(SuccessMultipleErrorsResponse, Integer, Hash)>] SuccessMultipleErrorsResponse data, response status code and response headers
+    # @option opts [String] :version 
+    # @return [Array<(TemplateDeleteResponse, Integer, Hash)>] TemplateDeleteResponse data, response status code and response headers
     def delete_template_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: PDFApi.delete_template ...'
@@ -937,6 +939,7 @@ module DocSpring
 
       # query parameters
       query_params = opts[:query_params] || {}
+      query_params[:'version'] = opts[:'version'] if !opts[:'version'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}
@@ -950,7 +953,7 @@ module DocSpring
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'SuccessMultipleErrorsResponse'
+      return_type = opts[:debug_return_type] || 'TemplateDeleteResponse'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['api_token_basic']
@@ -1427,7 +1430,7 @@ module DocSpring
       return data, status_code, headers
     end
 
-    # Fetch the full template attributes
+    # Fetch the full attributes for a PDF template
     # @param template_id [String] 
     # @param [Hash] opts the optional parameters
     # @return [Template]
@@ -1436,7 +1439,7 @@ module DocSpring
       data
     end
 
-    # Fetch the full template attributes
+    # Fetch the full attributes for a PDF template
     # @param template_id [String] 
     # @param [Hash] opts the optional parameters
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
@@ -2299,6 +2302,78 @@ module DocSpring
       return data, status_code, headers
     end
 
+    # Publish a template version
+    # @param template_id [String] 
+    # @param data [PublishVersionData] 
+    # @param [Hash] opts the optional parameters
+    # @return [TemplatePublishVersionResponse]
+    def publish_template_version(template_id, data, opts = {})
+      data, _status_code, _headers = publish_template_version_with_http_info(template_id, data, opts)
+      data
+    end
+
+    # Publish a template version
+    # @param template_id [String] 
+    # @param data [PublishVersionData] 
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(TemplatePublishVersionResponse, Integer, Hash)>] TemplatePublishVersionResponse data, response status code and response headers
+    def publish_template_version_with_http_info(template_id, data, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: PDFApi.publish_template_version ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling PDFApi.publish_template_version"
+      end
+      # verify the required parameter 'data' is set
+      if @api_client.config.client_side_validation && data.nil?
+        fail ArgumentError, "Missing the required parameter 'data' when calling PDFApi.publish_template_version"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/publish_version'.sub('{' + 'template_id' + '}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'TemplatePublishVersionResponse'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"PDFApi.publish_template_version",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: PDFApi#publish_template_version\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Rename a folder
     # @param folder_id [String] 
     # @param data [RenameFolderData] 
@@ -2367,6 +2442,78 @@ module DocSpring
       data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: PDFApi#rename_folder\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Restore a template version
+    # @param template_id [String] 
+    # @param data [RestoreVersionData] 
+    # @param [Hash] opts the optional parameters
+    # @return [SuccessErrorResponse]
+    def restore_template_version(template_id, data, opts = {})
+      data, _status_code, _headers = restore_template_version_with_http_info(template_id, data, opts)
+      data
+    end
+
+    # Restore a template version
+    # @param template_id [String] 
+    # @param data [RestoreVersionData] 
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(SuccessErrorResponse, Integer, Hash)>] SuccessErrorResponse data, response status code and response headers
+    def restore_template_version_with_http_info(template_id, data, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: PDFApi.restore_template_version ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling PDFApi.restore_template_version"
+      end
+      # verify the required parameter 'data' is set
+      if @api_client.config.client_side_validation && data.nil?
+        fail ArgumentError, "Missing the required parameter 'data' when calling PDFApi.restore_template_version"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/restore_version'.sub('{' + 'template_id' + '}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'SuccessErrorResponse'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"PDFApi.restore_template_version",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: PDFApi#restore_template_version\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end

@@ -11,5 +11,5 @@ Generator version: 7.11.0
 =end
 
 module DocSpring
-  VERSION = '3.0.0'
+  VERSION = '3.1.0'
 end

@@ -16,6 +16,8 @@
 | **processed_at** | **String** |  |  |
 | **state** | **String** |  |  |
 | **template_id** | **String** |  |  |
+| **template_type** | **String** |  |  |
+| **template_version** | **String** |  |  |
 | **test** | **Boolean** |  |  |
 | **truncated_text** | **Object** |  |  |
 | **pdf_hash** | **String** |  |  |
@@ -47,6 +49,8 @@ instance = DocSpring::Submission.new(
   processed_at: null,
   state: null,
   template_id: null,
+  template_type: null,
+  template_version: null,
   test: null,
   truncated_text: null,
   pdf_hash: null,

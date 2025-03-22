@@ -83,9 +83,21 @@ module DocSpring
 
     attr_accessor :updated_at
 
+    attr_accessor :version_published_at
+
+    attr_accessor :version
+
     attr_accessor :webhook_url
 
     attr_accessor :demo
+
+    attr_accessor :latest_version
+
+    attr_accessor :last_changed_at
+
+    attr_accessor :last_changed_by_type
+
+    attr_accessor :last_changed_by_id
 
     attr_accessor :defaults
 
@@ -106,6 +118,8 @@ module DocSpring
     attr_accessor :scss
 
     attr_accessor :shared_field_data
+
+    attr_accessor :versions
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -166,8 +180,14 @@ module DocSpring
         :'slack_webhook_url' => :'slack_webhook_url',
         :'template_type' => :'template_type',
         :'updated_at' => :'updated_at',
+        :'version_published_at' => :'version_published_at',
+        :'version' => :'version',
         :'webhook_url' => :'webhook_url',
         :'demo' => :'demo',
+        :'latest_version' => :'latest_version',
+        :'last_changed_at' => :'last_changed_at',
+        :'last_changed_by_type' => :'last_changed_by_type',
+        :'last_changed_by_id' => :'last_changed_by_id',
         :'defaults' => :'defaults',
         :'field_order' => :'field_order',
         :'fields' => :'fields',
@@ -177,7 +197,8 @@ module DocSpring
         :'html' => :'html',
         :'predefined_fields' => :'predefined_fields',
         :'scss' => :'scss',
-        :'shared_field_data' => :'shared_field_data'
+        :'shared_field_data' => :'shared_field_data',
+        :'versions' => :'versions'
       }
     end
 
@@ -223,8 +244,14 @@ module DocSpring
         :'slack_webhook_url' => :'String',
         :'template_type' => :'String',
         :'updated_at' => :'String',
+        :'version_published_at' => :'String',
+        :'version' => :'String',
         :'webhook_url' => :'String',
         :'demo' => :'Boolean',
+        :'latest_version' => :'String',
+        :'last_changed_at' => :'String',
+        :'last_changed_by_type' => :'String',
+        :'last_changed_by_id' => :'String',
         :'defaults' => :'Object',
         :'field_order' => :'Array<Array<Float>>',
         :'fields' => :'Object',
@@ -234,7 +261,8 @@ module DocSpring
         :'html' => :'String',
         :'predefined_fields' => :'Array<Object>',
         :'scss' => :'String',
-        :'shared_field_data' => :'Object'
+        :'shared_field_data' => :'Object',
+        :'versions' => :'Array<Object>'
       }
     end
 
@@ -258,7 +286,13 @@ module DocSpring
         :'redirect_url',
         :'slack_webhook_url',
         :'updated_at',
+        :'version_published_at',
+        :'version',
         :'webhook_url',
+        :'latest_version',
+        :'last_changed_at',
+        :'last_changed_by_type',
+        :'last_changed_by_id',
         :'footer_html',
         :'header_html',
         :'html',
@@ -487,6 +521,18 @@ module DocSpring
         self.updated_at = nil
       end
 
+      if attributes.key?(:'version_published_at')
+        self.version_published_at = attributes[:'version_published_at']
+      else
+        self.version_published_at = nil
+      end
+
+      if attributes.key?(:'version')
+        self.version = attributes[:'version']
+      else
+        self.version = nil
+      end
+
       if attributes.key?(:'webhook_url')
         self.webhook_url = attributes[:'webhook_url']
       else
@@ -497,6 +543,30 @@ module DocSpring
         self.demo = attributes[:'demo']
       else
         self.demo = nil
+      end
+
+      if attributes.key?(:'latest_version')
+        self.latest_version = attributes[:'latest_version']
+      else
+        self.latest_version = nil
+      end
+
+      if attributes.key?(:'last_changed_at')
+        self.last_changed_at = attributes[:'last_changed_at']
+      else
+        self.last_changed_at = nil
+      end
+
+      if attributes.key?(:'last_changed_by_type')
+        self.last_changed_by_type = attributes[:'last_changed_by_type']
+      else
+        self.last_changed_by_type = nil
+      end
+
+      if attributes.key?(:'last_changed_by_id')
+        self.last_changed_by_id = attributes[:'last_changed_by_id']
+      else
+        self.last_changed_by_id = nil
       end
 
       if attributes.key?(:'defaults')
@@ -561,6 +631,14 @@ module DocSpring
         self.shared_field_data = attributes[:'shared_field_data']
       else
         self.shared_field_data = nil
+      end
+
+      if attributes.key?(:'versions')
+        if (value = attributes[:'versions']).is_a?(Array)
+          self.versions = value
+        end
+      else
+        self.versions = nil
       end
     end
 
@@ -665,6 +743,10 @@ module DocSpring
         invalid_properties.push('invalid value for "shared_field_data", shared_field_data cannot be nil.')
       end
 
+      if @versions.nil?
+        invalid_properties.push('invalid value for "versions", versions cannot be nil.')
+      end
+
       invalid_properties
     end
 
@@ -694,12 +776,15 @@ module DocSpring
       template_type_validator = EnumAttributeValidator.new('String', ["pdf", "html"])
       return false unless template_type_validator.valid?(@template_type)
       return false if @demo.nil?
+      last_changed_by_type_validator = EnumAttributeValidator.new('String', ["user", "api"])
+      return false unless last_changed_by_type_validator.valid?(@last_changed_by_type)
       return false if @defaults.nil?
       return false if @field_order.nil?
       return false if @fields.nil?
       return false if @html_engine_options.nil?
       return false if @predefined_fields.nil?
       return false if @shared_field_data.nil?
+      return false if @versions.nil?
       true
     end
 
@@ -721,6 +806,16 @@ module DocSpring
         fail ArgumentError, "invalid value for \"template_type\", must be one of #{validator.allowable_values}."
       end
       @template_type = template_type
+    end
+
+    # Custom attribute writer method checking allowed values (enum).
+    # @param [Object] last_changed_by_type Object to be assigned
+    def last_changed_by_type=(last_changed_by_type)
+      validator = EnumAttributeValidator.new('String', ["user", "api"])
+      unless validator.valid?(last_changed_by_type)
+        fail ArgumentError, "invalid value for \"last_changed_by_type\", must be one of #{validator.allowable_values}."
+      end
+      @last_changed_by_type = last_changed_by_type
     end
 
     # Checks equality by comparing each attribute.
@@ -762,8 +857,14 @@ module DocSpring
           slack_webhook_url == o.slack_webhook_url &&
           template_type == o.template_type &&
           updated_at == o.updated_at &&
+          version_published_at == o.version_published_at &&
+          version == o.version &&
           webhook_url == o.webhook_url &&
           demo == o.demo &&
+          latest_version == o.latest_version &&
+          last_changed_at == o.last_changed_at &&
+          last_changed_by_type == o.last_changed_by_type &&
+          last_changed_by_id == o.last_changed_by_id &&
           defaults == o.defaults &&
           field_order == o.field_order &&
           fields == o.fields &&
@@ -773,7 +874,8 @@ module DocSpring
           html == o.html &&
           predefined_fields == o.predefined_fields &&
           scss == o.scss &&
-          shared_field_data == o.shared_field_data
+          shared_field_data == o.shared_field_data &&
+          versions == o.versions
     end
 
     # @see the `==` method
@@ -785,7 +887,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [add_data_request_submission_id_footers, allow_additional_properties, description, document_filename, document_md5, document_parse_error, document_processed, document_state, document_url, editable_submissions, embed_domains, encrypt_pdfs_password, encrypt_pdfs, expiration_interval, expire_after, expire_submissions, external_predefined_fields_template_id, external_predefined_fields_template_name, first_template, id, locked, merge_audit_trail_pdf, name, page_count, page_dimensions, parent_folder_id, path, permanent_document_url, public_submissions, public_web_form, redirect_url, slack_webhook_url, template_type, updated_at, webhook_url, demo, defaults, field_order, fields, footer_html, header_html, html_engine_options, html, predefined_fields, scss, shared_field_data].hash
+      [add_data_request_submission_id_footers, allow_additional_properties, description, document_filename, document_md5, document_parse_error, document_processed, document_state, document_url, editable_submissions, embed_domains, encrypt_pdfs_password, encrypt_pdfs, expiration_interval, expire_after, expire_submissions, external_predefined_fields_template_id, external_predefined_fields_template_name, first_template, id, locked, merge_audit_trail_pdf, name, page_count, page_dimensions, parent_folder_id, path, permanent_document_url, public_submissions, public_web_form, redirect_url, slack_webhook_url, template_type, updated_at, version_published_at, version, webhook_url, demo, latest_version, last_changed_at, last_changed_by_type, last_changed_by_id, defaults, field_order, fields, footer_html, header_html, html_engine_options, html, predefined_fields, scss, shared_field_data, versions].hash
     end
 
     # Builds the object from hash

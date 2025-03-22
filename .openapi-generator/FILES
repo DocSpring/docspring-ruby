@@ -36,7 +36,9 @@ docs/MoveFolderData.md
 docs/MoveTemplateData.md
 docs/MultipleErrorsResponse.md
 docs/PDFApi.md
+docs/PublishVersionData.md
 docs/RenameFolderData.md
+docs/RestoreVersionData.md
 docs/Submission.md
 docs/SubmissionAction.md
 docs/SubmissionBatch.md
@@ -51,7 +53,9 @@ docs/SuccessErrorResponse.md
 docs/SuccessMultipleErrorsResponse.md
 docs/Template.md
 docs/TemplateAddFieldsResponse.md
+docs/TemplateDeleteResponse.md
 docs/TemplatePreview.md
+docs/TemplatePublishVersionResponse.md
 docs/UpdateHtmlTemplate.md
 docs/UpdateSubmissionDataRequestData.md
 docs/UploadPresignResponse.md
@@ -91,7 +95,9 @@ lib/docspring/models/list_submissions_response.rb
 lib/docspring/models/move_folder_data.rb
 lib/docspring/models/move_template_data.rb
 lib/docspring/models/multiple_errors_response.rb
+lib/docspring/models/publish_version_data.rb
 lib/docspring/models/rename_folder_data.rb
+lib/docspring/models/restore_version_data.rb
 lib/docspring/models/submission.rb
 lib/docspring/models/submission_action.rb
 lib/docspring/models/submission_batch.rb
@@ -106,7 +112,9 @@ lib/docspring/models/success_error_response.rb
 lib/docspring/models/success_multiple_errors_response.rb
 lib/docspring/models/template.rb
 lib/docspring/models/template_add_fields_response.rb
+lib/docspring/models/template_delete_response.rb
 lib/docspring/models/template_preview.rb
+lib/docspring/models/template_publish_version_response.rb
 lib/docspring/models/update_html_template.rb
 lib/docspring/models/update_submission_data_request_data.rb
 lib/docspring/models/upload_presign_response.rb
@@ -141,7 +149,9 @@ spec/models/list_submissions_response_spec.rb
 spec/models/move_folder_data_spec.rb
 spec/models/move_template_data_spec.rb
 spec/models/multiple_errors_response_spec.rb
+spec/models/publish_version_data_spec.rb
 spec/models/rename_folder_data_spec.rb
+spec/models/restore_version_data_spec.rb
 spec/models/submission_action_spec.rb
 spec/models/submission_batch_data_spec.rb
 spec/models/submission_batch_spec.rb
@@ -155,7 +165,9 @@ spec/models/submission_spec.rb
 spec/models/success_error_response_spec.rb
 spec/models/success_multiple_errors_response_spec.rb
 spec/models/template_add_fields_response_spec.rb
+spec/models/template_delete_response_spec.rb
 spec/models/template_preview_spec.rb
+spec/models/template_publish_version_response_spec.rb
 spec/models/template_spec.rb
 spec/models/update_html_template_spec.rb
 spec/models/update_submission_data_request_data_spec.rb

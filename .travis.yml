@@ -8,4 +8,4 @@ script:
   - bundle install --path vendor/bundle
   - bundle exec rspec
   - gem build docspring.gemspec
-  - gem install ./docspring-3.0.0.gem
+  - gem install ./docspring-3.1.0.gem

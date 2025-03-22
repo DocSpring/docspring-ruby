@@ -189,7 +189,8 @@ describe 'PDFApi' do
   # Delete a template
   # @param template_id 
   # @param [Hash] opts the optional parameters
-  # @return [SuccessMultipleErrorsResponse]
+  # @option opts [String] :version 
+  # @return [TemplateDeleteResponse]
   describe 'delete_template test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
@@ -278,7 +279,7 @@ describe 'PDFApi' do
   end
 
   # unit tests for get_full_template
-  # Fetch the full template attributes
+  # Fetch the full attributes for a PDF template
   # @param template_id 
   # @param [Hash] opts the optional parameters
   # @return [Template]
@@ -438,6 +439,18 @@ describe 'PDFApi' do
     end
   end
 
+  # unit tests for publish_template_version
+  # Publish a template version
+  # @param template_id 
+  # @param data 
+  # @param [Hash] opts the optional parameters
+  # @return [TemplatePublishVersionResponse]
+  describe 'publish_template_version test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
   # unit tests for rename_folder
   # Rename a folder
   # @param folder_id 
@@ -445,6 +458,18 @@ describe 'PDFApi' do
   # @param [Hash] opts the optional parameters
   # @return [Folder]
   describe 'rename_folder test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for restore_template_version
+  # Restore a template version
+  # @param template_id 
+  # @param data 
+  # @param [Hash] opts the optional parameters
+  # @return [SuccessErrorResponse]
+  describe 'restore_template_version test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end

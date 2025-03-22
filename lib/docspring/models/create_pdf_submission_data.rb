@@ -31,6 +31,8 @@ module DocSpring
 
     attr_accessor :test
 
+    attr_accessor :version
+
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
@@ -41,7 +43,8 @@ module DocSpring
         :'field_overrides' => :'field_overrides',
         :'metadata' => :'metadata',
         :'password' => :'password',
-        :'test' => :'test'
+        :'test' => :'test',
+        :'version' => :'version'
       }
     end
 
@@ -60,7 +63,8 @@ module DocSpring
         :'field_overrides' => :'Object',
         :'metadata' => :'Object',
         :'password' => :'String',
-        :'test' => :'Boolean'
+        :'test' => :'Boolean',
+        :'version' => :'String'
       }
     end
 
@@ -120,6 +124,10 @@ module DocSpring
       if attributes.key?(:'test')
         self.test = attributes[:'test']
       end
+
+      if attributes.key?(:'version')
+        self.version = attributes[:'version']
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -154,7 +162,8 @@ module DocSpring
           field_overrides == o.field_overrides &&
           metadata == o.metadata &&
           password == o.password &&
-          test == o.test
+          test == o.test &&
+          version == o.version
     end
 
     # @see the `==` method
@@ -166,7 +175,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [data, data_requests, editable, expires_in, field_overrides, metadata, password, test].hash
+      [data, data_requests, editable, expires_in, field_overrides, metadata, password, test, version].hash
     end
 
     # Builds the object from hash

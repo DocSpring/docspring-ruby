@@ -39,6 +39,10 @@ module DocSpring
 
     attr_accessor :template_id
 
+    attr_accessor :template_type
+
+    attr_accessor :template_version
+
     attr_accessor :test
 
     attr_accessor :truncated_text
@@ -94,6 +98,8 @@ module DocSpring
         :'processed_at' => :'processed_at',
         :'state' => :'state',
         :'template_id' => :'template_id',
+        :'template_type' => :'template_type',
+        :'template_version' => :'template_version',
         :'test' => :'test',
         :'truncated_text' => :'truncated_text',
         :'pdf_hash' => :'pdf_hash',
@@ -126,6 +132,8 @@ module DocSpring
         :'processed_at' => :'String',
         :'state' => :'String',
         :'template_id' => :'String',
+        :'template_type' => :'String',
+        :'template_version' => :'String',
         :'test' => :'Boolean',
         :'truncated_text' => :'Object',
         :'pdf_hash' => :'String',
@@ -149,6 +157,7 @@ module DocSpring
         :'password',
         :'processed_at',
         :'template_id',
+        :'template_version',
         :'truncated_text',
         :'pdf_hash',
         :'download_url',
@@ -250,6 +259,18 @@ module DocSpring
         self.template_id = nil
       end
 
+      if attributes.key?(:'template_type')
+        self.template_type = attributes[:'template_type']
+      else
+        self.template_type = nil
+      end
+
+      if attributes.key?(:'template_version')
+        self.template_version = attributes[:'template_version']
+      else
+        self.template_version = nil
+      end
+
       if attributes.key?(:'test')
         self.test = attributes[:'test']
       else
@@ -328,6 +349,10 @@ module DocSpring
         invalid_properties.push('invalid value for "state", state cannot be nil.')
       end
 
+      if @template_type.nil?
+        invalid_properties.push('invalid value for "template_type", template_type cannot be nil.')
+      end
+
       if @test.nil?
         invalid_properties.push('invalid value for "test", test cannot be nil.')
       end
@@ -349,6 +374,9 @@ module DocSpring
       return false if @state.nil?
       state_validator = EnumAttributeValidator.new('String', ["pending", "processed", "invalid_data", "error", "image_download_failed", "image_processing_failed", "waiting_for_data_requests", "syntax_error", "account_suspended", "license_revoked", "accidental"])
       return false unless state_validator.valid?(@state)
+      return false if @template_type.nil?
+      template_type_validator = EnumAttributeValidator.new('String', ["pdf", "html"])
+      return false unless template_type_validator.valid?(@template_type)
       return false if @test.nil?
       return false if @actions.nil?
       true
@@ -362,6 +390,16 @@ module DocSpring
         fail ArgumentError, "invalid value for \"state\", must be one of #{validator.allowable_values}."
       end
       @state = state
+    end
+
+    # Custom attribute writer method checking allowed values (enum).
+    # @param [Object] template_type Object to be assigned
+    def template_type=(template_type)
+      validator = EnumAttributeValidator.new('String', ["pdf", "html"])
+      unless validator.valid?(template_type)
+        fail ArgumentError, "invalid value for \"template_type\", must be one of #{validator.allowable_values}."
+      end
+      @template_type = template_type
     end
 
     # Checks equality by comparing each attribute.
@@ -381,6 +419,8 @@ module DocSpring
           processed_at == o.processed_at &&
           state == o.state &&
           template_id == o.template_id &&
+          template_type == o.template_type &&
+          template_version == o.template_version &&
           test == o.test &&
           truncated_text == o.truncated_text &&
           pdf_hash == o.pdf_hash &&
@@ -401,7 +441,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [batch_id, data_requests, editable, expired, expires_at, id, json_schema_errors, metadata, password, processed_at, state, template_id, test, truncated_text, pdf_hash, download_url, permanent_download_url, preview_download_url, preview_generated_at, audit_trail_download_url, actions].hash
+      [batch_id, data_requests, editable, expired, expires_at, id, json_schema_errors, metadata, password, processed_at, state, template_id, template_type, template_version, test, truncated_text, pdf_hash, download_url, permanent_download_url, preview_download_url, preview_generated_at, audit_trail_download_url, actions].hash
     end
 
     # Builds the object from hash

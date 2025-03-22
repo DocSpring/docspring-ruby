@@ -38,8 +38,14 @@
 | **slack_webhook_url** | **String** |  |  |
 | **template_type** | **String** |  |  |
 | **updated_at** | **String** |  |  |
+| **version_published_at** | **String** |  |  |
+| **version** | **String** |  |  |
 | **webhook_url** | **String** |  |  |
 | **demo** | **Boolean** |  |  |
+| **latest_version** | **String** |  |  |
+| **last_changed_at** | **String** |  |  |
+| **last_changed_by_type** | **String** |  |  |
+| **last_changed_by_id** | **String** |  |  |
 | **defaults** | **Object** |  |  |
 | **field_order** | **Array&lt;Array&lt;Float&gt;&gt;** |  |  |
 | **fields** | **Object** |  |  |
@@ -50,6 +56,7 @@
 | **predefined_fields** | **Array&lt;Object&gt;** |  |  |
 | **scss** | **String** |  |  |
 | **shared_field_data** | **Object** |  |  |
+| **versions** | **Array&lt;Object&gt;** |  |  |
 
 ## Example
 
@@ -91,8 +98,14 @@ instance = DocSpring::Template.new(
   slack_webhook_url: null,
   template_type: null,
   updated_at: null,
+  version_published_at: null,
+  version: null,
   webhook_url: null,
   demo: null,
+  latest_version: null,
+  last_changed_at: null,
+  last_changed_by_type: null,
+  last_changed_by_id: null,
   defaults: null,
   field_order: null,
   fields: null,
@@ -102,7 +115,8 @@ instance = DocSpring::Template.new(
   html: null,
   predefined_fields: null,
   scss: null,
-  shared_field_data: null
+  shared_field_data: null,
+  versions: null
 )
 ```
 
