@@ -5,7 +5,7 @@
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **submissions** | [**Array&lt;Submission&gt;**](Submission.md) |  |  |
-| **limit** | **Float** |  |  |
+| **limit** | **Integer** |  |  |
 | **next_cursor** | **String** |  |  |
 
 ## Example
