@@ -15,6 +15,9 @@
 | **document_url** | **String** |  |  |
 | **editable_submissions** | **Boolean** |  |  |
 | **embed_domains** | **String** |  |  |
+| **embed_edit_allow_settings** | **Boolean** |  |  |
+| **embed_edit_allow_versioning** | **Boolean** |  |  |
+| **embed_edit_allow_document_replacement** | **Boolean** |  |  |
 | **encrypt_pdfs_password** | **String** |  |  |
 | **encrypt_pdfs** | **Boolean** |  |  |
 | **expiration_interval** | **String** |  |  |
@@ -41,11 +44,15 @@
 | **version_published_at** | **String** |  |  |
 | **version** | **String** |  |  |
 | **webhook_url** | **String** |  |  |
+| **embed_edit_token** | **String** |  | [optional] |
 | **demo** | **Boolean** |  |  |
 | **latest_version** | **String** |  |  |
 | **last_changed_at** | **String** |  |  |
 | **last_changed_by_type** | **String** |  |  |
 | **last_changed_by_id** | **String** |  |  |
+| **last_changed_by_external_name** | **String** |  |  |
+| **last_changed_by_external_email** | **String** |  |  |
+| **last_changed_by_external_id** | **String** |  |  |
 
 ## Example
 
@@ -64,6 +71,9 @@ instance = DocSpring::TemplatePreview.new(
   document_url: null,
   editable_submissions: null,
   embed_domains: null,
+  embed_edit_allow_settings: null,
+  embed_edit_allow_versioning: null,
+  embed_edit_allow_document_replacement: null,
   encrypt_pdfs_password: null,
   encrypt_pdfs: null,
   expiration_interval: null,
@@ -90,11 +100,15 @@ instance = DocSpring::TemplatePreview.new(
   version_published_at: null,
   version: null,
   webhook_url: null,
+  embed_edit_token: null,
   demo: null,
   latest_version: null,
   last_changed_at: null,
   last_changed_by_type: null,
-  last_changed_by_id: null
+  last_changed_by_id: null,
+  last_changed_by_external_name: null,
+  last_changed_by_external_email: null,
+  last_changed_by_external_id: null
 )
 ```
 

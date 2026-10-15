@@ -15,6 +15,7 @@ require 'time'
 
 module DocSpring
   class CombinePdfsData
+    # Delete the custom files in source_pdfs once the combined PDF has been processed (they're kept if it fails). Other combined submissions can't use them after that. A test API token can't delete custom files.
     attr_accessor :delete_custom_files
 
     attr_accessor :expires_in
@@ -25,6 +26,7 @@ module DocSpring
 
     attr_accessor :source_pdfs
 
+    # Deprecated, and has no effect. A combined PDF is a test or live document because of its source PDFs.
     attr_accessor :test
 
     # Attribute mapping from ruby-style variable name to JSON key.
@@ -187,7 +189,13 @@ module DocSpring
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
-      new(transformed_hash)
+      # Responses can include enum values added after this client was released, so the enum setters
+      # accept any value while the model is built from a response
+      allocate.tap do |model|
+        model.instance_variable_set(:@_skip_enum_validation, true)
+        model.send(:initialize, transformed_hash)
+        model.remove_instance_variable(:@_skip_enum_validation)
+      end
     end
 
     # Deserializes the data based on type

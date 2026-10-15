@@ -44,6 +44,7 @@ module DocSpring
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
+        :'parent_folder_id'
       ])
     end
 
@@ -123,7 +124,13 @@ module DocSpring
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
-      new(transformed_hash)
+      # Responses can include enum values added after this client was released, so the enum setters
+      # accept any value while the model is built from a response
+      allocate.tap do |model|
+        model.instance_variable_set(:@_skip_enum_validation, true)
+        model.send(:initialize, transformed_hash)
+        model.remove_instance_variable(:@_skip_enum_validation)
+      end
     end
 
     # Deserializes the data based on type

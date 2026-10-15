@@ -32,7 +32,8 @@ module DocSpring
     end
 
     # Resolve host from argument, DOCSPRING_HOST, or DOCSPRING_REGION (US/EU)
-    resolved_host = host || ENV.fetch('DOCSPRING_HOST', nil)
+    resolved_host = (host || ENV.fetch('DOCSPRING_HOST', nil)).to_s.strip
+    resolved_host = nil if resolved_host.empty?
     unless resolved_host
       r = (region || ENV.fetch('DOCSPRING_REGION', nil)).to_s.strip.upcase
       unless r.empty?
@@ -48,15 +49,13 @@ module DocSpring
     if resolved_host
       scheme = 'https'
       h = resolved_host
-      if h.start_with?('http://')
-        scheme = 'http'
-        h = h.sub(/^http:\/\//, '')
-      elsif h.start_with?('https://')
-        h = h.sub(/^https:\/\//, '')
+      if (match = h.match(%r{\A(https?)://}i))
+        scheme = match[1].downcase
+        h = match.post_match
       end
       @api_client.config.scheme = scheme
-      @api_client.config.host = h.sub(/\/api\/v1\/?\z/, '')
       # base_path remains '/api/v1'
+      @api_client.config.host = h.sub(%r{/+\z}, '').sub(%r{/api/v1\z}i, '')
     end
   end
 end
@@ -136,7 +135,7 @@ end
     end
 
     # Generate multiple PDFs
-    # Generates up to 50 PDFs in a single request. Each submission can use a different template and data. Supports both synchronous (wait for all PDFs) and asynchronous processing. More efficient than individual requests when creating multiple PDFs.  See also: - [Batch and Combine PDFs](https://docspring.com/docs/api-guide/generate-pdfs/batch-generate-pdfs/) - Generate and merge PDFs in one request 
+    # Generates up to 50 PDFs in a single request. Each submission can use a different template and data. Supports both synchronous (wait for all PDFs) and asynchronous processing. More efficient than individual requests when creating multiple PDFs.  See also: - [Batch Generate PDFs](https://docspring.com/docs/api-guide/generate-pdfs/batch-generate-pdfs/) - Request format, responses, and limits 
     # @param data [SubmissionBatchData] 
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait for submission batch to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) (default to true)
@@ -147,7 +146,7 @@ end
     end
 
     # Generate multiple PDFs
-    # Generates up to 50 PDFs in a single request. Each submission can use a different template and data. Supports both synchronous (wait for all PDFs) and asynchronous processing. More efficient than individual requests when creating multiple PDFs.  See also: - [Batch and Combine PDFs](https://docspring.com/docs/api-guide/generate-pdfs/batch-generate-pdfs/) - Generate and merge PDFs in one request 
+    # Generates up to 50 PDFs in a single request. Each submission can use a different template and data. Supports both synchronous (wait for all PDFs) and asynchronous processing. More efficient than individual requests when creating multiple PDFs.  See also: - [Batch Generate PDFs](https://docspring.com/docs/api-guide/generate-pdfs/batch-generate-pdfs/) - Request format, responses, and limits 
     # @param data [SubmissionBatchData] 
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait for submission batch to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain) (default to true)
@@ -487,7 +486,7 @@ end
     end
 
     # Create a new data request token for form authentication
-    # Creates an authentication token for accessing a data request form. Tokens can be created for API access (1 hour expiration) or email links (30 day expiration). Returns a token and a pre-authenticated URL for the data request form.  See also: - [Embedded Data Requests Guide](https://docspring.com/docs/guides/embedded-forms/embedded-data-requests/) 
+    # Creates an authentication token for accessing a data request form. Returns a token and a pre-authenticated URL for the data request form. The token remains valid until the data request is completed.  See also: - [Embedded Data Requests Guide](https://docspring.com/docs/guides/embedded-forms/embedded-data-requests/) 
     # @param data_request_id [String] 
     # @param [Hash] opts the optional parameters
     # @option opts [String] :type 
@@ -498,7 +497,7 @@ end
     end
 
     # Create a new data request token for form authentication
-    # Creates an authentication token for accessing a data request form. Tokens can be created for API access (1 hour expiration) or email links (30 day expiration). Returns a token and a pre-authenticated URL for the data request form.  See also: - [Embedded Data Requests Guide](https://docspring.com/docs/guides/embedded-forms/embedded-data-requests/) 
+    # Creates an authentication token for accessing a data request form. Returns a token and a pre-authenticated URL for the data request form. The token remains valid until the data request is completed.  See also: - [Embedded Data Requests Guide](https://docspring.com/docs/guides/embedded-forms/embedded-data-requests/) 
     # @param data_request_id [String] 
     # @param [Hash] opts the optional parameters
     # @option opts [String] :type 
@@ -845,6 +844,74 @@ end
       return data, status_code, headers
     end
 
+    # Create a webhook
+    # Creates a webhook that delivers a POST request to your endpoint whenever a subscribed event occurs. Optionally scope the webhook to specific API tokens, templates, or folders. 
+    # @param data [CreateWebhookData] 
+    # @param [Hash] opts the optional parameters
+    # @return [Webhook]
+    def create_webhook(data, opts = {})
+      data, _status_code, _headers = create_webhook_with_http_info(data, opts)
+      data
+    end
+
+    # Create a webhook
+    # Creates a webhook that delivers a POST request to your endpoint whenever a subscribed event occurs. Optionally scope the webhook to specific API tokens, templates, or folders. 
+    # @param data [CreateWebhookData] 
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(Webhook, Integer, Hash)>] Webhook data, response status code and response headers
+    def create_webhook_with_http_info(data, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.create_webhook ...'
+      end
+      # verify the required parameter 'data' is set
+      if @api_client.config.client_side_validation && data.nil?
+        fail ArgumentError, "Missing the required parameter 'data' when calling Client.create_webhook"
+      end
+      # resource path
+      local_var_path = '/webhooks'
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'Webhook'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.create_webhook",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#create_webhook\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Delete a folder
     # Deletes an empty folder. The folder must not contain any templates or subfolders. Move or delete all contents before attempting to delete the folder. 
     # @param folder_id [String] 
@@ -970,6 +1037,69 @@ end
       data, status_code, headers = @api_client.call_api(:DELETE, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#delete_template\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Delete a webhook
+    # Permanently deletes a webhook so it stops receiving events, and returns the deleted webhook.
+    # @param webhook_id [String] 
+    # @param [Hash] opts the optional parameters
+    # @return [Webhook]
+    def delete_webhook(webhook_id, opts = {})
+      data, _status_code, _headers = delete_webhook_with_http_info(webhook_id, opts)
+      data
+    end
+
+    # Delete a webhook
+    # Permanently deletes a webhook so it stops receiving events, and returns the deleted webhook.
+    # @param webhook_id [String] 
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(Webhook, Integer, Hash)>] Webhook data, response status code and response headers
+    def delete_webhook_with_http_info(webhook_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.delete_webhook ...'
+      end
+      # verify the required parameter 'webhook_id' is set
+      if @api_client.config.client_side_validation && webhook_id.nil?
+        fail ArgumentError, "Missing the required parameter 'webhook_id' when calling Client.delete_webhook"
+      end
+      # resource path
+      local_var_path = '/webhooks/{webhook_id}'.sub('{' + 'webhook_id' + '}', CGI.escape(webhook_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'Webhook'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.delete_webhook",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:DELETE, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#delete_webhook\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -1101,7 +1231,7 @@ end
     end
 
     # Generate a PDF
-    # Creates a PDF submission by filling in a template with data. Supports both synchronous (default) and asynchronous processing. Set `wait: false` to return immediately.  See also: - [Customize the PDF Title and Filename](https://docspring.com/docs/api-guide/generate-pdfs/customize-pdf-title-and-filename/) - Set custom metadata - [Handling Truncated Text](https://docspring.com/docs/api-guide/generate-pdfs/handle-truncated-text/) - Handle text that doesn't fit in fields 
+    # Creates a PDF submission by filling in a template with data. Supports both synchronous (default) and asynchronous processing. Add the `wait=false` query parameter to return immediately.  See also: - [Customize the PDF Title and Filename](https://docspring.com/docs/api-guide/generate-pdfs/customize-pdf-title-and-filename/) - Set custom metadata - [Handling Truncated Text](https://docspring.com/docs/api-guide/generate-pdfs/handle-truncated-text/) - Handle text that doesn't fit in fields 
     # @param template_id [String] 
     # @param submission [CreatePdfSubmissionData] 
     # @param [Hash] opts the optional parameters
@@ -1113,7 +1243,7 @@ end
     end
 
     # Generate a PDF
-    # Creates a PDF submission by filling in a template with data. Supports both synchronous (default) and asynchronous processing. Set &#x60;wait: false&#x60; to return immediately.  See also: - [Customize the PDF Title and Filename](https://docspring.com/docs/api-guide/generate-pdfs/customize-pdf-title-and-filename/) - Set custom metadata - [Handling Truncated Text](https://docspring.com/docs/api-guide/generate-pdfs/handle-truncated-text/) - Handle text that doesn&#39;t fit in fields 
+    # Creates a PDF submission by filling in a template with data. Supports both synchronous (default) and asynchronous processing. Add the &#x60;wait&#x3D;false&#x60; query parameter to return immediately.  See also: - [Customize the PDF Title and Filename](https://docspring.com/docs/api-guide/generate-pdfs/customize-pdf-title-and-filename/) - Set custom metadata - [Handling Truncated Text](https://docspring.com/docs/api-guide/generate-pdfs/handle-truncated-text/) - Handle text that doesn&#39;t fit in fields 
     # @param template_id [String] 
     # @param submission [CreatePdfSubmissionData] 
     # @param [Hash] opts the optional parameters
@@ -1681,6 +1811,81 @@ end
       return data, status_code, headers
     end
 
+    # Generate typed model code for a template
+    # Generates typed model code for a template's submission data from its JSON schema, in TypeScript, JavaScript, Ruby, Python, PHP, Java, C#, Elixir or Go. Build your submission data with the generated types so your app catches mistakes before it calls the API.  `root_type_name` is the type that describes the whole submission data object, qualified with its namespace or package where there is one. Java returns every class in `code`, each under a `// ClassName.java` comment: split them into one file per class.  A template with no named fields returns 422, since there are no types to generate.  See also: - [Generate Model Code](https://docspring.com/docs/template-editor/generate-model-code/) - Use the generated types 
+    # @param template_id [String] 
+    # @param lang [String] The language to generate code for
+    # @param [Hash] opts the optional parameters
+    # @return [TemplateModelCodeResponse]
+    def get_template_model_code(template_id, lang, opts = {})
+      data, _status_code, _headers = get_template_model_code_with_http_info(template_id, lang, opts)
+      data
+    end
+
+    # Generate typed model code for a template
+    # Generates typed model code for a template&#39;s submission data from its JSON schema, in TypeScript, JavaScript, Ruby, Python, PHP, Java, C#, Elixir or Go. Build your submission data with the generated types so your app catches mistakes before it calls the API.  &#x60;root_type_name&#x60; is the type that describes the whole submission data object, qualified with its namespace or package where there is one. Java returns every class in &#x60;code&#x60;, each under a &#x60;// ClassName.java&#x60; comment: split them into one file per class.  A template with no named fields returns 422, since there are no types to generate.  See also: - [Generate Model Code](https://docspring.com/docs/template-editor/generate-model-code/) - Use the generated types 
+    # @param template_id [String] 
+    # @param lang [String] The language to generate code for
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(TemplateModelCodeResponse, Integer, Hash)>] TemplateModelCodeResponse data, response status code and response headers
+    def get_template_model_code_with_http_info(template_id, lang, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.get_template_model_code ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.get_template_model_code"
+      end
+      # verify the required parameter 'lang' is set
+      if @api_client.config.client_side_validation && lang.nil?
+        fail ArgumentError, "Missing the required parameter 'lang' when calling Client.get_template_model_code"
+      end
+      # verify enum value
+      allowable_values = ["typescript", "javascript", "ruby", "python", "php", "java", "csharp", "elixir", "go"]
+      if @api_client.config.client_side_validation && !allowable_values.include?(lang)
+        fail ArgumentError, "invalid value for \"lang\", must be one of #{allowable_values}"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/model_code'.sub('{' + 'template_id' + '}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'lang'] = lang
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'TemplateModelCodeResponse'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.get_template_model_code",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#get_template_model_code\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Fetch the JSON schema for a template
     # Retrieves the JSON Schema definition for a template's fields. Use this to validate data before submitting it for PDF generation, or to build dynamic forms that match the template's field structure and validation requirements.  See also: - [Generate PDFs Guide](https://docspring.com/docs/api-guide/generate-pdfs/generate-pdfs-via-api/) - Use schema to validate submission data 
     # @param template_id [String] 
@@ -1740,6 +1945,69 @@ end
       data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#get_template_schema\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Get a webhook
+    # Retrieves a single webhook by its ID.
+    # @param webhook_id [String] 
+    # @param [Hash] opts the optional parameters
+    # @return [Webhook]
+    def get_webhook(webhook_id, opts = {})
+      data, _status_code, _headers = get_webhook_with_http_info(webhook_id, opts)
+      data
+    end
+
+    # Get a webhook
+    # Retrieves a single webhook by its ID.
+    # @param webhook_id [String] 
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(Webhook, Integer, Hash)>] Webhook data, response status code and response headers
+    def get_webhook_with_http_info(webhook_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.get_webhook ...'
+      end
+      # verify the required parameter 'webhook_id' is set
+      if @api_client.config.client_side_validation && webhook_id.nil?
+        fail ArgumentError, "Missing the required parameter 'webhook_id' when calling Client.get_webhook"
+      end
+      # resource path
+      local_var_path = '/webhooks/{webhook_id}'.sub('{' + 'webhook_id' + '}', CGI.escape(webhook_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'Webhook'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.get_webhook",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#get_webhook\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -2112,6 +2380,96 @@ end
       data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#list_templates\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Get a list of all webhooks
+    # Returns a list of the webhooks configured for your account. Supports pagination and filtering by event type, mode, and the API token, template, or folder a webhook is scoped to. 
+    # @param [Hash] opts the optional parameters
+    # @option opts [Integer] :page Default: 1
+    # @option opts [Integer] :per_page Default: 50
+    # @option opts [String] :event_type Filter by a subscribed event type
+    # @option opts [String] :mode Filter by mode (test or live)
+    # @option opts [String] :template_id Filter by a scoped template ID
+    # @option opts [String] :folder_id Filter by a scoped folder ID
+    # @option opts [String] :api_token_id Filter by a scoped API token ID
+    # @return [Array<Webhook>]
+    def list_webhooks(opts = {})
+      data, _status_code, _headers = list_webhooks_with_http_info(opts)
+      data
+    end
+
+    # Get a list of all webhooks
+    # Returns a list of the webhooks configured for your account. Supports pagination and filtering by event type, mode, and the API token, template, or folder a webhook is scoped to. 
+    # @param [Hash] opts the optional parameters
+    # @option opts [Integer] :page Default: 1
+    # @option opts [Integer] :per_page Default: 50
+    # @option opts [String] :event_type Filter by a subscribed event type
+    # @option opts [String] :mode Filter by mode (test or live)
+    # @option opts [String] :template_id Filter by a scoped template ID
+    # @option opts [String] :folder_id Filter by a scoped folder ID
+    # @option opts [String] :api_token_id Filter by a scoped API token ID
+    # @return [Array<(Array<Webhook>, Integer, Hash)>] Array<Webhook> data, response status code and response headers
+    def list_webhooks_with_http_info(opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.list_webhooks ...'
+      end
+      if @api_client.config.client_side_validation && !opts[:'page'].nil? && opts[:'page'] < 1
+        fail ArgumentError, 'invalid value for "opts[:"page"]" when calling Client.list_webhooks, must be greater than or equal to 1.'
+      end
+
+      if @api_client.config.client_side_validation && !opts[:'per_page'].nil? && opts[:'per_page'] > 100
+        fail ArgumentError, 'invalid value for "opts[:"per_page"]" when calling Client.list_webhooks, must be smaller than or equal to 100.'
+      end
+
+      if @api_client.config.client_side_validation && !opts[:'per_page'].nil? && opts[:'per_page'] < 1
+        fail ArgumentError, 'invalid value for "opts[:"per_page"]" when calling Client.list_webhooks, must be greater than or equal to 1.'
+      end
+
+      # resource path
+      local_var_path = '/webhooks'
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'page'] = opts[:'page'] if !opts[:'page'].nil?
+      query_params[:'per_page'] = opts[:'per_page'] if !opts[:'per_page'].nil?
+      query_params[:'event_type'] = opts[:'event_type'] if !opts[:'event_type'].nil?
+      query_params[:'mode'] = opts[:'mode'] if !opts[:'mode'].nil?
+      query_params[:'template_id'] = opts[:'template_id'] if !opts[:'template_id'].nil?
+      query_params[:'folder_id'] = opts[:'folder_id'] if !opts[:'folder_id'].nil?
+      query_params[:'api_token_id'] = opts[:'api_token_id'] if !opts[:'api_token_id'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'Array<Webhook>'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.list_webhooks",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#list_webhooks\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -2618,7 +2976,7 @@ end
     end
 
     # Update a Template
-    # Updates template content and properties. For HTML templates, you can modify the HTML, SCSS, headers, footers, name, and description. Changes are applied to your draft template and do not affect published template versions. 
+    # Updates template content and properties. For HTML templates, you can modify the HTML, SCSS, headers, footers, name, and description. Changes are applied to your draft template and do not affect published template versions. The exception is `parent_folder_id`: moving the template to another folder moves its published versions too. 
     # @param template_id [String] 
     # @param data [UpdateHtmlTemplate] 
     # @param [Hash] opts the optional parameters
@@ -2629,7 +2987,7 @@ end
     end
 
     # Update a Template
-    # Updates template content and properties. For HTML templates, you can modify the HTML, SCSS, headers, footers, name, and description. Changes are applied to your draft template and do not affect published template versions. 
+    # Updates template content and properties. For HTML templates, you can modify the HTML, SCSS, headers, footers, name, and description. Changes are applied to your draft template and do not affect published template versions. The exception is &#x60;parent_folder_id&#x60;: moving the template to another folder moves its published versions too. 
     # @param template_id [String] 
     # @param data [UpdateHtmlTemplate] 
     # @param [Hash] opts the optional parameters
@@ -2839,6 +3197,80 @@ end
       data, status_code, headers = @api_client.call_api(:PUT, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#update_template_document_from_upload\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Update a webhook
+    # Updates the configuration of an existing webhook.
+    # @param webhook_id [String] 
+    # @param data [UpdateWebhookData] 
+    # @param [Hash] opts the optional parameters
+    # @return [Webhook]
+    def update_webhook(webhook_id, data, opts = {})
+      data, _status_code, _headers = update_webhook_with_http_info(webhook_id, data, opts)
+      data
+    end
+
+    # Update a webhook
+    # Updates the configuration of an existing webhook.
+    # @param webhook_id [String] 
+    # @param data [UpdateWebhookData] 
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(Webhook, Integer, Hash)>] Webhook data, response status code and response headers
+    def update_webhook_with_http_info(webhook_id, data, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.update_webhook ...'
+      end
+      # verify the required parameter 'webhook_id' is set
+      if @api_client.config.client_side_validation && webhook_id.nil?
+        fail ArgumentError, "Missing the required parameter 'webhook_id' when calling Client.update_webhook"
+      end
+      # verify the required parameter 'data' is set
+      if @api_client.config.client_side_validation && data.nil?
+        fail ArgumentError, "Missing the required parameter 'data' when calling Client.update_webhook"
+      end
+      # resource path
+      local_var_path = '/webhooks/{webhook_id}'.sub('{' + 'webhook_id' + '}', CGI.escape(webhook_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(data)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'Webhook'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.update_webhook",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:PUT, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#update_webhook\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end

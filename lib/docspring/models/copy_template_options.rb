@@ -19,11 +19,14 @@ module DocSpring
 
     attr_accessor :parent_folder_id
 
+    attr_accessor :version
+
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
         :'name' => :'name',
-        :'parent_folder_id' => :'parent_folder_id'
+        :'parent_folder_id' => :'parent_folder_id',
+        :'version' => :'version'
       }
     end
 
@@ -41,7 +44,8 @@ module DocSpring
     def self.openapi_types
       {
         :'name' => :'String',
-        :'parent_folder_id' => :'String'
+        :'parent_folder_id' => :'String',
+        :'version' => :'String'
       }
     end
 
@@ -73,8 +77,10 @@ module DocSpring
 
       if attributes.key?(:'parent_folder_id')
         self.parent_folder_id = attributes[:'parent_folder_id']
-      else
-        self.parent_folder_id = nil
+      end
+
+      if attributes.key?(:'version')
+        self.version = attributes[:'version']
       end
     end
 
@@ -83,10 +89,6 @@ module DocSpring
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @parent_folder_id.nil?
-        invalid_properties.push('invalid value for "parent_folder_id", parent_folder_id cannot be nil.')
-      end
-
       invalid_properties
     end
 
@@ -94,18 +96,7 @@ module DocSpring
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @parent_folder_id.nil?
       true
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] parent_folder_id Value to be assigned
-    def parent_folder_id=(parent_folder_id)
-      if parent_folder_id.nil?
-        fail ArgumentError, 'parent_folder_id cannot be nil'
-      end
-
-      @parent_folder_id = parent_folder_id
     end
 
     # Checks equality by comparing each attribute.
@@ -114,7 +105,8 @@ module DocSpring
       return true if self.equal?(o)
       self.class == o.class &&
           name == o.name &&
-          parent_folder_id == o.parent_folder_id
+          parent_folder_id == o.parent_folder_id &&
+          version == o.version
     end
 
     # @see the `==` method
@@ -126,7 +118,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [name, parent_folder_id].hash
+      [name, parent_folder_id, version].hash
     end
 
     # Builds the object from hash
@@ -149,7 +141,13 @@ module DocSpring
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
-      new(transformed_hash)
+      # Responses can include enum values added after this client was released, so the enum setters
+      # accept any value while the model is built from a response
+      allocate.tap do |model|
+        model.instance_variable_set(:@_skip_enum_validation, true)
+        model.send(:initialize, transformed_hash)
+        model.remove_instance_variable(:@_skip_enum_validation)
+      end
     end
 
     # Deserializes the data based on type

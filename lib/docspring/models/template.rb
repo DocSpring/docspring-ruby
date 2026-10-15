@@ -37,6 +37,12 @@ module DocSpring
 
     attr_accessor :embed_domains
 
+    attr_accessor :embed_edit_allow_settings
+
+    attr_accessor :embed_edit_allow_versioning
+
+    attr_accessor :embed_edit_allow_document_replacement
+
     attr_accessor :encrypt_pdfs_password
 
     attr_accessor :encrypt_pdfs
@@ -89,6 +95,8 @@ module DocSpring
 
     attr_accessor :webhook_url
 
+    attr_accessor :embed_edit_token
+
     attr_accessor :demo
 
     attr_accessor :latest_version
@@ -99,7 +107,15 @@ module DocSpring
 
     attr_accessor :last_changed_by_id
 
+    attr_accessor :last_changed_by_external_name
+
+    attr_accessor :last_changed_by_external_email
+
+    attr_accessor :last_changed_by_external_id
+
     attr_accessor :defaults
+
+    attr_accessor :field_dependencies
 
     attr_accessor :field_order
 
@@ -118,6 +134,8 @@ module DocSpring
     attr_accessor :scss
 
     attr_accessor :shared_field_data
+
+    attr_accessor :template_schema_version
 
     attr_accessor :versions
 
@@ -157,6 +175,9 @@ module DocSpring
         :'document_url' => :'document_url',
         :'editable_submissions' => :'editable_submissions',
         :'embed_domains' => :'embed_domains',
+        :'embed_edit_allow_settings' => :'embed_edit_allow_settings',
+        :'embed_edit_allow_versioning' => :'embed_edit_allow_versioning',
+        :'embed_edit_allow_document_replacement' => :'embed_edit_allow_document_replacement',
         :'encrypt_pdfs_password' => :'encrypt_pdfs_password',
         :'encrypt_pdfs' => :'encrypt_pdfs',
         :'expiration_interval' => :'expiration_interval',
@@ -183,12 +204,17 @@ module DocSpring
         :'version_published_at' => :'version_published_at',
         :'version' => :'version',
         :'webhook_url' => :'webhook_url',
+        :'embed_edit_token' => :'embed_edit_token',
         :'demo' => :'demo',
         :'latest_version' => :'latest_version',
         :'last_changed_at' => :'last_changed_at',
         :'last_changed_by_type' => :'last_changed_by_type',
         :'last_changed_by_id' => :'last_changed_by_id',
+        :'last_changed_by_external_name' => :'last_changed_by_external_name',
+        :'last_changed_by_external_email' => :'last_changed_by_external_email',
+        :'last_changed_by_external_id' => :'last_changed_by_external_id',
         :'defaults' => :'defaults',
+        :'field_dependencies' => :'field_dependencies',
         :'field_order' => :'field_order',
         :'fields' => :'fields',
         :'footer_html' => :'footer_html',
@@ -198,6 +224,7 @@ module DocSpring
         :'predefined_fields' => :'predefined_fields',
         :'scss' => :'scss',
         :'shared_field_data' => :'shared_field_data',
+        :'template_schema_version' => :'template_schema_version',
         :'versions' => :'versions'
       }
     end
@@ -226,6 +253,9 @@ module DocSpring
         :'document_url' => :'String',
         :'editable_submissions' => :'Boolean',
         :'embed_domains' => :'String',
+        :'embed_edit_allow_settings' => :'Boolean',
+        :'embed_edit_allow_versioning' => :'Boolean',
+        :'embed_edit_allow_document_replacement' => :'Boolean',
         :'encrypt_pdfs_password' => :'String',
         :'encrypt_pdfs' => :'Boolean',
         :'expiration_interval' => :'String',
@@ -252,12 +282,17 @@ module DocSpring
         :'version_published_at' => :'String',
         :'version' => :'String',
         :'webhook_url' => :'String',
+        :'embed_edit_token' => :'String',
         :'demo' => :'Boolean',
         :'latest_version' => :'String',
         :'last_changed_at' => :'String',
         :'last_changed_by_type' => :'String',
         :'last_changed_by_id' => :'String',
+        :'last_changed_by_external_name' => :'String',
+        :'last_changed_by_external_email' => :'String',
+        :'last_changed_by_external_id' => :'String',
         :'defaults' => :'Object',
+        :'field_dependencies' => :'Array<Object>',
         :'field_order' => :'Array<Array<Float>>',
         :'fields' => :'Object',
         :'footer_html' => :'String',
@@ -267,6 +302,7 @@ module DocSpring
         :'predefined_fields' => :'Array<Object>',
         :'scss' => :'String',
         :'shared_field_data' => :'Object',
+        :'template_schema_version' => :'Integer',
         :'versions' => :'Array<Object>'
       }
     end
@@ -286,7 +322,6 @@ module DocSpring
         :'name',
         :'page_dimensions',
         :'parent_folder_id',
-        :'path',
         :'permanent_document_url',
         :'redirect_url',
         :'slack_webhook_url',
@@ -294,10 +329,14 @@ module DocSpring
         :'version_published_at',
         :'version',
         :'webhook_url',
+        :'embed_edit_token',
         :'latest_version',
         :'last_changed_at',
         :'last_changed_by_type',
         :'last_changed_by_id',
+        :'last_changed_by_external_name',
+        :'last_changed_by_external_email',
+        :'last_changed_by_external_id',
         :'footer_html',
         :'header_html',
         :'html',
@@ -385,6 +424,24 @@ module DocSpring
         self.embed_domains = attributes[:'embed_domains']
       else
         self.embed_domains = nil
+      end
+
+      if attributes.key?(:'embed_edit_allow_settings')
+        self.embed_edit_allow_settings = attributes[:'embed_edit_allow_settings']
+      else
+        self.embed_edit_allow_settings = nil
+      end
+
+      if attributes.key?(:'embed_edit_allow_versioning')
+        self.embed_edit_allow_versioning = attributes[:'embed_edit_allow_versioning']
+      else
+        self.embed_edit_allow_versioning = nil
+      end
+
+      if attributes.key?(:'embed_edit_allow_document_replacement')
+        self.embed_edit_allow_document_replacement = attributes[:'embed_edit_allow_document_replacement']
+      else
+        self.embed_edit_allow_document_replacement = nil
       end
 
       if attributes.key?(:'encrypt_pdfs_password')
@@ -545,6 +602,10 @@ module DocSpring
         self.webhook_url = nil
       end
 
+      if attributes.key?(:'embed_edit_token')
+        self.embed_edit_token = attributes[:'embed_edit_token']
+      end
+
       if attributes.key?(:'demo')
         self.demo = attributes[:'demo']
       else
@@ -575,10 +636,36 @@ module DocSpring
         self.last_changed_by_id = nil
       end
 
+      if attributes.key?(:'last_changed_by_external_name')
+        self.last_changed_by_external_name = attributes[:'last_changed_by_external_name']
+      else
+        self.last_changed_by_external_name = nil
+      end
+
+      if attributes.key?(:'last_changed_by_external_email')
+        self.last_changed_by_external_email = attributes[:'last_changed_by_external_email']
+      else
+        self.last_changed_by_external_email = nil
+      end
+
+      if attributes.key?(:'last_changed_by_external_id')
+        self.last_changed_by_external_id = attributes[:'last_changed_by_external_id']
+      else
+        self.last_changed_by_external_id = nil
+      end
+
       if attributes.key?(:'defaults')
         self.defaults = attributes[:'defaults']
       else
         self.defaults = nil
+      end
+
+      if attributes.key?(:'field_dependencies')
+        if (value = attributes[:'field_dependencies']).is_a?(Array)
+          self.field_dependencies = value
+        end
+      else
+        self.field_dependencies = nil
       end
 
       if attributes.key?(:'field_order')
@@ -639,6 +726,12 @@ module DocSpring
         self.shared_field_data = nil
       end
 
+      if attributes.key?(:'template_schema_version')
+        self.template_schema_version = attributes[:'template_schema_version']
+      else
+        self.template_schema_version = nil
+      end
+
       if attributes.key?(:'versions')
         if (value = attributes[:'versions']).is_a?(Array)
           self.versions = value
@@ -677,6 +770,18 @@ module DocSpring
         invalid_properties.push('invalid value for "editable_submissions", editable_submissions cannot be nil.')
       end
 
+      if @embed_edit_allow_settings.nil?
+        invalid_properties.push('invalid value for "embed_edit_allow_settings", embed_edit_allow_settings cannot be nil.')
+      end
+
+      if @embed_edit_allow_versioning.nil?
+        invalid_properties.push('invalid value for "embed_edit_allow_versioning", embed_edit_allow_versioning cannot be nil.')
+      end
+
+      if @embed_edit_allow_document_replacement.nil?
+        invalid_properties.push('invalid value for "embed_edit_allow_document_replacement", embed_edit_allow_document_replacement cannot be nil.')
+      end
+
       if @encrypt_pdfs.nil?
         invalid_properties.push('invalid value for "encrypt_pdfs", encrypt_pdfs cannot be nil.')
       end
@@ -709,6 +814,10 @@ module DocSpring
         invalid_properties.push('invalid value for "page_count", page_count cannot be nil.')
       end
 
+      if @path.nil?
+        invalid_properties.push('invalid value for "path", path cannot be nil.')
+      end
+
       if @public_submissions.nil?
         invalid_properties.push('invalid value for "public_submissions", public_submissions cannot be nil.')
       end
@@ -727,6 +836,10 @@ module DocSpring
 
       if @defaults.nil?
         invalid_properties.push('invalid value for "defaults", defaults cannot be nil.')
+      end
+
+      if @field_dependencies.nil?
+        invalid_properties.push('invalid value for "field_dependencies", field_dependencies cannot be nil.')
       end
 
       if @field_order.nil?
@@ -749,6 +862,10 @@ module DocSpring
         invalid_properties.push('invalid value for "shared_field_data", shared_field_data cannot be nil.')
       end
 
+      if @template_schema_version.nil?
+        invalid_properties.push('invalid value for "template_schema_version", template_schema_version cannot be nil.')
+      end
+
       if @versions.nil?
         invalid_properties.push('invalid value for "versions", versions cannot be nil.')
       end
@@ -768,6 +885,9 @@ module DocSpring
       document_state_validator = EnumAttributeValidator.new('String', ["pending", "processed", "password_required", "malformed_pdf", "unknown_error"])
       return false unless document_state_validator.valid?(@document_state)
       return false if @editable_submissions.nil?
+      return false if @embed_edit_allow_settings.nil?
+      return false if @embed_edit_allow_versioning.nil?
+      return false if @embed_edit_allow_document_replacement.nil?
       return false if @encrypt_pdfs.nil?
       return false if @expiration_interval.nil?
       return false if @expire_after.nil?
@@ -776,20 +896,23 @@ module DocSpring
       return false if @locked.nil?
       return false if @merge_audit_trail_pdf.nil?
       return false if @page_count.nil?
+      return false if @path.nil?
       return false if @public_submissions.nil?
       return false if @public_web_form.nil?
       return false if @template_type.nil?
       template_type_validator = EnumAttributeValidator.new('String', ["pdf", "html"])
       return false unless template_type_validator.valid?(@template_type)
       return false if @demo.nil?
-      last_changed_by_type_validator = EnumAttributeValidator.new('String', ["user", "api"])
+      last_changed_by_type_validator = EnumAttributeValidator.new('String', ["user", "api", "external_user"])
       return false unless last_changed_by_type_validator.valid?(@last_changed_by_type)
       return false if @defaults.nil?
+      return false if @field_dependencies.nil?
       return false if @field_order.nil?
       return false if @fields.nil?
       return false if @html_engine_options.nil?
       return false if @predefined_fields.nil?
       return false if @shared_field_data.nil?
+      return false if @template_schema_version.nil?
       return false if @versions.nil?
       true
     end
@@ -838,7 +961,8 @@ module DocSpring
     # @param [Object] document_state Object to be assigned
     def document_state=(document_state)
       validator = EnumAttributeValidator.new('String', ["pending", "processed", "password_required", "malformed_pdf", "unknown_error"])
-      unless validator.valid?(document_state)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(document_state)
         fail ArgumentError, "invalid value for \"document_state\", must be one of #{validator.allowable_values}."
       end
       @document_state = document_state
@@ -852,6 +976,36 @@ module DocSpring
       end
 
       @editable_submissions = editable_submissions
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] embed_edit_allow_settings Value to be assigned
+    def embed_edit_allow_settings=(embed_edit_allow_settings)
+      if embed_edit_allow_settings.nil?
+        fail ArgumentError, 'embed_edit_allow_settings cannot be nil'
+      end
+
+      @embed_edit_allow_settings = embed_edit_allow_settings
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] embed_edit_allow_versioning Value to be assigned
+    def embed_edit_allow_versioning=(embed_edit_allow_versioning)
+      if embed_edit_allow_versioning.nil?
+        fail ArgumentError, 'embed_edit_allow_versioning cannot be nil'
+      end
+
+      @embed_edit_allow_versioning = embed_edit_allow_versioning
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] embed_edit_allow_document_replacement Value to be assigned
+    def embed_edit_allow_document_replacement=(embed_edit_allow_document_replacement)
+      if embed_edit_allow_document_replacement.nil?
+        fail ArgumentError, 'embed_edit_allow_document_replacement cannot be nil'
+      end
+
+      @embed_edit_allow_document_replacement = embed_edit_allow_document_replacement
     end
 
     # Custom attribute writer method with validation
@@ -935,6 +1089,16 @@ module DocSpring
     end
 
     # Custom attribute writer method with validation
+    # @param [Object] path Value to be assigned
+    def path=(path)
+      if path.nil?
+        fail ArgumentError, 'path cannot be nil'
+      end
+
+      @path = path
+    end
+
+    # Custom attribute writer method with validation
     # @param [Object] public_submissions Value to be assigned
     def public_submissions=(public_submissions)
       if public_submissions.nil?
@@ -958,7 +1122,8 @@ module DocSpring
     # @param [Object] template_type Object to be assigned
     def template_type=(template_type)
       validator = EnumAttributeValidator.new('String', ["pdf", "html"])
-      unless validator.valid?(template_type)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(template_type)
         fail ArgumentError, "invalid value for \"template_type\", must be one of #{validator.allowable_values}."
       end
       @template_type = template_type
@@ -977,8 +1142,9 @@ module DocSpring
     # Custom attribute writer method checking allowed values (enum).
     # @param [Object] last_changed_by_type Object to be assigned
     def last_changed_by_type=(last_changed_by_type)
-      validator = EnumAttributeValidator.new('String', ["user", "api"])
-      unless validator.valid?(last_changed_by_type)
+      validator = EnumAttributeValidator.new('String', ["user", "api", "external_user"])
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(last_changed_by_type)
         fail ArgumentError, "invalid value for \"last_changed_by_type\", must be one of #{validator.allowable_values}."
       end
       @last_changed_by_type = last_changed_by_type
@@ -992,6 +1158,16 @@ module DocSpring
       end
 
       @defaults = defaults
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] field_dependencies Value to be assigned
+    def field_dependencies=(field_dependencies)
+      if field_dependencies.nil?
+        fail ArgumentError, 'field_dependencies cannot be nil'
+      end
+
+      @field_dependencies = field_dependencies
     end
 
     # Custom attribute writer method with validation
@@ -1045,6 +1221,16 @@ module DocSpring
     end
 
     # Custom attribute writer method with validation
+    # @param [Object] template_schema_version Value to be assigned
+    def template_schema_version=(template_schema_version)
+      if template_schema_version.nil?
+        fail ArgumentError, 'template_schema_version cannot be nil'
+      end
+
+      @template_schema_version = template_schema_version
+    end
+
+    # Custom attribute writer method with validation
     # @param [Object] versions Value to be assigned
     def versions=(versions)
       if versions.nil?
@@ -1070,6 +1256,9 @@ module DocSpring
           document_url == o.document_url &&
           editable_submissions == o.editable_submissions &&
           embed_domains == o.embed_domains &&
+          embed_edit_allow_settings == o.embed_edit_allow_settings &&
+          embed_edit_allow_versioning == o.embed_edit_allow_versioning &&
+          embed_edit_allow_document_replacement == o.embed_edit_allow_document_replacement &&
           encrypt_pdfs_password == o.encrypt_pdfs_password &&
           encrypt_pdfs == o.encrypt_pdfs &&
           expiration_interval == o.expiration_interval &&
@@ -1096,12 +1285,17 @@ module DocSpring
           version_published_at == o.version_published_at &&
           version == o.version &&
           webhook_url == o.webhook_url &&
+          embed_edit_token == o.embed_edit_token &&
           demo == o.demo &&
           latest_version == o.latest_version &&
           last_changed_at == o.last_changed_at &&
           last_changed_by_type == o.last_changed_by_type &&
           last_changed_by_id == o.last_changed_by_id &&
+          last_changed_by_external_name == o.last_changed_by_external_name &&
+          last_changed_by_external_email == o.last_changed_by_external_email &&
+          last_changed_by_external_id == o.last_changed_by_external_id &&
           defaults == o.defaults &&
+          field_dependencies == o.field_dependencies &&
           field_order == o.field_order &&
           fields == o.fields &&
           footer_html == o.footer_html &&
@@ -1111,6 +1305,7 @@ module DocSpring
           predefined_fields == o.predefined_fields &&
           scss == o.scss &&
           shared_field_data == o.shared_field_data &&
+          template_schema_version == o.template_schema_version &&
           versions == o.versions
     end
 
@@ -1123,7 +1318,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [add_data_request_submission_id_footers, allow_additional_properties, description, document_filename, document_md5, document_parse_error, document_processed, document_state, document_url, editable_submissions, embed_domains, encrypt_pdfs_password, encrypt_pdfs, expiration_interval, expire_after, expire_submissions, external_predefined_fields_template_id, external_predefined_fields_template_name, first_template, id, locked, merge_audit_trail_pdf, name, page_count, page_dimensions, parent_folder_id, path, permanent_document_url, public_submissions, public_web_form, redirect_url, slack_webhook_url, template_type, updated_at, version_published_at, version, webhook_url, demo, latest_version, last_changed_at, last_changed_by_type, last_changed_by_id, defaults, field_order, fields, footer_html, header_html, html_engine_options, html, predefined_fields, scss, shared_field_data, versions].hash
+      [add_data_request_submission_id_footers, allow_additional_properties, description, document_filename, document_md5, document_parse_error, document_processed, document_state, document_url, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs_password, encrypt_pdfs, expiration_interval, expire_after, expire_submissions, external_predefined_fields_template_id, external_predefined_fields_template_name, first_template, id, locked, merge_audit_trail_pdf, name, page_count, page_dimensions, parent_folder_id, path, permanent_document_url, public_submissions, public_web_form, redirect_url, slack_webhook_url, template_type, updated_at, version_published_at, version, webhook_url, embed_edit_token, demo, latest_version, last_changed_at, last_changed_by_type, last_changed_by_id, last_changed_by_external_name, last_changed_by_external_email, last_changed_by_external_id, defaults, field_dependencies, field_order, fields, footer_html, header_html, html_engine_options, html, predefined_fields, scss, shared_field_data, template_schema_version, versions].hash
     end
 
     # Builds the object from hash
@@ -1146,7 +1341,13 @@ module DocSpring
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
-      new(transformed_hash)
+      # Responses can include enum values added after this client was released, so the enum setters
+      # accept any value while the model is built from a response
+      allocate.tap do |model|
+        model.instance_variable_set(:@_skip_enum_validation, true)
+        model.send(:initialize, transformed_hash)
+        model.remove_instance_variable(:@_skip_enum_validation)
+      end
     end
 
     # Deserializes the data based on type

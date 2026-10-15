@@ -10,6 +10,7 @@
 | **action_type** | **String** |  |  |
 | **action_category** | **String** |  |  |
 | **result_data** | **Object** |  |  |
+| **error_message** | **String** |  |  |
 
 ## Example
 
@@ -22,7 +23,8 @@ instance = DocSpring::SubmissionAction.new(
   state: null,
   action_type: null,
   action_category: null,
-  result_data: null
+  result_data: null,
+  error_message: null
 )
 ```
 

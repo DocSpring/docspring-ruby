@@ -15,8 +15,10 @@ All URIs are relative to *https://sync.api.docspring.com/api/v1*
 | [**create_html_template**](Client.md#create_html_template) | **POST** /templates?endpoint_variant&#x3D;create_html_template | Create a new HTML template |
 | [**create_pdf_template**](Client.md#create_pdf_template) | **POST** /templates | Create a new PDF template with a form POST file upload |
 | [**create_pdf_template_from_upload**](Client.md#create_pdf_template_from_upload) | **POST** /templates?endpoint_variant&#x3D;create_template_from_cached_upload | Create a new PDF template from a cached S3 file upload |
+| [**create_webhook**](Client.md#create_webhook) | **POST** /webhooks | Create a webhook |
 | [**delete_folder**](Client.md#delete_folder) | **DELETE** /folders/{folder_id} | Delete a folder |
 | [**delete_template**](Client.md#delete_template) | **DELETE** /templates/{template_id} | Delete a template |
+| [**delete_webhook**](Client.md#delete_webhook) | **DELETE** /webhooks/{webhook_id} | Delete a webhook |
 | [**expire_combined_submission**](Client.md#expire_combined_submission) | **DELETE** /combined_submissions/{combined_submission_id} | Expire a combined submission |
 | [**expire_submission**](Client.md#expire_submission) | **DELETE** /submissions/{submission_id} | Expire a PDF submission |
 | [**generate_pdf**](Client.md#generate_pdf) | **POST** /templates/{template_id}/submissions | Generate a PDF |
@@ -28,12 +30,15 @@ All URIs are relative to *https://sync.api.docspring.com/api/v1*
 | [**get_submission**](Client.md#get_submission) | **GET** /submissions/{submission_id} | Check the status of a PDF |
 | [**get_submission_batch**](Client.md#get_submission_batch) | **GET** /submissions/batches/{submission_batch_id} | Check the status of a submission batch job |
 | [**get_template**](Client.md#get_template) | **GET** /templates/{template_id} | Check the status of an uploaded template |
+| [**get_template_model_code**](Client.md#get_template_model_code) | **GET** /templates/{template_id}/model_code | Generate typed model code for a template |
 | [**get_template_schema**](Client.md#get_template_schema) | **GET** /templates/{template_id}/schema | Fetch the JSON schema for a template |
+| [**get_webhook**](Client.md#get_webhook) | **GET** /webhooks/{webhook_id} | Get a webhook |
 | [**list_combined_submissions**](Client.md#list_combined_submissions) | **GET** /combined_submissions | Get a list of all combined submissions |
 | [**list_folders**](Client.md#list_folders) | **GET** /folders/ | Get a list of all folders |
 | [**list_submissions**](Client.md#list_submissions) | **GET** /submissions | List all submissions |
 | [**list_template_submissions**](Client.md#list_template_submissions) | **GET** /templates/{template_id}/submissions | List all submissions for a given template |
 | [**list_templates**](Client.md#list_templates) | **GET** /templates | Get a list of all templates |
+| [**list_webhooks**](Client.md#list_webhooks) | **GET** /webhooks | Get a list of all webhooks |
 | [**move_folder_to_folder**](Client.md#move_folder_to_folder) | **POST** /folders/{folder_id}/move | Move a folder |
 | [**move_template_to_folder**](Client.md#move_template_to_folder) | **POST** /templates/{template_id}/move | Move Template to folder |
 | [**publish_template_version**](Client.md#publish_template_version) | **POST** /templates/{template_id}/publish_version | Publish a template version |
@@ -44,6 +49,7 @@ All URIs are relative to *https://sync.api.docspring.com/api/v1*
 | [**update_template**](Client.md#update_template) | **PUT** /templates/{template_id} | Update a Template |
 | [**update_template_document**](Client.md#update_template_document) | **PUT** /templates/{template_id}?endpoint_variant&#x3D;update_template_pdf_with_form_post | Update a template&#39;s document with a form POST file upload |
 | [**update_template_document_from_upload**](Client.md#update_template_document_from_upload) | **PUT** /templates/{template_id}?endpoint_variant&#x3D;update_template_pdf_with_cached_upload | Update a template&#39;s document with a cached S3 file upload |
+| [**update_webhook**](Client.md#update_webhook) | **PUT** /webhooks/{webhook_id} | Update a webhook |
 
 
 ## add_fields_to_template
@@ -124,7 +130,7 @@ end
 
 Generate multiple PDFs
 
-Generates up to 50 PDFs in a single request. Each submission can use a different template and data. Supports both synchronous (wait for all PDFs) and asynchronous processing. More efficient than individual requests when creating multiple PDFs.  See also: - [Batch and Combine PDFs](https://docspring.com/docs/api-guide/generate-pdfs/batch-generate-pdfs/) - Generate and merge PDFs in one request 
+Generates up to 50 PDFs in a single request. Each submission can use a different template and data. Supports both synchronous (wait for all PDFs) and asynchronous processing. More efficient than individual requests when creating multiple PDFs.  See also: - [Batch Generate PDFs](https://docspring.com/docs/api-guide/generate-pdfs/batch-generate-pdfs/) - Request format, responses, and limits 
 
 ### Examples
 
@@ -285,7 +291,7 @@ end
 api_instance = DocSpring::Client.new
 template_id = 'tpl_1234567890abcdef01' # String | 
 opts = {
-  options: DocSpring::CopyTemplateOptions.new({parent_folder_id: 'parent_folder_id_example'}) # CopyTemplateOptions | 
+  options: DocSpring::CopyTemplateOptions.new # CopyTemplateOptions | 
 }
 
 begin
@@ -484,7 +490,7 @@ end
 
 Create a new data request token for form authentication
 
-Creates an authentication token for accessing a data request form. Tokens can be created for API access (1 hour expiration) or email links (30 day expiration). Returns a token and a pre-authenticated URL for the data request form.  See also: - [Embedded Data Requests Guide](https://docspring.com/docs/guides/embedded-forms/embedded-data-requests/) 
+Creates an authentication token for accessing a data request form. Returns a token and a pre-authenticated URL for the data request form. The token remains valid until the data request is completed.  See also: - [Embedded Data Requests Guide](https://docspring.com/docs/guides/embedded-forms/embedded-data-requests/) 
 
 ### Examples
 
@@ -842,6 +848,76 @@ end
 - **Accept**: application/json
 
 
+## create_webhook
+
+> <Webhook> create_webhook(data)
+
+Create a webhook
+
+Creates a webhook that delivers a POST request to your endpoint whenever a subscribed event occurs. Optionally scope the webhook to specific API tokens, templates, or folders. 
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+data = DocSpring::CreateWebhookData.new({webhook: 3.56}) # CreateWebhookData | 
+
+begin
+  # Create a webhook
+  result = api_instance.create_webhook(data)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->create_webhook: #{e}"
+end
+```
+
+#### Using the create_webhook_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<Webhook>, Integer, Hash)> create_webhook_with_http_info(data)
+
+```ruby
+begin
+  # Create a webhook
+  data, status_code, headers = api_instance.create_webhook_with_http_info(data)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <Webhook>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->create_webhook_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **data** | [**CreateWebhookData**](CreateWebhookData.md) |  |  |
+
+### Return type
+
+[**Webhook**](Webhook.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
 ## delete_folder
 
 > <Folder> delete_folder(folder_id)
@@ -975,6 +1051,76 @@ end
 ### Return type
 
 [**TemplateDeleteResponse**](TemplateDeleteResponse.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+
+## delete_webhook
+
+> <Webhook> delete_webhook(webhook_id)
+
+Delete a webhook
+
+Permanently deletes a webhook so it stops receiving events, and returns the deleted webhook.
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+webhook_id = 'whk_1234567890abcdef01' # String | 
+
+begin
+  # Delete a webhook
+  result = api_instance.delete_webhook(webhook_id)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->delete_webhook: #{e}"
+end
+```
+
+#### Using the delete_webhook_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<Webhook>, Integer, Hash)> delete_webhook_with_http_info(webhook_id)
+
+```ruby
+begin
+  # Delete a webhook
+  data, status_code, headers = api_instance.delete_webhook_with_http_info(webhook_id)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <Webhook>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->delete_webhook_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **webhook_id** | **String** |  |  |
+
+### Return type
+
+[**Webhook**](Webhook.md)
 
 ### Authorization
 
@@ -1132,7 +1278,7 @@ end
 
 Generate a PDF
 
-Creates a PDF submission by filling in a template with data. Supports both synchronous (default) and asynchronous processing. Set `wait: false` to return immediately.  See also: - [Customize the PDF Title and Filename](https://docspring.com/docs/api-guide/generate-pdfs/customize-pdf-title-and-filename/) - Set custom metadata - [Handling Truncated Text](https://docspring.com/docs/api-guide/generate-pdfs/handle-truncated-text/) - Handle text that doesn't fit in fields 
+Creates a PDF submission by filling in a template with data. Supports both synchronous (default) and asynchronous processing. Add the `wait=false` query parameter to return immediately.  See also: - [Customize the PDF Title and Filename](https://docspring.com/docs/api-guide/generate-pdfs/customize-pdf-title-and-filename/) - Set custom metadata - [Handling Truncated Text](https://docspring.com/docs/api-guide/generate-pdfs/handle-truncated-text/) - Handle text that doesn't fit in fields 
 
 ### Examples
 
@@ -1767,6 +1913,78 @@ end
 - **Accept**: application/json
 
 
+## get_template_model_code
+
+> <TemplateModelCodeResponse> get_template_model_code(template_id, lang)
+
+Generate typed model code for a template
+
+Generates typed model code for a template's submission data from its JSON schema, in TypeScript, JavaScript, Ruby, Python, PHP, Java, C#, Elixir or Go. Build your submission data with the generated types so your app catches mistakes before it calls the API.  `root_type_name` is the type that describes the whole submission data object, qualified with its namespace or package where there is one. Java returns every class in `code`, each under a `// ClassName.java` comment: split them into one file per class.  A template with no named fields returns 422, since there are no types to generate.  See also: - [Generate Model Code](https://docspring.com/docs/template-editor/generate-model-code/) - Use the generated types 
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+template_id = 'tpl_1234567890abcdef01' # String | 
+lang = 'typescript' # String | The language to generate code for
+
+begin
+  # Generate typed model code for a template
+  result = api_instance.get_template_model_code(template_id, lang)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->get_template_model_code: #{e}"
+end
+```
+
+#### Using the get_template_model_code_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<TemplateModelCodeResponse>, Integer, Hash)> get_template_model_code_with_http_info(template_id, lang)
+
+```ruby
+begin
+  # Generate typed model code for a template
+  data, status_code, headers = api_instance.get_template_model_code_with_http_info(template_id, lang)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <TemplateModelCodeResponse>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->get_template_model_code_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **template_id** | **String** |  |  |
+| **lang** | **String** | The language to generate code for |  |
+
+### Return type
+
+[**TemplateModelCodeResponse**](TemplateModelCodeResponse.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+
 ## get_template_schema
 
 > <JsonSchema> get_template_schema(template_id)
@@ -1826,6 +2044,76 @@ end
 ### Return type
 
 [**JsonSchema**](JsonSchema.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+
+## get_webhook
+
+> <Webhook> get_webhook(webhook_id)
+
+Get a webhook
+
+Retrieves a single webhook by its ID.
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+webhook_id = 'whk_1234567890abcdef01' # String | 
+
+begin
+  # Get a webhook
+  result = api_instance.get_webhook(webhook_id)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->get_webhook: #{e}"
+end
+```
+
+#### Using the get_webhook_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<Webhook>, Integer, Hash)> get_webhook_with_http_info(webhook_id)
+
+```ruby
+begin
+  # Get a webhook
+  data, status_code, headers = api_instance.get_webhook_with_http_info(webhook_id)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <Webhook>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->get_webhook_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **webhook_id** | **String** |  |  |
+
+### Return type
+
+[**Webhook**](Webhook.md)
 
 ### Authorization
 
@@ -2216,6 +2504,90 @@ end
 ### Return type
 
 [**Array&lt;TemplatePreview&gt;**](TemplatePreview.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+
+## list_webhooks
+
+> <Array<Webhook>> list_webhooks(opts)
+
+Get a list of all webhooks
+
+Returns a list of the webhooks configured for your account. Supports pagination and filtering by event type, mode, and the API token, template, or folder a webhook is scoped to. 
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+opts = {
+  page: 56, # Integer | Default: 1
+  per_page: 56, # Integer | Default: 50
+  event_type: 'submission.processed', # String | Filter by a subscribed event type
+  mode: 'live', # String | Filter by mode (test or live)
+  template_id: 'tpl_1234567890abcdef01', # String | Filter by a scoped template ID
+  folder_id: 'folder_id_example', # String | Filter by a scoped folder ID
+  api_token_id: 'api_token_id_example' # String | Filter by a scoped API token ID
+}
+
+begin
+  # Get a list of all webhooks
+  result = api_instance.list_webhooks(opts)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->list_webhooks: #{e}"
+end
+```
+
+#### Using the list_webhooks_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<Array<Webhook>>, Integer, Hash)> list_webhooks_with_http_info(opts)
+
+```ruby
+begin
+  # Get a list of all webhooks
+  data, status_code, headers = api_instance.list_webhooks_with_http_info(opts)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <Array<Webhook>>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->list_webhooks_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **page** | **Integer** | Default: 1 | [optional] |
+| **per_page** | **Integer** | Default: 50 | [optional] |
+| **event_type** | **String** | Filter by a subscribed event type | [optional] |
+| **mode** | **String** | Filter by mode (test or live) | [optional] |
+| **template_id** | **String** | Filter by a scoped template ID | [optional] |
+| **folder_id** | **String** | Filter by a scoped folder ID | [optional] |
+| **api_token_id** | **String** | Filter by a scoped API token ID | [optional] |
+
+### Return type
+
+[**Array&lt;Webhook&gt;**](Webhook.md)
 
 ### Authorization
 
@@ -2732,7 +3104,7 @@ end
 
 Update a Template
 
-Updates template content and properties. For HTML templates, you can modify the HTML, SCSS, headers, footers, name, and description. Changes are applied to your draft template and do not affect published template versions. 
+Updates template content and properties. For HTML templates, you can modify the HTML, SCSS, headers, footers, name, and description. Changes are applied to your draft template and do not affect published template versions. The exception is `parent_folder_id`: moving the template to another folder moves its published versions too. 
 
 ### Examples
 
@@ -2935,6 +3307,78 @@ end
 ### Return type
 
 [**SuccessMultipleErrorsResponse**](SuccessMultipleErrorsResponse.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
+## update_webhook
+
+> <Webhook> update_webhook(webhook_id, data)
+
+Update a webhook
+
+Updates the configuration of an existing webhook.
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+webhook_id = 'whk_1234567890abcdef01' # String | 
+data = DocSpring::UpdateWebhookData.new({webhook: 3.56}) # UpdateWebhookData | 
+
+begin
+  # Update a webhook
+  result = api_instance.update_webhook(webhook_id, data)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->update_webhook: #{e}"
+end
+```
+
+#### Using the update_webhook_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<Webhook>, Integer, Hash)> update_webhook_with_http_info(webhook_id, data)
+
+```ruby
+begin
+  # Update a webhook
+  data, status_code, headers = api_instance.update_webhook_with_http_info(webhook_id, data)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <Webhook>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->update_webhook_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **webhook_id** | **String** |  |  |
+| **data** | [**UpdateWebhookData**](UpdateWebhookData.md) |  |  |
+
+### Return type
+
+[**Webhook**](Webhook.md)
 
 ### Authorization
 

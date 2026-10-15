@@ -220,7 +220,8 @@ module DocSpring
     # @param [Object] auth_second_factor_type Object to be assigned
     def auth_second_factor_type=(auth_second_factor_type)
       validator = EnumAttributeValidator.new('String', ["none", "phone_number", "totp", "mobile_push", "security_key", "fingerprint", ""])
-      unless validator.valid?(auth_second_factor_type)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(auth_second_factor_type)
         fail ArgumentError, "invalid value for \"auth_second_factor_type\", must be one of #{validator.allowable_values}."
       end
       @auth_second_factor_type = auth_second_factor_type
@@ -230,7 +231,8 @@ module DocSpring
     # @param [Object] auth_type Object to be assigned
     def auth_type=(auth_type)
       validator = EnumAttributeValidator.new('String', ["none", "password", "oauth", "email_link", "phone_number", "ldap", "saml"])
-      unless validator.valid?(auth_type)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(auth_type)
         fail ArgumentError, "invalid value for \"auth_type\", must be one of #{validator.allowable_values}."
       end
       @auth_type = auth_type
@@ -288,7 +290,13 @@ module DocSpring
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
-      new(transformed_hash)
+      # Responses can include enum values added after this client was released, so the enum setters
+      # accept any value while the model is built from a response
+      allocate.tap do |model|
+        model.instance_variable_set(:@_skip_enum_validation, true)
+        model.send(:initialize, transformed_hash)
+        model.remove_instance_variable(:@_skip_enum_validation)
+      end
     end
 
     # Deserializes the data based on type

@@ -186,7 +186,8 @@ module DocSpring
     # @param [Object] method Object to be assigned
     def method=(method)
       validator = EnumAttributeValidator.new('String', ["post"])
-      unless validator.valid?(method)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(method)
         fail ArgumentError, "invalid value for \"method\", must be one of #{validator.allowable_values}."
       end
       @method = method
@@ -235,7 +236,13 @@ module DocSpring
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
-      new(transformed_hash)
+      # Responses can include enum values added after this client was released, so the enum setters
+      # accept any value while the model is built from a response
+      allocate.tap do |model|
+        model.instance_variable_set(:@_skip_enum_validation, true)
+        model.send(:initialize, transformed_hash)
+        model.remove_instance_variable(:@_skip_enum_validation)
+      end
     end
 
     # Deserializes the data based on type

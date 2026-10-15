@@ -35,6 +35,8 @@ module DocSpring
 
     attr_accessor :completed_at
 
+    attr_accessor :declined_at
+
     attr_accessor :data
 
     attr_accessor :auth_type
@@ -92,6 +94,7 @@ module DocSpring
         :'state' => :'state',
         :'viewed_at' => :'viewed_at',
         :'completed_at' => :'completed_at',
+        :'declined_at' => :'declined_at',
         :'data' => :'data',
         :'auth_type' => :'auth_type',
         :'auth_second_factor_type' => :'auth_second_factor_type',
@@ -129,6 +132,7 @@ module DocSpring
         :'state' => :'String',
         :'viewed_at' => :'String',
         :'completed_at' => :'String',
+        :'declined_at' => :'String',
         :'data' => :'Object',
         :'auth_type' => :'String',
         :'auth_second_factor_type' => :'String',
@@ -154,6 +158,7 @@ module DocSpring
         :'metadata',
         :'viewed_at',
         :'completed_at',
+        :'declined_at',
         :'data',
         :'auth_provider',
         :'auth_session_started_at',
@@ -242,6 +247,12 @@ module DocSpring
         self.completed_at = attributes[:'completed_at']
       else
         self.completed_at = nil
+      end
+
+      if attributes.key?(:'declined_at')
+        self.declined_at = attributes[:'declined_at']
+      else
+        self.declined_at = nil
       end
 
       if attributes.key?(:'data')
@@ -341,7 +352,7 @@ module DocSpring
       warn '[DEPRECATED] the `valid?` method is obsolete'
       return false if @sort_order.nil?
       return false if @state.nil?
-      state_validator = EnumAttributeValidator.new('String', ["pending", "completed"])
+      state_validator = EnumAttributeValidator.new('String', ["pending", "completed", "declined"])
       return false unless state_validator.valid?(@state)
       return false if @auth_type.nil?
       auth_type_validator = EnumAttributeValidator.new('String', ["none", "password", "oauth", "email_link", "phone_number", "ldap", "saml"])
@@ -365,8 +376,9 @@ module DocSpring
     # Custom attribute writer method checking allowed values (enum).
     # @param [Object] state Object to be assigned
     def state=(state)
-      validator = EnumAttributeValidator.new('String', ["pending", "completed"])
-      unless validator.valid?(state)
+      validator = EnumAttributeValidator.new('String', ["pending", "completed", "declined"])
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(state)
         fail ArgumentError, "invalid value for \"state\", must be one of #{validator.allowable_values}."
       end
       @state = state
@@ -376,7 +388,8 @@ module DocSpring
     # @param [Object] auth_type Object to be assigned
     def auth_type=(auth_type)
       validator = EnumAttributeValidator.new('String', ["none", "password", "oauth", "email_link", "phone_number", "ldap", "saml"])
-      unless validator.valid?(auth_type)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(auth_type)
         fail ArgumentError, "invalid value for \"auth_type\", must be one of #{validator.allowable_values}."
       end
       @auth_type = auth_type
@@ -386,7 +399,8 @@ module DocSpring
     # @param [Object] auth_second_factor_type Object to be assigned
     def auth_second_factor_type=(auth_second_factor_type)
       validator = EnumAttributeValidator.new('String', ["none", "phone_number", "totp", "mobile_push", "security_key", "fingerprint"])
-      unless validator.valid?(auth_second_factor_type)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(auth_second_factor_type)
         fail ArgumentError, "invalid value for \"auth_second_factor_type\", must be one of #{validator.allowable_values}."
       end
       @auth_second_factor_type = auth_second_factor_type
@@ -407,6 +421,7 @@ module DocSpring
           state == o.state &&
           viewed_at == o.viewed_at &&
           completed_at == o.completed_at &&
+          declined_at == o.declined_at &&
           data == o.data &&
           auth_type == o.auth_type &&
           auth_second_factor_type == o.auth_second_factor_type &&
@@ -429,7 +444,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, email, name, order, sort_order, fields, metadata, state, viewed_at, completed_at, data, auth_type, auth_second_factor_type, auth_provider, auth_session_started_at, auth_session_id_hash, auth_user_id_hash, auth_username_hash, auth_phone_number_hash, ip_address, user_agent].hash
+      [id, email, name, order, sort_order, fields, metadata, state, viewed_at, completed_at, declined_at, data, auth_type, auth_second_factor_type, auth_provider, auth_session_started_at, auth_session_id_hash, auth_user_id_hash, auth_username_hash, auth_phone_number_hash, ip_address, user_agent].hash
     end
 
     # Builds the object from hash
@@ -452,7 +467,13 @@ module DocSpring
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
-      new(transformed_hash)
+      # Responses can include enum values added after this client was released, so the enum setters
+      # accept any value while the model is built from a response
+      allocate.tap do |model|
+        model.instance_variable_set(:@_skip_enum_validation, true)
+        model.send(:initialize, transformed_hash)
+        model.remove_instance_variable(:@_skip_enum_validation)
+      end
     end
 
     # Deserializes the data based on type

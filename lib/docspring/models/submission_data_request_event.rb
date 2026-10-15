@@ -186,7 +186,8 @@ module DocSpring
     # @param [Object] event_type Object to be assigned
     def event_type=(event_type)
       validator = EnumAttributeValidator.new('String', ["send_request", "view_request", "accepted_terms", "decline_request", "sign_request", "all_completed"])
-      unless validator.valid?(event_type)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(event_type)
         fail ArgumentError, "invalid value for \"event_type\", must be one of #{validator.allowable_values}."
       end
       @event_type = event_type
@@ -196,7 +197,8 @@ module DocSpring
     # @param [Object] message_type Object to be assigned
     def message_type=(message_type)
       validator = EnumAttributeValidator.new('String', ["email", "sms", "fax", "mail", "slack", "msteams", "discord", "telegram", "whatsapp"])
-      unless validator.valid?(message_type)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(message_type)
         fail ArgumentError, "invalid value for \"message_type\", must be one of #{validator.allowable_values}."
       end
       @message_type = message_type
@@ -248,7 +250,13 @@ module DocSpring
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
-      new(transformed_hash)
+      # Responses can include enum values added after this client was released, so the enum setters
+      # accept any value while the model is built from a response
+      allocate.tap do |model|
+        model.instance_variable_set(:@_skip_enum_validation, true)
+        model.send(:initialize, transformed_hash)
+        model.remove_instance_variable(:@_skip_enum_validation)
+      end
     end
 
     # Deserializes the data based on type

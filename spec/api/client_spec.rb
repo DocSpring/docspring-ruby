@@ -47,7 +47,7 @@ describe 'Client' do
 
   # unit tests for batch_generate_pdfs
   # Generate multiple PDFs
-  # Generates up to 50 PDFs in a single request. Each submission can use a different template and data. Supports both synchronous (wait for all PDFs) and asynchronous processing. More efficient than individual requests when creating multiple PDFs.  See also: - [Batch and Combine PDFs](https://docspring.com/docs/api-guide/generate-pdfs/batch-generate-pdfs/) - Generate and merge PDFs in one request 
+  # Generates up to 50 PDFs in a single request. Each submission can use a different template and data. Supports both synchronous (wait for all PDFs) and asynchronous processing. More efficient than individual requests when creating multiple PDFs.  See also: - [Batch Generate PDFs](https://docspring.com/docs/api-guide/generate-pdfs/batch-generate-pdfs/) - Request format, responses, and limits 
   # @param data 
   # @param [Hash] opts the optional parameters
   # @option opts [Boolean] :wait Wait for submission batch to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain)
@@ -110,7 +110,7 @@ describe 'Client' do
 
   # unit tests for create_data_request_token
   # Create a new data request token for form authentication
-  # Creates an authentication token for accessing a data request form. Tokens can be created for API access (1 hour expiration) or email links (30 day expiration). Returns a token and a pre-authenticated URL for the data request form.  See also: - [Embedded Data Requests Guide](https://docspring.com/docs/guides/embedded-forms/embedded-data-requests/) 
+  # Creates an authentication token for accessing a data request form. Returns a token and a pre-authenticated URL for the data request form. The token remains valid until the data request is completed.  See also: - [Embedded Data Requests Guide](https://docspring.com/docs/guides/embedded-forms/embedded-data-requests/) 
   # @param data_request_id 
   # @param [Hash] opts the optional parameters
   # @option opts [String] :type 
@@ -173,6 +173,18 @@ describe 'Client' do
     end
   end
 
+  # unit tests for create_webhook
+  # Create a webhook
+  # Creates a webhook that delivers a POST request to your endpoint whenever a subscribed event occurs. Optionally scope the webhook to specific API tokens, templates, or folders. 
+  # @param data 
+  # @param [Hash] opts the optional parameters
+  # @return [Webhook]
+  describe 'create_webhook test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
   # unit tests for delete_folder
   # Delete a folder
   # Deletes an empty folder. The folder must not contain any templates or subfolders. Move or delete all contents before attempting to delete the folder. 
@@ -193,6 +205,18 @@ describe 'Client' do
   # @option opts [String] :version 
   # @return [TemplateDeleteResponse]
   describe 'delete_template test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for delete_webhook
+  # Delete a webhook
+  # Permanently deletes a webhook so it stops receiving events, and returns the deleted webhook.
+  # @param webhook_id 
+  # @param [Hash] opts the optional parameters
+  # @return [Webhook]
+  describe 'delete_webhook test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -224,7 +248,7 @@ describe 'Client' do
 
   # unit tests for generate_pdf
   # Generate a PDF
-  # Creates a PDF submission by filling in a template with data. Supports both synchronous (default) and asynchronous processing. Set &#x60;wait: false&#x60; to return immediately.  See also: - [Customize the PDF Title and Filename](https://docspring.com/docs/api-guide/generate-pdfs/customize-pdf-title-and-filename/) - Set custom metadata - [Handling Truncated Text](https://docspring.com/docs/api-guide/generate-pdfs/handle-truncated-text/) - Handle text that doesn&#39;t fit in fields 
+  # Creates a PDF submission by filling in a template with data. Supports both synchronous (default) and asynchronous processing. Add the &#x60;wait&#x3D;false&#x60; query parameter to return immediately.  See also: - [Customize the PDF Title and Filename](https://docspring.com/docs/api-guide/generate-pdfs/customize-pdf-title-and-filename/) - Set custom metadata - [Handling Truncated Text](https://docspring.com/docs/api-guide/generate-pdfs/handle-truncated-text/) - Handle text that doesn&#39;t fit in fields 
   # @param template_id 
   # @param submission 
   # @param [Hash] opts the optional parameters
@@ -333,6 +357,19 @@ describe 'Client' do
     end
   end
 
+  # unit tests for get_template_model_code
+  # Generate typed model code for a template
+  # Generates typed model code for a template&#39;s submission data from its JSON schema, in TypeScript, JavaScript, Ruby, Python, PHP, Java, C#, Elixir or Go. Build your submission data with the generated types so your app catches mistakes before it calls the API.  &#x60;root_type_name&#x60; is the type that describes the whole submission data object, qualified with its namespace or package where there is one. Java returns every class in &#x60;code&#x60;, each under a &#x60;// ClassName.java&#x60; comment: split them into one file per class.  A template with no named fields returns 422, since there are no types to generate.  See also: - [Generate Model Code](https://docspring.com/docs/template-editor/generate-model-code/) - Use the generated types 
+  # @param template_id 
+  # @param lang The language to generate code for
+  # @param [Hash] opts the optional parameters
+  # @return [TemplateModelCodeResponse]
+  describe 'get_template_model_code test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
   # unit tests for get_template_schema
   # Fetch the JSON schema for a template
   # Retrieves the JSON Schema definition for a template&#39;s fields. Use this to validate data before submitting it for PDF generation, or to build dynamic forms that match the template&#39;s field structure and validation requirements.  See also: - [Generate PDFs Guide](https://docspring.com/docs/api-guide/generate-pdfs/generate-pdfs-via-api/) - Use schema to validate submission data 
@@ -340,6 +377,18 @@ describe 'Client' do
   # @param [Hash] opts the optional parameters
   # @return [JsonSchema]
   describe 'get_template_schema test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for get_webhook
+  # Get a webhook
+  # Retrieves a single webhook by its ID.
+  # @param webhook_id 
+  # @param [Hash] opts the optional parameters
+  # @return [Webhook]
+  describe 'get_webhook test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -415,6 +464,24 @@ describe 'Client' do
   # @option opts [Integer] :per_page Default: 50
   # @return [Array<TemplatePreview>]
   describe 'list_templates test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for list_webhooks
+  # Get a list of all webhooks
+  # Returns a list of the webhooks configured for your account. Supports pagination and filtering by event type, mode, and the API token, template, or folder a webhook is scoped to. 
+  # @param [Hash] opts the optional parameters
+  # @option opts [Integer] :page Default: 1
+  # @option opts [Integer] :per_page Default: 50
+  # @option opts [String] :event_type Filter by a subscribed event type
+  # @option opts [String] :mode Filter by mode (test or live)
+  # @option opts [String] :template_id Filter by a scoped template ID
+  # @option opts [String] :folder_id Filter by a scoped folder ID
+  # @option opts [String] :api_token_id Filter by a scoped API token ID
+  # @return [Array<Webhook>]
+  describe 'list_webhooks test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -511,7 +578,7 @@ describe 'Client' do
 
   # unit tests for update_template
   # Update a Template
-  # Updates template content and properties. For HTML templates, you can modify the HTML, SCSS, headers, footers, name, and description. Changes are applied to your draft template and do not affect published template versions. 
+  # Updates template content and properties. For HTML templates, you can modify the HTML, SCSS, headers, footers, name, and description. Changes are applied to your draft template and do not affect published template versions. The exception is &#x60;parent_folder_id&#x60;: moving the template to another folder moves its published versions too. 
   # @param template_id 
   # @param data 
   # @param [Hash] opts the optional parameters
@@ -544,6 +611,19 @@ describe 'Client' do
   # @param [Hash] opts the optional parameters
   # @return [SuccessMultipleErrorsResponse]
   describe 'update_template_document_from_upload test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for update_webhook
+  # Update a webhook
+  # Updates the configuration of an existing webhook.
+  # @param webhook_id 
+  # @param data 
+  # @param [Hash] opts the optional parameters
+  # @return [Webhook]
+  describe 'update_webhook test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end

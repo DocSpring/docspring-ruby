@@ -19,6 +19,8 @@ module DocSpring
 
     attr_accessor :id
 
+    attr_accessor :schema_id
+
     attr_accessor :title
 
     attr_accessor :description
@@ -33,18 +35,25 @@ module DocSpring
 
     attr_accessor :required
 
+    attr_accessor :dependencies
+
+    attr_accessor :all_of
+
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
         :'schema' => :'$schema',
         :'id' => :'id',
+        :'schema_id' => :'$id',
         :'title' => :'title',
         :'description' => :'description',
         :'definitions' => :'definitions',
         :'type' => :'type',
         :'properties' => :'properties',
         :'additional_properties' => :'additionalProperties',
-        :'required' => :'required'
+        :'required' => :'required',
+        :'dependencies' => :'dependencies',
+        :'all_of' => :'allOf'
       }
     end
 
@@ -63,13 +72,16 @@ module DocSpring
       {
         :'schema' => :'String',
         :'id' => :'String',
+        :'schema_id' => :'String',
         :'title' => :'String',
         :'description' => :'String',
         :'definitions' => :'Object',
         :'type' => :'String',
         :'properties' => :'Object',
         :'additional_properties' => :'Boolean',
-        :'required' => :'Array<String>'
+        :'required' => :'Array<String>',
+        :'dependencies' => :'Object',
+        :'all_of' => :'Array<Object>'
       }
     end
 
@@ -103,6 +115,10 @@ module DocSpring
         self.id = attributes[:'id']
       end
 
+      if attributes.key?(:'schema_id')
+        self.schema_id = attributes[:'schema_id']
+      end
+
       if attributes.key?(:'title')
         self.title = attributes[:'title']
       end
@@ -132,6 +148,16 @@ module DocSpring
           self.required = value
         end
       end
+
+      if attributes.key?(:'dependencies')
+        self.dependencies = attributes[:'dependencies']
+      end
+
+      if attributes.key?(:'all_of')
+        if (value = attributes[:'all_of']).is_a?(Array)
+          self.all_of = value
+        end
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -156,13 +182,16 @@ module DocSpring
       self.class == o.class &&
           schema == o.schema &&
           id == o.id &&
+          schema_id == o.schema_id &&
           title == o.title &&
           description == o.description &&
           definitions == o.definitions &&
           type == o.type &&
           properties == o.properties &&
           additional_properties == o.additional_properties &&
-          required == o.required
+          required == o.required &&
+          dependencies == o.dependencies &&
+          all_of == o.all_of
     end
 
     # @see the `==` method
@@ -174,7 +203,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [schema, id, title, description, definitions, type, properties, additional_properties, required].hash
+      [schema, id, schema_id, title, description, definitions, type, properties, additional_properties, required, dependencies, all_of].hash
     end
 
     # Builds the object from hash
@@ -197,7 +226,13 @@ module DocSpring
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
-      new(transformed_hash)
+      # Responses can include enum values added after this client was released, so the enum setters
+      # accept any value while the model is built from a response
+      allocate.tap do |model|
+        model.instance_variable_set(:@_skip_enum_validation, true)
+        model.send(:initialize, transformed_hash)
+        model.remove_instance_variable(:@_skip_enum_validation)
+      end
     end
 
     # Deserializes the data based on type

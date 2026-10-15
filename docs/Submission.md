@@ -7,6 +7,7 @@
 | **batch_id** | **String** |  |  |
 | **data_requests** | [**Array&lt;SubmissionDataRequest&gt;**](SubmissionDataRequest.md) |  |  |
 | **editable** | **Boolean** |  |  |
+| **error_message** | **String** |  |  |
 | **expired** | **Boolean** |  |  |
 | **expires_at** | **String** |  |  |
 | **id** | **String** |  |  |
@@ -27,9 +28,9 @@
 | **preview_generated_at** | **String** |  |  |
 | **audit_trail_download_url** | **String** |  |  |
 | **actions** | [**Array&lt;SubmissionAction&gt;**](SubmissionAction.md) |  |  |
-| **source** | **String** |  |  |
-| **referrer** | **String** |  |  |
-| **data** | **Object** |  |  |
+| **source** | **String** |  | [optional] |
+| **referrer** | **String** |  | [optional] |
+| **data** | **Object** |  | [optional] |
 
 ## Example
 
@@ -40,6 +41,7 @@ instance = DocSpring::Submission.new(
   batch_id: null,
   data_requests: null,
   editable: null,
+  error_message: null,
   expired: null,
   expires_at: null,
   id: null,

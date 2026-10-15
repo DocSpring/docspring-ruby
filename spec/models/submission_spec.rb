@@ -45,6 +45,12 @@ describe DocSpring::Submission do
     end
   end
 
+  describe 'test attribute "error_message"' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
   describe 'test attribute "expired"' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
@@ -90,7 +96,7 @@ describe DocSpring::Submission do
   describe 'test attribute "state"' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
-      # validator = Petstore::EnumTest::EnumAttributeValidator.new('String', ["pending", "processed", "invalid_data", "error", "image_download_failed", "image_processing_failed", "waiting_for_data_requests", "syntax_error", "account_suspended", "license_revoked", "accidental"])
+      # validator = Petstore::EnumTest::EnumAttributeValidator.new('String', ["pending", "processed", "invalid_data", "error", "image_download_failed", "image_processing_failed", "waiting_for_data_requests", "syntax_error", "account_suspended", "license_revoked", "accidental", "declined"])
       # validator.allowable_values.each do |value|
       #   expect { instance.state = value }.not_to raise_error
       # end

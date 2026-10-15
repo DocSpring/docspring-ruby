@@ -72,7 +72,7 @@ describe DocSpring::SubmissionDataRequest do
   describe 'test attribute "state"' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
-      # validator = Petstore::EnumTest::EnumAttributeValidator.new('String', ["pending", "completed"])
+      # validator = Petstore::EnumTest::EnumAttributeValidator.new('String', ["pending", "completed", "declined"])
       # validator.allowable_values.each do |value|
       #   expect { instance.state = value }.not_to raise_error
       # end
@@ -86,6 +86,12 @@ describe DocSpring::SubmissionDataRequest do
   end
 
   describe 'test attribute "completed_at"' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  describe 'test attribute "declined_at"' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end

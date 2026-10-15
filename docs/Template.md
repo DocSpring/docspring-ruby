@@ -15,6 +15,9 @@
 | **document_url** | **String** |  |  |
 | **editable_submissions** | **Boolean** |  |  |
 | **embed_domains** | **String** |  |  |
+| **embed_edit_allow_settings** | **Boolean** |  |  |
+| **embed_edit_allow_versioning** | **Boolean** |  |  |
+| **embed_edit_allow_document_replacement** | **Boolean** |  |  |
 | **encrypt_pdfs_password** | **String** |  |  |
 | **encrypt_pdfs** | **Boolean** |  |  |
 | **expiration_interval** | **String** |  |  |
@@ -41,12 +44,17 @@
 | **version_published_at** | **String** |  |  |
 | **version** | **String** |  |  |
 | **webhook_url** | **String** |  |  |
+| **embed_edit_token** | **String** |  | [optional] |
 | **demo** | **Boolean** |  |  |
 | **latest_version** | **String** |  |  |
 | **last_changed_at** | **String** |  |  |
 | **last_changed_by_type** | **String** |  |  |
 | **last_changed_by_id** | **String** |  |  |
+| **last_changed_by_external_name** | **String** |  |  |
+| **last_changed_by_external_email** | **String** |  |  |
+| **last_changed_by_external_id** | **String** |  |  |
 | **defaults** | **Object** |  |  |
+| **field_dependencies** | **Array&lt;Object&gt;** |  |  |
 | **field_order** | **Array&lt;Array&lt;Float&gt;&gt;** |  |  |
 | **fields** | **Object** |  |  |
 | **footer_html** | **String** |  |  |
@@ -56,6 +64,7 @@
 | **predefined_fields** | **Array&lt;Object&gt;** |  |  |
 | **scss** | **String** |  |  |
 | **shared_field_data** | **Object** |  |  |
+| **template_schema_version** | **Integer** |  |  |
 | **versions** | **Array&lt;Object&gt;** |  |  |
 
 ## Example
@@ -75,6 +84,9 @@ instance = DocSpring::Template.new(
   document_url: null,
   editable_submissions: null,
   embed_domains: null,
+  embed_edit_allow_settings: null,
+  embed_edit_allow_versioning: null,
+  embed_edit_allow_document_replacement: null,
   encrypt_pdfs_password: null,
   encrypt_pdfs: null,
   expiration_interval: null,
@@ -101,12 +113,17 @@ instance = DocSpring::Template.new(
   version_published_at: null,
   version: null,
   webhook_url: null,
+  embed_edit_token: null,
   demo: null,
   latest_version: null,
   last_changed_at: null,
   last_changed_by_type: null,
   last_changed_by_id: null,
+  last_changed_by_external_name: null,
+  last_changed_by_external_email: null,
+  last_changed_by_external_id: null,
   defaults: null,
+  field_dependencies: null,
   field_order: null,
   fields: null,
   footer_html: null,
@@ -116,6 +133,7 @@ instance = DocSpring::Template.new(
   predefined_fields: null,
   scss: null,
   shared_field_data: null,
+  template_schema_version: null,
   versions: null
 )
 ```

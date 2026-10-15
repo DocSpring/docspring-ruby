@@ -27,6 +27,8 @@ module DocSpring
 
     attr_accessor :result_data
 
+    attr_accessor :error_message
+
     class EnumAttributeValidator
       attr_reader :datatype
       attr_reader :allowable_values
@@ -57,7 +59,8 @@ module DocSpring
         :'state' => :'state',
         :'action_type' => :'action_type',
         :'action_category' => :'action_category',
-        :'result_data' => :'result_data'
+        :'result_data' => :'result_data',
+        :'error_message' => :'error_message'
       }
     end
 
@@ -79,7 +82,8 @@ module DocSpring
         :'state' => :'String',
         :'action_type' => :'String',
         :'action_category' => :'String',
-        :'result_data' => :'Object'
+        :'result_data' => :'Object',
+        :'error_message' => :'String'
       }
     end
 
@@ -88,6 +92,7 @@ module DocSpring
       Set.new([
         :'id',
         :'integration_id',
+        :'error_message'
       ])
     end
 
@@ -142,6 +147,12 @@ module DocSpring
       else
         self.result_data = nil
       end
+
+      if attributes.key?(:'error_message')
+        self.error_message = attributes[:'error_message']
+      else
+        self.error_message = nil
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -189,7 +200,8 @@ module DocSpring
     # @param [Object] state Object to be assigned
     def state=(state)
       validator = EnumAttributeValidator.new('String', ["pending", "processed", "failed", "error"])
-      unless validator.valid?(state)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(state)
         fail ArgumentError, "invalid value for \"state\", must be one of #{validator.allowable_values}."
       end
       @state = state
@@ -199,7 +211,8 @@ module DocSpring
     # @param [Object] action_type Object to be assigned
     def action_type=(action_type)
       validator = EnumAttributeValidator.new('String', ["webhook", "slack_webhook", "email", "aws_s3_upload"])
-      unless validator.valid?(action_type)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(action_type)
         fail ArgumentError, "invalid value for \"action_type\", must be one of #{validator.allowable_values}."
       end
       @action_type = action_type
@@ -209,7 +222,8 @@ module DocSpring
     # @param [Object] action_category Object to be assigned
     def action_category=(action_category)
       validator = EnumAttributeValidator.new('String', ["notification", "file_upload"])
-      unless validator.valid?(action_category)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(action_category)
         fail ArgumentError, "invalid value for \"action_category\", must be one of #{validator.allowable_values}."
       end
       @action_category = action_category
@@ -235,7 +249,8 @@ module DocSpring
           state == o.state &&
           action_type == o.action_type &&
           action_category == o.action_category &&
-          result_data == o.result_data
+          result_data == o.result_data &&
+          error_message == o.error_message
     end
 
     # @see the `==` method
@@ -247,7 +262,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, integration_id, state, action_type, action_category, result_data].hash
+      [id, integration_id, state, action_type, action_category, result_data, error_message].hash
     end
 
     # Builds the object from hash
@@ -270,7 +285,13 @@ module DocSpring
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
-      new(transformed_hash)
+      # Responses can include enum values added after this client was released, so the enum setters
+      # accept any value while the model is built from a response
+      allocate.tap do |model|
+        model.instance_variable_set(:@_skip_enum_validation, true)
+        model.send(:initialize, transformed_hash)
+        model.remove_instance_variable(:@_skip_enum_validation)
+      end
     end
 
     # Deserializes the data based on type

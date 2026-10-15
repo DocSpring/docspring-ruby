@@ -14,6 +14,7 @@
 | **state** | **String** |  |  |
 | **viewed_at** | **String** |  |  |
 | **completed_at** | **String** |  |  |
+| **declined_at** | **String** |  |  |
 | **data** | **Object** |  |  |
 | **auth_type** | **String** |  |  |
 | **auth_second_factor_type** | **String** |  |  |
@@ -42,6 +43,7 @@ instance = DocSpring::SubmissionDataRequest.new(
   state: null,
   viewed_at: null,
   completed_at: null,
+  declined_at: null,
   data: null,
   auth_type: null,
   auth_second_factor_type: null,

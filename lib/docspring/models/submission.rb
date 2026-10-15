@@ -21,6 +21,8 @@ module DocSpring
 
     attr_accessor :editable
 
+    attr_accessor :error_message
+
     attr_accessor :expired
 
     attr_accessor :expires_at
@@ -95,6 +97,7 @@ module DocSpring
         :'batch_id' => :'batch_id',
         :'data_requests' => :'data_requests',
         :'editable' => :'editable',
+        :'error_message' => :'error_message',
         :'expired' => :'expired',
         :'expires_at' => :'expires_at',
         :'id' => :'id',
@@ -137,6 +140,7 @@ module DocSpring
         :'batch_id' => :'String',
         :'data_requests' => :'Array<SubmissionDataRequest>',
         :'editable' => :'Boolean',
+        :'error_message' => :'String',
         :'expired' => :'Boolean',
         :'expires_at' => :'String',
         :'id' => :'String',
@@ -168,6 +172,7 @@ module DocSpring
       Set.new([
         :'batch_id',
         :'editable',
+        :'error_message',
         :'expires_at',
         :'id',
         :'json_schema_errors',
@@ -221,6 +226,12 @@ module DocSpring
         self.editable = attributes[:'editable']
       else
         self.editable = nil
+      end
+
+      if attributes.key?(:'error_message')
+        self.error_message = attributes[:'error_message']
+      else
+        self.error_message = nil
       end
 
       if attributes.key?(:'expired')
@@ -349,20 +360,14 @@ module DocSpring
 
       if attributes.key?(:'source')
         self.source = attributes[:'source']
-      else
-        self.source = nil
       end
 
       if attributes.key?(:'referrer')
         self.referrer = attributes[:'referrer']
-      else
-        self.referrer = nil
       end
 
       if attributes.key?(:'data')
         self.data = attributes[:'data']
-      else
-        self.data = nil
       end
     end
 
@@ -399,10 +404,6 @@ module DocSpring
         invalid_properties.push('invalid value for "actions", actions cannot be nil.')
       end
 
-      if @source.nil?
-        invalid_properties.push('invalid value for "source", source cannot be nil.')
-      end
-
       invalid_properties
     end
 
@@ -414,14 +415,13 @@ module DocSpring
       return false if @expired.nil?
       return false if @metadata.nil?
       return false if @state.nil?
-      state_validator = EnumAttributeValidator.new('String', ["pending", "processed", "invalid_data", "error", "image_download_failed", "image_processing_failed", "waiting_for_data_requests", "syntax_error", "account_suspended", "license_revoked", "accidental"])
+      state_validator = EnumAttributeValidator.new('String', ["pending", "processed", "invalid_data", "error", "image_download_failed", "image_processing_failed", "waiting_for_data_requests", "syntax_error", "account_suspended", "license_revoked", "accidental", "declined"])
       return false unless state_validator.valid?(@state)
       return false if @template_type.nil?
       template_type_validator = EnumAttributeValidator.new('String', ["pdf", "html"])
       return false unless template_type_validator.valid?(@template_type)
       return false if @test.nil?
       return false if @actions.nil?
-      return false if @source.nil?
       source_validator = EnumAttributeValidator.new('String', ["api", "web", "reprocess", "webhook"])
       return false unless source_validator.valid?(@source)
       true
@@ -460,8 +460,9 @@ module DocSpring
     # Custom attribute writer method checking allowed values (enum).
     # @param [Object] state Object to be assigned
     def state=(state)
-      validator = EnumAttributeValidator.new('String', ["pending", "processed", "invalid_data", "error", "image_download_failed", "image_processing_failed", "waiting_for_data_requests", "syntax_error", "account_suspended", "license_revoked", "accidental"])
-      unless validator.valid?(state)
+      validator = EnumAttributeValidator.new('String', ["pending", "processed", "invalid_data", "error", "image_download_failed", "image_processing_failed", "waiting_for_data_requests", "syntax_error", "account_suspended", "license_revoked", "accidental", "declined"])
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(state)
         fail ArgumentError, "invalid value for \"state\", must be one of #{validator.allowable_values}."
       end
       @state = state
@@ -471,7 +472,8 @@ module DocSpring
     # @param [Object] template_type Object to be assigned
     def template_type=(template_type)
       validator = EnumAttributeValidator.new('String', ["pdf", "html"])
-      unless validator.valid?(template_type)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(template_type)
         fail ArgumentError, "invalid value for \"template_type\", must be one of #{validator.allowable_values}."
       end
       @template_type = template_type
@@ -501,7 +503,8 @@ module DocSpring
     # @param [Object] source Object to be assigned
     def source=(source)
       validator = EnumAttributeValidator.new('String', ["api", "web", "reprocess", "webhook"])
-      unless validator.valid?(source)
+      # build_from_hash accepts enum values this client doesn't know about yet
+      unless defined?(@_skip_enum_validation) || validator.valid?(source)
         fail ArgumentError, "invalid value for \"source\", must be one of #{validator.allowable_values}."
       end
       @source = source
@@ -515,6 +518,7 @@ module DocSpring
           batch_id == o.batch_id &&
           data_requests == o.data_requests &&
           editable == o.editable &&
+          error_message == o.error_message &&
           expired == o.expired &&
           expires_at == o.expires_at &&
           id == o.id &&
@@ -549,7 +553,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [batch_id, data_requests, editable, expired, expires_at, id, json_schema_errors, metadata, password, processed_at, state, template_id, template_type, template_version, test, truncated_text, pdf_hash, download_url, permanent_download_url, preview_download_url, preview_generated_at, audit_trail_download_url, actions, source, referrer, data].hash
+      [batch_id, data_requests, editable, error_message, expired, expires_at, id, json_schema_errors, metadata, password, processed_at, state, template_id, template_type, template_version, test, truncated_text, pdf_hash, download_url, permanent_download_url, preview_download_url, preview_generated_at, audit_trail_download_url, actions, source, referrer, data].hash
     end
 
     # Builds the object from hash
@@ -572,7 +576,13 @@ module DocSpring
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
-      new(transformed_hash)
+      # Responses can include enum values added after this client was released, so the enum setters
+      # accept any value while the model is built from a response
+      allocate.tap do |model|
+        model.instance_variable_set(:@_skip_enum_validation, true)
+        model.send(:initialize, transformed_hash)
+        model.remove_instance_variable(:@_skip_enum_validation)
+      end
     end
 
     # Deserializes the data based on type
