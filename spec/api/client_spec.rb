@@ -1,7 +1,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures. Requests are rate limited per account, and live PDFs use credits: a request over the limit returns 429 with a Retry-After header, and one your credits can't cover returns 402. See [Credits & Rate Limits](https://docspring.com/docs/api-guide/credits-and-rate-limits/).
 
 The version of the OpenAPI document: v1
 
@@ -47,7 +47,7 @@ describe 'Client' do
 
   # unit tests for batch_generate_pdfs
   # Generate multiple PDFs
-  # Generates up to 50 PDFs in a single request. Each submission can use a different template and data. Supports both synchronous (wait for all PDFs) and asynchronous processing. More efficient than individual requests when creating multiple PDFs.  See also: - [Batch Generate PDFs](https://docspring.com/docs/api-guide/generate-pdfs/batch-generate-pdfs/) - Request format, responses, and limits 
+  # Generates up to 50 PDFs in a single request. Each submission can use a different template and data. Supports both synchronous (wait for all PDFs) and asynchronous processing. More efficient than individual requests when creating multiple PDFs.  Live PDFs use credits. If any live submission is waiting for credits, the API returns 402 and the others are still processed: check each submission&#39;s &#x60;state&#x60;. See [Credits &amp; Rate Limits](https://docspring.com/docs/api-guide/credits-and-rate-limits/).  See also: - [Batch Generate PDFs](https://docspring.com/docs/api-guide/generate-pdfs/batch-generate-pdfs/) - Request format, responses, and limits 
   # @param data 
   # @param [Hash] opts the optional parameters
   # @option opts [Boolean] :wait Wait for submission batch to be processed before returning. Set to false to return immediately. Default: true (on sync.* subdomain)
@@ -60,7 +60,7 @@ describe 'Client' do
 
   # unit tests for combine_pdfs
   # Merge submission PDFs, template PDFs, or custom files
-  # Combines multiple PDFs from various sources into a single PDF file. Supports merging submission PDFs, template PDFs, custom files, other merged PDFs, and PDFs from URLs. Merges the PDFs in the order provided. 
+  # Combines multiple PDFs from various sources into a single PDF file. Supports merging submission PDFs, template PDFs, custom files, other merged PDFs, and PDFs from URLs. Merges the PDFs in the order provided.  Combining uses credits (4 per source PDF, plus 4 per unit of the combined PDF), even with a test API token or watermarked source PDFs. If your balance can&#39;t cover it, the API returns 402 and the combined submission waits in the &#x60;insufficient_credits&#x60; state until you add credits. See [Credits &amp; Rate Limits](https://docspring.com/docs/api-guide/credits-and-rate-limits/). 
   # @param data 
   # @param [Hash] opts the optional parameters
   # @return [CreateCombinedSubmissionResponse]
@@ -248,7 +248,7 @@ describe 'Client' do
 
   # unit tests for generate_pdf
   # Generate a PDF
-  # Creates a PDF submission by filling in a template with data. Supports both synchronous (default) and asynchronous processing. Add the &#x60;wait&#x3D;false&#x60; query parameter to return immediately.  See also: - [Customize the PDF Title and Filename](https://docspring.com/docs/api-guide/generate-pdfs/customize-pdf-title-and-filename/) - Set custom metadata - [Handling Truncated Text](https://docspring.com/docs/api-guide/generate-pdfs/handle-truncated-text/) - Handle text that doesn&#39;t fit in fields 
+  # Creates a PDF submission by filling in a template with data. Supports both synchronous (default) and asynchronous processing. Add the &#x60;wait&#x3D;false&#x60; query parameter to return immediately.  Live PDFs use credits; test PDFs (&#x60;test: true&#x60;) are free and watermarked. If your balance can&#39;t cover a live PDF, the API returns 402 and the submission waits in the &#x60;insufficient_credits&#x60; state until you add credits. See [Credits &amp; Rate Limits](https://docspring.com/docs/api-guide/credits-and-rate-limits/).  See also: - [Customize the PDF Title and Filename](https://docspring.com/docs/api-guide/generate-pdfs/customize-pdf-title-and-filename/) - Set custom metadata - [Handling Truncated Text](https://docspring.com/docs/api-guide/generate-pdfs/handle-truncated-text/) - Handle text that doesn&#39;t fit in fields 
   # @param template_id 
   # @param submission 
   # @param [Hash] opts the optional parameters
@@ -274,7 +274,7 @@ describe 'Client' do
 
   # unit tests for get_combined_submission
   # Check the status of a combined submission (merged PDFs)
-  # Retrieves the details and status of a combined submission. Returns processing state, download URL (if processed), metadata, and information about any integrated actions (e.g., S3 uploads). 
+  # Retrieves the details and status of a combined submission. Returns processing state, download URL (if processed), metadata, and information about any integrated actions (e.g., S3 uploads).  &#x60;insufficient_credits&#x60; means the combined submission is waiting for credits and is processed once you add them. If it&#39;s still waiting after 30 days, it moves to &#x60;error&#x60;. 
   # @param combined_submission_id 
   # @param [Hash] opts the optional parameters
   # @return [CombinedSubmission]
@@ -321,7 +321,7 @@ describe 'Client' do
 
   # unit tests for get_submission
   # Check the status of a PDF
-  # Retrieves the details and status of a PDF submission. Returns processing state, download URL (if processed), metadata, submission data (optional), and information about any integrated actions. Use this to poll for completion when using asynchronous processing. 
+  # Retrieves the details and status of a PDF submission. Returns processing state, download URL (if processed), metadata, submission data (optional), and information about any integrated actions. Use this to poll for completion when using asynchronous processing.  &#x60;insufficient_credits&#x60; means the submission is waiting for credits and is processed once you add them. If it&#39;s still waiting after 30 days, it moves to &#x60;error&#x60;. 
   # @param submission_id 
   # @param [Hash] opts the optional parameters
   # @option opts [Boolean] :include_data 
@@ -334,7 +334,7 @@ describe 'Client' do
 
   # unit tests for get_submission_batch
   # Check the status of a submission batch job
-  # Retrieves the status and results of a batch PDF generation job. Returns processing state, completion statistics, and optionally includes all individual submission details. Use this to poll for completion when using asynchronous batch processing. 
+  # Retrieves the status and results of a batch PDF generation job. Returns processing state, completion statistics, and optionally includes all individual submission details. Use this to poll for completion when using asynchronous batch processing.  Submissions waiting for credits are in the &#x60;insufficient_credits&#x60; state and count as pending, so the batch stays &#x60;pending&#x60; until you add credits or they stop waiting after 30 days. 
   # @param submission_batch_id 
   # @param [Hash] opts the optional parameters
   # @option opts [Boolean] :include_submissions 

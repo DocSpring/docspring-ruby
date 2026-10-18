@@ -1,7 +1,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures. Requests are rate limited per account, and live PDFs use credits: a request over the limit returns 429 with a Retry-After header, and one your credits can't cover returns 402. See [Credits & Rate Limits](https://docspring.com/docs/api-guide/credits-and-rate-limits/).
 
 The version of the OpenAPI document: v1
 
@@ -415,7 +415,7 @@ module DocSpring
       return false if @expired.nil?
       return false if @metadata.nil?
       return false if @state.nil?
-      state_validator = EnumAttributeValidator.new('String', ["pending", "processed", "invalid_data", "error", "image_download_failed", "image_processing_failed", "waiting_for_data_requests", "syntax_error", "account_suspended", "license_revoked", "accidental", "declined"])
+      state_validator = EnumAttributeValidator.new('String', ["pending", "processed", "invalid_data", "error", "image_download_failed", "image_processing_failed", "waiting_for_data_requests", "syntax_error", "insufficient_credits", "account_suspended", "license_revoked", "accidental", "declined"])
       return false unless state_validator.valid?(@state)
       return false if @template_type.nil?
       template_type_validator = EnumAttributeValidator.new('String', ["pdf", "html"])
@@ -460,7 +460,7 @@ module DocSpring
     # Custom attribute writer method checking allowed values (enum).
     # @param [Object] state Object to be assigned
     def state=(state)
-      validator = EnumAttributeValidator.new('String', ["pending", "processed", "invalid_data", "error", "image_download_failed", "image_processing_failed", "waiting_for_data_requests", "syntax_error", "account_suspended", "license_revoked", "accidental", "declined"])
+      validator = EnumAttributeValidator.new('String', ["pending", "processed", "invalid_data", "error", "image_download_failed", "image_processing_failed", "waiting_for_data_requests", "syntax_error", "insufficient_credits", "account_suspended", "license_revoked", "accidental", "declined"])
       # build_from_hash accepts enum values this client doesn't know about yet
       unless defined?(@_skip_enum_validation) || validator.valid?(state)
         fail ArgumentError, "invalid value for \"state\", must be one of #{validator.allowable_values}."

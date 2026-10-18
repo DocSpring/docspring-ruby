@@ -9,6 +9,7 @@
 | **errors** | **Array&lt;String&gt;** |  | [optional] |
 | **submission_batch** | [**SubmissionBatch**](SubmissionBatch.md) |  |  |
 | **submissions** | **Array&lt;Object&gt;** |  |  |
+| **code** | **String** | &#x60;insufficient_credits&#x60; when the response is a 402. | [optional] |
 
 ## Example
 
@@ -20,7 +21,8 @@ instance = DocSpring::BatchGeneratePdfs201Response.new(
   error: null,
   errors: null,
   submission_batch: null,
-  submissions: null
+  submissions: null,
+  code: null
 )
 ```
 

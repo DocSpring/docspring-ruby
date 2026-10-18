@@ -6,6 +6,7 @@
 | ---- | ---- | ----------- | ----- |
 | **status** | **String** |  |  |
 | **token** | [**SubmissionDataRequestToken**](SubmissionDataRequestToken.md) |  |  |
+| **error** | **String** |  | [optional] |
 | **errors** | **Array&lt;String&gt;** |  | [optional] |
 
 ## Example
@@ -16,6 +17,7 @@ require 'docspring'
 instance = DocSpring::CreateSubmissionDataRequestTokenResponse.new(
   status: null,
   token: null,
+  error: null,
   errors: null
 )
 ```

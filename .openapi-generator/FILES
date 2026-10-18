@@ -31,6 +31,7 @@ docs/CustomFile.md
 docs/ErrorOrMultipleErrorsResponse.md
 docs/ErrorResponse.md
 docs/Folder.md
+docs/ForbiddenErrorResponse.md
 docs/JsonSchema.md
 docs/ListSubmissionsResponse.md
 docs/MoveFolderData.md
@@ -95,6 +96,7 @@ lib/docspring/models/custom_file.rb
 lib/docspring/models/error_or_multiple_errors_response.rb
 lib/docspring/models/error_response.rb
 lib/docspring/models/folder.rb
+lib/docspring/models/forbidden_error_response.rb
 lib/docspring/models/json_schema.rb
 lib/docspring/models/list_submissions_response.rb
 lib/docspring/models/move_folder_data.rb
@@ -154,6 +156,7 @@ spec/models/custom_file_spec.rb
 spec/models/error_or_multiple_errors_response_spec.rb
 spec/models/error_response_spec.rb
 spec/models/folder_spec.rb
+spec/models/forbidden_error_response_spec.rb
 spec/models/json_schema_spec.rb
 spec/models/list_submissions_response_spec.rb
 spec/models/move_folder_data_spec.rb

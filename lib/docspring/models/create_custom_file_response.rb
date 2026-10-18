@@ -1,7 +1,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures. Requests are rate limited per account, and live PDFs use credits: a request over the limit returns 429 with a Retry-After header, and one your credits can't cover returns 402. See [Credits & Rate Limits](https://docspring.com/docs/api-guide/credits-and-rate-limits/).
 
 The version of the OpenAPI document: v1
 
@@ -18,6 +18,8 @@ module DocSpring
     attr_accessor :status
 
     attr_accessor :custom_file
+
+    attr_accessor :error
 
     attr_accessor :errors
 
@@ -48,6 +50,7 @@ module DocSpring
       {
         :'status' => :'status',
         :'custom_file' => :'custom_file',
+        :'error' => :'error',
         :'errors' => :'errors'
       }
     end
@@ -67,6 +70,7 @@ module DocSpring
       {
         :'status' => :'String',
         :'custom_file' => :'CustomFile',
+        :'error' => :'String',
         :'errors' => :'Array<String>'
       }
     end
@@ -103,6 +107,10 @@ module DocSpring
         self.custom_file = attributes[:'custom_file']
       else
         self.custom_file = nil
+      end
+
+      if attributes.key?(:'error')
+        self.error = attributes[:'error']
       end
 
       if attributes.key?(:'errors')
@@ -167,6 +175,7 @@ module DocSpring
       self.class == o.class &&
           status == o.status &&
           custom_file == o.custom_file &&
+          error == o.error &&
           errors == o.errors
     end
 
@@ -179,7 +188,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [status, custom_file, errors].hash
+      [status, custom_file, error, errors].hash
     end
 
     # Builds the object from hash

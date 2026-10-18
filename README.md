@@ -6,7 +6,7 @@ templates with your data, generates PDFs from HTML templates, combines PDFs and 
 [Documentation](https://docspring.com/docs/) · [API reference](https://docspring.com/docs/api/) ·
 [RubyGems](https://rubygems.org/gems/docspring) · [Changelog](https://github.com/DocSpring/docspring-ruby/blob/main/CHANGELOG.md)
 
-Version 3.4.0. Requires Ruby >= 2.7.
+Version 3.5.0. Requires Ruby >= 2.7.
 
 ## Install and configure
 

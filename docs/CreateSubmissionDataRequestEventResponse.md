@@ -6,6 +6,7 @@
 | ---- | ---- | ----------- | ----- |
 | **status** | **String** |  |  |
 | **event** | [**SubmissionDataRequestEvent**](SubmissionDataRequestEvent.md) |  |  |
+| **error** | **String** |  | [optional] |
 | **errors** | **Array&lt;String&gt;** |  | [optional] |
 
 ## Example
@@ -16,6 +17,7 @@ require 'docspring'
 instance = DocSpring::CreateSubmissionDataRequestEventResponse.new(
   status: null,
   event: null,
+  error: null,
   errors: null
 )
 ```

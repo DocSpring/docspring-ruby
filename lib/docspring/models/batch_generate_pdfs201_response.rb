@@ -1,7 +1,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures. Requests are rate limited per account, and live PDFs use credits: a request over the limit returns 429 with a Retry-After header, and one your credits can't cover returns 402. See [Credits & Rate Limits](https://docspring.com/docs/api-guide/credits-and-rate-limits/).
 
 The version of the OpenAPI document: v1
 
@@ -24,6 +24,9 @@ module DocSpring
     attr_accessor :submission_batch
 
     attr_accessor :submissions
+
+    # `insufficient_credits` when the response is a 402.
+    attr_accessor :code
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -54,7 +57,8 @@ module DocSpring
         :'error' => :'error',
         :'errors' => :'errors',
         :'submission_batch' => :'submission_batch',
-        :'submissions' => :'submissions'
+        :'submissions' => :'submissions',
+        :'code' => :'code'
       }
     end
 
@@ -75,7 +79,8 @@ module DocSpring
         :'error' => :'String',
         :'errors' => :'Array<String>',
         :'submission_batch' => :'SubmissionBatch',
-        :'submissions' => :'Array<Object>'
+        :'submissions' => :'Array<Object>',
+        :'code' => :'String'
       }
     end
 
@@ -129,6 +134,10 @@ module DocSpring
         end
       else
         self.submissions = nil
+      end
+
+      if attributes.key?(:'code')
+        self.code = attributes[:'code']
       end
     end
 
@@ -204,7 +213,8 @@ module DocSpring
           error == o.error &&
           errors == o.errors &&
           submission_batch == o.submission_batch &&
-          submissions == o.submissions
+          submissions == o.submissions &&
+          code == o.code
     end
 
     # @see the `==` method
@@ -216,7 +226,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [status, error, errors, submission_batch, submissions].hash
+      [status, error, errors, submission_batch, submissions, code].hash
     end
 
     # Builds the object from hash
