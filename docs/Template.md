@@ -33,6 +33,7 @@
 | **page_count** | **Integer** |  |  |
 | **page_dimensions** | **Array&lt;Array&lt;Float&gt;&gt;** |  |  |
 | **parent_folder_id** | **String** |  |  |
+| **parse_dates_using_template_date_format** | **Boolean** |  |  |
 | **path** | **String** |  |  |
 | **permanent_document_url** | **String** |  |  |
 | **public_submissions** | **Boolean** |  |  |
@@ -102,6 +103,7 @@ instance = DocSpring::Template.new(
   page_count: null,
   page_dimensions: null,
   parent_folder_id: null,
+  parse_dates_using_template_date_format: null,
   path: null,
   permanent_document_url: null,
   public_submissions: null,

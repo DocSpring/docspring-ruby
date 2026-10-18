@@ -205,6 +205,12 @@ describe DocSpring::TemplatePreview do
     end
   end
 
+  describe 'test attribute "parse_dates_using_template_date_format"' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
   describe 'test attribute "path"' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/

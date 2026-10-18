@@ -73,6 +73,8 @@ module DocSpring
 
     attr_accessor :parent_folder_id
 
+    attr_accessor :parse_dates_using_template_date_format
+
     attr_accessor :path
 
     attr_accessor :permanent_document_url
@@ -167,6 +169,7 @@ module DocSpring
         :'page_count' => :'page_count',
         :'page_dimensions' => :'page_dimensions',
         :'parent_folder_id' => :'parent_folder_id',
+        :'parse_dates_using_template_date_format' => :'parse_dates_using_template_date_format',
         :'path' => :'path',
         :'permanent_document_url' => :'permanent_document_url',
         :'public_submissions' => :'public_submissions',
@@ -232,6 +235,7 @@ module DocSpring
         :'page_count' => :'Integer',
         :'page_dimensions' => :'Array<Array<Float>>',
         :'parent_folder_id' => :'String',
+        :'parse_dates_using_template_date_format' => :'Boolean',
         :'path' => :'String',
         :'permanent_document_url' => :'String',
         :'public_submissions' => :'Boolean',
@@ -480,6 +484,12 @@ module DocSpring
         self.parent_folder_id = nil
       end
 
+      if attributes.key?(:'parse_dates_using_template_date_format')
+        self.parse_dates_using_template_date_format = attributes[:'parse_dates_using_template_date_format']
+      else
+        self.parse_dates_using_template_date_format = nil
+      end
+
       if attributes.key?(:'path')
         self.path = attributes[:'path']
       else
@@ -672,6 +682,10 @@ module DocSpring
         invalid_properties.push('invalid value for "page_count", page_count cannot be nil.')
       end
 
+      if @parse_dates_using_template_date_format.nil?
+        invalid_properties.push('invalid value for "parse_dates_using_template_date_format", parse_dates_using_template_date_format cannot be nil.')
+      end
+
       if @path.nil?
         invalid_properties.push('invalid value for "path", path cannot be nil.')
       end
@@ -718,6 +732,7 @@ module DocSpring
       return false if @locked.nil?
       return false if @merge_audit_trail_pdf.nil?
       return false if @page_count.nil?
+      return false if @parse_dates_using_template_date_format.nil?
       return false if @path.nil?
       return false if @public_submissions.nil?
       return false if @public_web_form.nil?
@@ -902,6 +917,16 @@ module DocSpring
     end
 
     # Custom attribute writer method with validation
+    # @param [Object] parse_dates_using_template_date_format Value to be assigned
+    def parse_dates_using_template_date_format=(parse_dates_using_template_date_format)
+      if parse_dates_using_template_date_format.nil?
+        fail ArgumentError, 'parse_dates_using_template_date_format cannot be nil'
+      end
+
+      @parse_dates_using_template_date_format = parse_dates_using_template_date_format
+    end
+
+    # Custom attribute writer method with validation
     # @param [Object] path Value to be assigned
     def path=(path)
       if path.nil?
@@ -997,6 +1022,7 @@ module DocSpring
           page_count == o.page_count &&
           page_dimensions == o.page_dimensions &&
           parent_folder_id == o.parent_folder_id &&
+          parse_dates_using_template_date_format == o.parse_dates_using_template_date_format &&
           path == o.path &&
           permanent_document_url == o.permanent_document_url &&
           public_submissions == o.public_submissions &&
@@ -1028,7 +1054,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [add_data_request_submission_id_footers, allow_additional_properties, description, document_filename, document_md5, document_parse_error, document_processed, document_state, document_url, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs_password, encrypt_pdfs, expiration_interval, expire_after, expire_submissions, external_predefined_fields_template_id, external_predefined_fields_template_name, first_template, id, locked, merge_audit_trail_pdf, name, page_count, page_dimensions, parent_folder_id, path, permanent_document_url, public_submissions, public_web_form, redirect_url, slack_webhook_url, template_type, updated_at, version_published_at, version, webhook_url, embed_edit_token, demo, latest_version, last_changed_at, last_changed_by_type, last_changed_by_id, last_changed_by_external_name, last_changed_by_external_email, last_changed_by_external_id].hash
+      [add_data_request_submission_id_footers, allow_additional_properties, description, document_filename, document_md5, document_parse_error, document_processed, document_state, document_url, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs_password, encrypt_pdfs, expiration_interval, expire_after, expire_submissions, external_predefined_fields_template_id, external_predefined_fields_template_name, first_template, id, locked, merge_audit_trail_pdf, name, page_count, page_dimensions, parent_folder_id, parse_dates_using_template_date_format, path, permanent_document_url, public_submissions, public_web_form, redirect_url, slack_webhook_url, template_type, updated_at, version_published_at, version, webhook_url, embed_edit_token, demo, latest_version, last_changed_at, last_changed_by_type, last_changed_by_id, last_changed_by_external_name, last_changed_by_external_email, last_changed_by_external_id].hash
     end
 
     # Builds the object from hash
