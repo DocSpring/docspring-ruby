@@ -4,69 +4,52 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **add_data_request_submission_id_footers** | **Boolean** |  |  |
-| **allow_additional_properties** | **Boolean** |  |  |
-| **description** | **String** |  |  |
-| **document_filename** | **String** |  |  |
-| **document_md5** | **String** |  |  |
-| **document_parse_error** | **Boolean** |  |  |
-| **document_processed** | **Boolean** |  |  |
-| **document_state** | **String** |  |  |
-| **document_url** | **String** |  |  |
-| **editable_submissions** | **Boolean** |  |  |
-| **embed_domains** | **String** |  |  |
-| **embed_edit_allow_settings** | **Boolean** |  |  |
-| **embed_edit_allow_versioning** | **Boolean** |  |  |
-| **embed_edit_allow_document_replacement** | **Boolean** |  |  |
-| **encrypt_pdfs_password** | **String** |  |  |
-| **encrypt_pdfs** | **Boolean** |  |  |
-| **expiration_interval** | **String** |  |  |
-| **expire_after** | **Integer** |  |  |
-| **expire_submissions** | **Boolean** |  |  |
-| **external_predefined_fields_template_id** | **String** |  |  |
-| **external_predefined_fields_template_name** | **String** |  |  |
-| **first_template** | **Boolean** |  |  |
-| **id** | **String** |  |  |
-| **locked** | **Boolean** |  |  |
-| **merge_audit_trail_pdf** | **Boolean** |  |  |
-| **name** | **String** |  |  |
-| **page_count** | **Integer** |  |  |
-| **page_dimensions** | **Array&lt;Array&lt;Float&gt;&gt;** |  |  |
-| **parent_folder_id** | **String** |  |  |
-| **parse_dates_using_template_date_format** | **Boolean** |  |  |
-| **path** | **String** |  |  |
-| **permanent_document_url** | **String** |  |  |
-| **public_submissions** | **Boolean** |  |  |
-| **public_web_form** | **Boolean** |  |  |
-| **redirect_url** | **String** |  |  |
-| **slack_webhook_url** | **String** |  |  |
-| **template_type** | **String** |  |  |
-| **updated_at** | **String** |  |  |
-| **version_published_at** | **String** |  |  |
-| **version** | **String** |  |  |
-| **webhook_url** | **String** |  |  |
-| **embed_edit_token** | **String** |  | [optional] |
-| **demo** | **Boolean** |  |  |
-| **latest_version** | **String** |  |  |
-| **last_changed_at** | **String** |  |  |
-| **last_changed_by_type** | **String** |  |  |
-| **last_changed_by_id** | **String** |  |  |
-| **last_changed_by_external_name** | **String** |  |  |
-| **last_changed_by_external_email** | **String** |  |  |
-| **last_changed_by_external_id** | **String** |  |  |
-| **defaults** | **Object** |  |  |
-| **field_dependencies** | **Array&lt;Object&gt;** |  |  |
-| **field_order** | **Array&lt;Array&lt;Float&gt;&gt;** |  |  |
-| **fields** | **Object** |  |  |
-| **footer_html** | **String** |  |  |
-| **header_html** | **String** |  |  |
-| **html_engine_options** | **Object** |  |  |
-| **html** | **String** |  |  |
-| **predefined_fields** | **Array&lt;Object&gt;** |  |  |
-| **scss** | **String** |  |  |
-| **shared_field_data** | **Object** |  |  |
-| **template_schema_version** | **Integer** |  |  |
-| **versions** | **Array&lt;Object&gt;** |  |  |
+| **id** | **String** | The template's ID. |  |
+| **name** | **String** | The template's name. |  |
+| **description** | **String** | Shown under the template's name at the top of its hosted forms, and used as their meta description. Not shown on embedded forms or signature requests. |  |
+| **template_type** | [**TemplateType**](TemplateType.md) | `pdf`: fields placed on an uploaded PDF. `html`: a PDF rendered from HTML and SCSS. It can't be changed after the template is created. |  |
+| **ready** | **Boolean** | Whether the template can generate PDFs. HTML templates are always ready. A PDF template is ready once its document has been processed (`document.state` is `processed`). |  |
+| **document** | [**TemplateDocument**](TemplateDocument.md) | The PDF of a PDF template. Null for HTML templates, and for a PDF template that has no PDF yet. |  |
+| **parent_folder_id** | **String** | The ID of the folder the template is in. Null for a template at the root. Setting it moves the template and all of its published versions. |  |
+| **path** | **String** | The path of the folder the template is in, such as `/Contracts`. `/` for a template at the root. |  |
+| **version** | **String** | The published version this is, such as `1.2.0`. Null for the draft. |  |
+| **latest_version** | **String** | The template's latest published version. Null if no version has been published. |  |
+| **version_published_at** | **Time** | When this version was published. Null for the draft. |  |
+| **locked** | **Boolean** | A locked template can't be changed or deleted until it's unlocked (`locked` can always be changed). |  |
+| **add_signature_request_submission_id_footers** | **Boolean** | Print the submission ID in the footer of each page of PDFs signed through signature requests. |  |
+| **ai_field_naming_language** | [**AiFieldNamingLanguage**](AiFieldNamingLanguage.md) | The language AI field setup names fields in: `auto` uses the form's language when it's written in the Latin alphabet without accents, and English otherwise; `english` always uses English; `form_language` uses the form's language and script. New templates take it from your account's template settings. Null for HTML templates. |  |
+| **allow_additional_properties** | **Boolean** | Accept submission data with properties that aren't fields of the template. |  |
+| **allow_skipping_optional_fields** | **Boolean** | Visual forms and signature request forms show the Continue button as soon as the required fields are filled in, without visiting each optional field. The `allowSkippingOptionalFields` embed option overrides it. |  |
+| **default_form_mode** | [**TemplateFormMode**](TemplateFormMode.md) | The hosted form that /templates/{template_id}/form shows when its URL has no `mode` parameter: `web` (the web form), `visual` (the visual form, where fields are filled in on the PDF) or `dual` (both, in tabs). HTML templates have no visual form, so `web` is the only value they accept. |  |
+| **editable_submissions** | **Boolean** | Generate PDFs whose text and check fields stay fillable ("Generate Editable PDFs"). A submission's `editable` overrides it. |  |
+| **embed_domains** | **Array&lt;String&gt;** | The sites where the template's signature requests, forms and embedded template editor can be loaded: a host such as `app.example.com`, with an optional leading wildcard (`*.example.com`), port (`localhost:3000`) or scheme (`https://app.example.com`; without one, `http` and `https` both work). When it's empty, live signature requests don't load on any site, and the embedded template editor loads on every site. |  |
+| **embed_edit_allow_settings** | **Boolean** | Allow the embedded template editor to change sensitive template settings (webhooks, redirect URL, encryption, public access, expiration and so on). |  |
+| **embed_edit_allow_versioning** | **Boolean** | Allow the embedded template editor to publish, restore, compare and delete published versions. |  |
+| **embed_edit_allow_document_replacement** | **Boolean** | Allow the embedded template editor to replace the template's PDF. |  |
+| **encrypt_pdfs** | **Boolean** | Encrypt generated PDFs with `encrypt_pdfs_password`. |  |
+| **has_encrypt_pdfs_password** | **Boolean** | Whether `encrypt_pdfs_password` is set. |  |
+| **expire_submissions** | **Boolean** | Delete each submission's data and PDF after `expire_after` `expiration_interval`. |  |
+| **expire_after** | **Integer** | How many `expiration_interval`s a submission's data and PDF are kept for, when `expire_submissions` is on. At most 5256000 (10 years in minutes). |  |
+| **expiration_interval** | [**ExpirationInterval**](ExpirationInterval.md) | The unit of `expire_after`. |  |
+| **merge_audit_trail_pdf** | **Boolean** | Add the audit trail to the end of PDFs signed through signature requests. |  |
+| **parse_dates_using_template_date_format** | **Boolean** | Date fields also accept NN/NN/YYYY dates (with slashes, dashes or dots), read in the order of the template's default date format: month first for %m/%d/%Y, day first for %d/%m/%Y. When false, date fields only accept YYYY-MM-DD. Applies to PDF templates: an HTML template's date fields only accept YYYY-MM-DD. Date fields that include a time take RFC 3339 date-times either way. |  |
+| **public_submissions** | **Boolean** | Allow anyone with a submission's ID to download its PDF. |  |
+| **public_web_form** | **Boolean** | Allow anyone to fill in the template's web form. |  |
+| **redirect_url** | **String** | Where the web form sends people after they submit it. |  |
+| **has_slack_webhook_url** | **Boolean** | Whether `slack_webhook_url` is set. |  |
+| **last_changed_at** | **Time** | When the draft was last changed. |  |
+| **last_changed_by** | [**TemplateActor**](TemplateActor.md) | Who last changed the draft: a user in your account, an API token, or someone using the embedded template editor. Null if no change has been recorded. |  |
+| **created_at** | **Time** | When the template was created. |  |
+| **updated_at** | **Time** | When the template was last updated. |  |
+| **defaults** | [**TemplateDefaults**](TemplateDefaults.md) |  |  |
+| **field_dependencies** | [**Array&lt;TemplateFieldDependency&gt;**](TemplateFieldDependency.md) | Conditional logic: each rule shows or hides its target fields, or makes them required, depending on the values of other fields. |  |
+| **html** | **String** | The HTML of an HTML template, as a Liquid template. Null for PDF templates. |  |
+| **scss** | **String** | The SCSS of an HTML template. |  |
+| **header_html** | **String** | The HTML printed at the top of each page of an HTML template. |  |
+| **footer_html** | **String** | The HTML printed at the bottom of each page of an HTML template. |  |
+| **html_engine_options** | [**HtmlEngineOptions**](HtmlEngineOptions.md) | How an HTML template's PDFs are printed. Null for PDF templates. Setting it replaces the whole object: options left out use their defaults. |  |
+| **embed_edit_token** | **String** | The token that opens the template in the embedded template editor. |  |
+| **versions** | [**Array&lt;TemplateVersion&gt;**](TemplateVersion.md) | The template's published versions, newest first (up to 100). |  |
 
 ## Example
 
@@ -74,68 +57,51 @@
 require 'docspring'
 
 instance = DocSpring::Template.new(
-  add_data_request_submission_id_footers: null,
-  allow_additional_properties: null,
+  id: null,
+  name: null,
   description: null,
-  document_filename: null,
-  document_md5: null,
-  document_parse_error: null,
-  document_processed: null,
-  document_state: null,
-  document_url: null,
+  template_type: null,
+  ready: null,
+  document: null,
+  parent_folder_id: null,
+  path: null,
+  version: null,
+  latest_version: null,
+  version_published_at: null,
+  locked: null,
+  add_signature_request_submission_id_footers: null,
+  ai_field_naming_language: null,
+  allow_additional_properties: null,
+  allow_skipping_optional_fields: null,
+  default_form_mode: null,
   editable_submissions: null,
   embed_domains: null,
   embed_edit_allow_settings: null,
   embed_edit_allow_versioning: null,
   embed_edit_allow_document_replacement: null,
-  encrypt_pdfs_password: null,
   encrypt_pdfs: null,
-  expiration_interval: null,
-  expire_after: null,
+  has_encrypt_pdfs_password: null,
   expire_submissions: null,
-  external_predefined_fields_template_id: null,
-  external_predefined_fields_template_name: null,
-  first_template: null,
-  id: null,
-  locked: null,
+  expire_after: null,
+  expiration_interval: null,
   merge_audit_trail_pdf: null,
-  name: null,
-  page_count: null,
-  page_dimensions: null,
-  parent_folder_id: null,
   parse_dates_using_template_date_format: null,
-  path: null,
-  permanent_document_url: null,
   public_submissions: null,
   public_web_form: null,
   redirect_url: null,
-  slack_webhook_url: null,
-  template_type: null,
-  updated_at: null,
-  version_published_at: null,
-  version: null,
-  webhook_url: null,
-  embed_edit_token: null,
-  demo: null,
-  latest_version: null,
+  has_slack_webhook_url: null,
   last_changed_at: null,
-  last_changed_by_type: null,
-  last_changed_by_id: null,
-  last_changed_by_external_name: null,
-  last_changed_by_external_email: null,
-  last_changed_by_external_id: null,
+  last_changed_by: null,
+  created_at: null,
+  updated_at: null,
   defaults: null,
   field_dependencies: null,
-  field_order: null,
-  fields: null,
-  footer_html: null,
-  header_html: null,
-  html_engine_options: null,
   html: null,
-  predefined_fields: null,
   scss: null,
-  shared_field_data: null,
-  template_schema_version: null,
+  header_html: null,
+  footer_html: null,
+  html_engine_options: null,
+  embed_edit_token: null,
   versions: null
 )
 ```

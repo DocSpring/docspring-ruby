@@ -4,8 +4,7 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **status** | **String** |  |  |
-| **error** | **String** |  |  |
+| **error** | [**ErrorInfo**](ErrorInfo.md) |  |  |
 
 ## Example
 
@@ -13,7 +12,6 @@
 require 'docspring'
 
 instance = DocSpring::ErrorResponse.new(
-  status: null,
   error: null
 )
 ```
