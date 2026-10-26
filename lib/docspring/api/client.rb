@@ -66,6 +66,80 @@ module DocSpring
   end
 end
 
+    # Add fields to a template
+    # Adds fields to a template's draft and returns all of its fields. Publish a version for submissions of published versions to have them. 
+    # @param template_id [String] The template's ID.
+    # @param body [AddTemplateFieldsRequest] The fields to add to the template's draft.
+    # @param [Hash] opts the optional parameters
+    # @return [TemplateFields]
+    def add_template_fields(template_id, body, opts = {})
+      data, _status_code, _headers = add_template_fields_with_http_info(template_id, body, opts)
+      data
+    end
+
+    # Add fields to a template
+    # Adds fields to a template's draft and returns all of its fields. Publish a version for submissions of published versions to have them. 
+    # @param template_id [String] The template's ID.
+    # @param body [AddTemplateFieldsRequest] The fields to add to the template's draft.
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(TemplateFields, Integer, Hash)>] TemplateFields data, response status code and response headers
+    def add_template_fields_with_http_info(template_id, body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.add_template_fields ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.add_template_fields"
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.add_template_fields"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/fields'.sub('{template_id}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'TemplateFields'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.add_template_fields",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#add_template_fields\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Copy a template
     # Copies a template (its draft, or a published version) into a new template.
     # @param template_id [String] The template's ID.
@@ -493,7 +567,7 @@ end
     # @param body [CreateSubmissionRequest] The submission's data and settings.
     # @param [Hash] opts the optional parameters
     # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
-    # @option opts [Boolean] :wait Wait until the PDF has been generated before responding. Default true on sync.api hosts.
+    # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
     # @return [Submission]
     def create_submission(template_id, body, opts = {})
       data, _status_code, _headers = create_submission_with_http_info(template_id, body, opts)
@@ -506,7 +580,7 @@ end
     # @param body [CreateSubmissionRequest] The submission's data and settings.
     # @param [Hash] opts the optional parameters
     # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
-    # @option opts [Boolean] :wait Wait until the PDF has been generated before responding. Default true on sync.api hosts.
+    # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
     # @return [Array<(Submission, Integer, Hash)>] Submission data, response status code and response headers
     def create_submission_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -642,7 +716,7 @@ end
     # Creates an HTML template, or a PDF template from a PDF you uploaded with the presigned upload (GET /uploads/presign): pass its `fields.key` as `cache_id`. To send the PDF with the request instead, use POST /templates/upload.  A PDF template is ready to generate PDFs once DocSpring has processed its PDF (`ready` is true). On sync.api hosts the request waits for that unless you pass `wait=false`. 
     # @param body [CreateTemplateRequest] The template to create.
     # @param [Hash] opts the optional parameters
-    # @option opts [Boolean] :wait Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+    # @option opts [Boolean] :wait Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
     # @return [Template]
     def create_template(body, opts = {})
       data, _status_code, _headers = create_template_with_http_info(body, opts)
@@ -653,7 +727,7 @@ end
     # Creates an HTML template, or a PDF template from a PDF you uploaded with the presigned upload (GET /uploads/presign): pass its `fields.key` as `cache_id`. To send the PDF with the request instead, use POST /templates/upload.  A PDF template is ready to generate PDFs once DocSpring has processed its PDF (`ready` is true). On sync.api hosts the request waits for that unless you pass `wait=false`. 
     # @param body [CreateTemplateRequest] The template to create.
     # @param [Hash] opts the optional parameters
-    # @option opts [Boolean] :wait Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+    # @option opts [Boolean] :wait Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def create_template_with_http_info(body, opts = {})
       if @api_client.config.debugging
@@ -1154,6 +1228,83 @@ end
       data, status_code, headers = @api_client.call_api(:DELETE, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#expire_submission\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Generate more files
+    # Adds formats to a processed submission's files, in the background: `png`, a PNG image of each page of the PDF (up to 100 pages). To make them with the submission, add them to `output_formats` when you create it.  Each new file is listed in `files` while it's made: on sync.api hosts the request waits for them (unless you pass `wait=false`), otherwise poll GET /submissions/{submission_id} until none of their `state` is `pending`. A file that couldn't be made has the state `error` and an `error_message`, and the submission stays processed. Asking for a format the submission already has (or is making) changes nothing. 
+    # @param submission_id [String] The submission's ID.
+    # @param body [GenerateSubmissionFilesRequest] The formats to make.
+    # @param [Hash] opts the optional parameters
+    # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
+    # @return [Submission]
+    def generate_submission_files(submission_id, body, opts = {})
+      data, _status_code, _headers = generate_submission_files_with_http_info(submission_id, body, opts)
+      data
+    end
+
+    # Generate more files
+    # Adds formats to a processed submission's files, in the background: `png`, a PNG image of each page of the PDF (up to 100 pages). To make them with the submission, add them to `output_formats` when you create it.  Each new file is listed in `files` while it's made: on sync.api hosts the request waits for them (unless you pass `wait=false`), otherwise poll GET /submissions/{submission_id} until none of their `state` is `pending`. A file that couldn't be made has the state `error` and an `error_message`, and the submission stays processed. Asking for a format the submission already has (or is making) changes nothing. 
+    # @param submission_id [String] The submission's ID.
+    # @param body [GenerateSubmissionFilesRequest] The formats to make.
+    # @param [Hash] opts the optional parameters
+    # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
+    # @return [Array<(Submission, Integer, Hash)>] Submission data, response status code and response headers
+    def generate_submission_files_with_http_info(submission_id, body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.generate_submission_files ...'
+      end
+      # verify the required parameter 'submission_id' is set
+      if @api_client.config.client_side_validation && submission_id.nil?
+        fail ArgumentError, "Missing the required parameter 'submission_id' when calling Client.generate_submission_files"
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.generate_submission_files"
+      end
+      # resource path
+      local_var_path = '/submissions/{submission_id}/generate_files'.sub('{submission_id}', CGI.escape(submission_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'wait'] = opts[:'wait'] if !opts[:'wait'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'Submission'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.generate_submission_files",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#generate_submission_files\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -1725,6 +1876,72 @@ end
       return data, status_code, headers
     end
 
+    # Compare a version of a template with the one before it
+    # Returns what changed in the template's draft since its latest published version (or in a published version since the one before it): fields added, removed, changed and moved, the settings that changed, and whether the document was replaced. Check it before you publish a version. 
+    # @param template_id [String] The template's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @return [TemplateDiff]
+    def get_template_diff(template_id, opts = {})
+      data, _status_code, _headers = get_template_diff_with_http_info(template_id, opts)
+      data
+    end
+
+    # Compare a version of a template with the one before it
+    # Returns what changed in the template's draft since its latest published version (or in a published version since the one before it): fields added, removed, changed and moved, the settings that changed, and whether the document was replaced. Check it before you publish a version. 
+    # @param template_id [String] The template's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @return [Array<(TemplateDiff, Integer, Hash)>] TemplateDiff data, response status code and response headers
+    def get_template_diff_with_http_info(template_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.get_template_diff ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.get_template_diff"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/diff'.sub('{template_id}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'version'] = opts[:'version'] if !opts[:'version'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'TemplateDiff'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.get_template_diff",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#get_template_diff\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Generate typed code for a template's submission data
     # Generates types for a template's submission data in TypeScript, JavaScript, Ruby, Python, PHP, Java, C#, Elixir or Go, so your app catches mistakes before it calls the API. `root_type_name` is the type of the whole `data` object. Java returns every class in `code`, each under a `// ClassName.java` comment. A template with no named fields returns 422. 
     # @param template_id [String] The template's ID.
@@ -1794,6 +2011,72 @@ end
       data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#get_template_model_code\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Get images of a template's pages
+    # Returns a JPEG image of each page of a PDF template's PDF, with temporary links to download them: the draft's PDF, or a published version's. Use them to see the pages that fields are placed on. 
+    # @param template_id [String] The template's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @return [TemplatePageImages]
+    def get_template_page_images(template_id, opts = {})
+      data, _status_code, _headers = get_template_page_images_with_http_info(template_id, opts)
+      data
+    end
+
+    # Get images of a template's pages
+    # Returns a JPEG image of each page of a PDF template's PDF, with temporary links to download them: the draft's PDF, or a published version's. Use them to see the pages that fields are placed on. 
+    # @param template_id [String] The template's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @return [Array<(TemplatePageImages, Integer, Hash)>] TemplatePageImages data, response status code and response headers
+    def get_template_page_images_with_http_info(template_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.get_template_page_images ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.get_template_page_images"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/page_images'.sub('{template_id}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'version'] = opts[:'version'] if !opts[:'version'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'TemplatePageImages'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.get_template_page_images",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#get_template_page_images\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -2197,6 +2480,72 @@ end
       return data, status_code, headers
     end
 
+    # List a template's fields
+    # Returns a template's fields with all of their settings, page by page: the draft's fields, or a published version's. A PDF template's fields are placed on its pages: GET /templates/{template_id}/page_images has images of the pages. 
+    # @param template_id [String] The template's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @return [TemplateFields]
+    def list_template_fields(template_id, opts = {})
+      data, _status_code, _headers = list_template_fields_with_http_info(template_id, opts)
+      data
+    end
+
+    # List a template's fields
+    # Returns a template's fields with all of their settings, page by page: the draft's fields, or a published version's. A PDF template's fields are placed on its pages: GET /templates/{template_id}/page_images has images of the pages. 
+    # @param template_id [String] The template's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @return [Array<(TemplateFields, Integer, Hash)>] TemplateFields data, response status code and response headers
+    def list_template_fields_with_http_info(template_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.list_template_fields ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.list_template_fields"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/fields'.sub('{template_id}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'version'] = opts[:'version'] if !opts[:'version'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'TemplateFields'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.list_template_fields",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#list_template_fields\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # List a template's submissions
     # Returns a template's submissions (from every version of the template), newest first.
     # @param template_id [String] The template's ID.
@@ -2574,7 +2923,7 @@ end
     end
 
     # Publish a template version
-    # Publishes the template's draft as a new version that doesn't change. `version_type` says which part of the latest version number goes up. 
+    # Publishes the template's draft as a new version that doesn't change. `version_type` says which part of the latest version number goes up. While the template's PDF is downloading or being processed, or DocSpring is setting up its fields, it returns a 409 that says so. 
     # @param template_id [String] The template's ID.
     # @param body [PublishTemplateVersionRequest] The version to publish.
     # @param [Hash] opts the optional parameters
@@ -2585,7 +2934,7 @@ end
     end
 
     # Publish a template version
-    # Publishes the template's draft as a new version that doesn't change. `version_type` says which part of the latest version number goes up. 
+    # Publishes the template's draft as a new version that doesn't change. `version_type` says which part of the latest version number goes up. While the template's PDF is downloading or being processed, or DocSpring is setting up its fields, it returns a 409 that says so. 
     # @param template_id [String] The template's ID.
     # @param body [PublishTemplateVersionRequest] The version to publish.
     # @param [Hash] opts the optional parameters
@@ -2643,6 +2992,80 @@ end
       data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#publish_template_version\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Remove fields from a template
+    # Removes fields from a template's draft and returns the fields that are left. Conditional logic that used only the removed fields is removed too. 
+    # @param template_id [String] The template's ID.
+    # @param body [RemoveTemplateFieldsRequest] The fields to remove from the template's draft.
+    # @param [Hash] opts the optional parameters
+    # @return [TemplateFields]
+    def remove_template_fields(template_id, body, opts = {})
+      data, _status_code, _headers = remove_template_fields_with_http_info(template_id, body, opts)
+      data
+    end
+
+    # Remove fields from a template
+    # Removes fields from a template's draft and returns the fields that are left. Conditional logic that used only the removed fields is removed too. 
+    # @param template_id [String] The template's ID.
+    # @param body [RemoveTemplateFieldsRequest] The fields to remove from the template's draft.
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(TemplateFields, Integer, Hash)>] TemplateFields data, response status code and response headers
+    def remove_template_fields_with_http_info(template_id, body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.remove_template_fields ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.remove_template_fields"
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.remove_template_fields"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/fields/remove'.sub('{template_id}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'TemplateFields'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.remove_template_fields",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#remove_template_fields\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -2717,6 +3140,80 @@ end
       data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#rename_folder\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Reorder a template's fields
+    # Changes the order of the fields in a template's draft and returns them in their new order. Send every field's ID: each field stays on its page, and a page's fields are printed in this order, so a later field prints over an earlier one where they overlap. Their values are in this order in the template's data schema and forms. 
+    # @param template_id [String] The template's ID.
+    # @param body [ReorderTemplateFieldsRequest] The new order of the fields in the template's draft.
+    # @param [Hash] opts the optional parameters
+    # @return [TemplateFields]
+    def reorder_template_fields(template_id, body, opts = {})
+      data, _status_code, _headers = reorder_template_fields_with_http_info(template_id, body, opts)
+      data
+    end
+
+    # Reorder a template's fields
+    # Changes the order of the fields in a template's draft and returns them in their new order. Send every field's ID: each field stays on its page, and a page's fields are printed in this order, so a later field prints over an earlier one where they overlap. Their values are in this order in the template's data schema and forms. 
+    # @param template_id [String] The template's ID.
+    # @param body [ReorderTemplateFieldsRequest] The new order of the fields in the template's draft.
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(TemplateFields, Integer, Hash)>] TemplateFields data, response status code and response headers
+    def reorder_template_fields_with_http_info(template_id, body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.reorder_template_fields ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.reorder_template_fields"
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.reorder_template_fields"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/fields/reorder'.sub('{template_id}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'TemplateFields'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.reorder_template_fields",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#reorder_template_fields\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -2927,7 +3424,7 @@ end
     end
 
     # Update a template
-    # Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object. Setting `parent_folder_id` moves the template and all of its published versions. 
+    # Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object, and `field_groups` changes only the groups it lists. Setting `parent_folder_id` moves the template and all of its published versions. 
     # @param template_id [String] The template's ID.
     # @param body [UpdateTemplateRequest] The settings to change. Properties left out keep their values.
     # @param [Hash] opts the optional parameters
@@ -2938,7 +3435,7 @@ end
     end
 
     # Update a template
-    # Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object. Setting `parent_folder_id` moves the template and all of its published versions. 
+    # Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object, and `field_groups` changes only the groups it lists. Setting `parent_folder_id` moves the template and all of its published versions. 
     # @param template_id [String] The template's ID.
     # @param body [UpdateTemplateRequest] The settings to change. Properties left out keep their values.
     # @param [Hash] opts the optional parameters
@@ -3001,11 +3498,11 @@ end
     end
 
     # Replace a template's PDF
-    # Replaces a PDF template's PDF with one you uploaded with the presigned upload (GET /uploads/presign). The fields stay where they are, unless `reimport_fields` replaces them with the new PDF's fillable fields. To send the PDF with the request instead, use PUT /templates/{template_id}/document/upload. 
+    # Replaces a PDF template's PDF with one you uploaded with the presigned upload (GET /uploads/presign) (`cache_id`), a link to download it from (`document_url`), or the file in base64 (`document_base64`). The fields stay where they are, unless `reimport_fields` replaces them with the new PDF's fillable fields. To send the PDF as `multipart/form-data` instead, use PUT /templates/{template_id}/document/upload. 
     # @param template_id [String] The template's ID.
-    # @param body [UpdateTemplateDocumentRequest] The new PDF.
+    # @param body [UpdateTemplateDocumentRequest] The new PDF, as one of `cache_id`, `document_url` and `document_base64`.
     # @param [Hash] opts the optional parameters
-    # @option opts [Boolean] :wait Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+    # @option opts [Boolean] :wait Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
     # @return [Template]
     def update_template_document(template_id, body, opts = {})
       data, _status_code, _headers = update_template_document_with_http_info(template_id, body, opts)
@@ -3013,11 +3510,11 @@ end
     end
 
     # Replace a template's PDF
-    # Replaces a PDF template's PDF with one you uploaded with the presigned upload (GET /uploads/presign). The fields stay where they are, unless `reimport_fields` replaces them with the new PDF's fillable fields. To send the PDF with the request instead, use PUT /templates/{template_id}/document/upload. 
+    # Replaces a PDF template's PDF with one you uploaded with the presigned upload (GET /uploads/presign) (`cache_id`), a link to download it from (`document_url`), or the file in base64 (`document_base64`). The fields stay where they are, unless `reimport_fields` replaces them with the new PDF's fillable fields. To send the PDF as `multipart/form-data` instead, use PUT /templates/{template_id}/document/upload. 
     # @param template_id [String] The template's ID.
-    # @param body [UpdateTemplateDocumentRequest] The new PDF.
+    # @param body [UpdateTemplateDocumentRequest] The new PDF, as one of `cache_id`, `document_url` and `document_base64`.
     # @param [Hash] opts the optional parameters
-    # @option opts [Boolean] :wait Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+    # @option opts [Boolean] :wait Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def update_template_document_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -3073,6 +3570,80 @@ end
       data, status_code, headers = @api_client.call_api(:PUT, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#update_template_document\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Update a template's fields
+    # Changes fields of a template's draft and returns all of its fields. Settings left out keep their values. A shared setting (`type`, `required`, `default`, ...) changes for every field with the same name. 
+    # @param template_id [String] The template's ID.
+    # @param body [UpdateTemplateFieldsRequest] The fields to change in the template's draft.
+    # @param [Hash] opts the optional parameters
+    # @return [TemplateFields]
+    def update_template_fields(template_id, body, opts = {})
+      data, _status_code, _headers = update_template_fields_with_http_info(template_id, body, opts)
+      data
+    end
+
+    # Update a template's fields
+    # Changes fields of a template's draft and returns all of its fields. Settings left out keep their values. A shared setting (`type`, `required`, `default`, ...) changes for every field with the same name. 
+    # @param template_id [String] The template's ID.
+    # @param body [UpdateTemplateFieldsRequest] The fields to change in the template's draft.
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(TemplateFields, Integer, Hash)>] TemplateFields data, response status code and response headers
+    def update_template_fields_with_http_info(template_id, body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.update_template_fields ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.update_template_fields"
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.update_template_fields"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/fields'.sub('{template_id}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'TemplateFields'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.update_template_fields",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:PUT, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#update_template_fields\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -3155,7 +3726,7 @@ end
     # Creates a PDF template from a PDF sent with the request (`multipart/form-data`). For large files, upload the PDF with the presigned upload (GET /uploads/presign) and create the template with POST /templates. 
     # @param document [File] The PDF.
     # @param [Hash] opts the optional parameters
-    # @option opts [Boolean] :wait Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+    # @option opts [Boolean] :wait Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
     # @option opts [String] :name The template's name.
     # @option opts [String] :description The template's description.
     # @option opts [String] :parent_folder_id The folder to put the template in. Left out, it's created at the root.
@@ -3174,7 +3745,7 @@ end
     # Creates a PDF template from a PDF sent with the request (`multipart/form-data`). For large files, upload the PDF with the presigned upload (GET /uploads/presign) and create the template with POST /templates. 
     # @param document [File] The PDF.
     # @param [Hash] opts the optional parameters
-    # @option opts [Boolean] :wait Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+    # @option opts [Boolean] :wait Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
     # @option opts [String] :name The template's name.
     # @option opts [String] :description The template's description.
     # @option opts [String] :parent_folder_id The folder to put the template in. Left out, it's created at the root.
@@ -3252,7 +3823,7 @@ end
     # @param template_id [String] The template's ID.
     # @param document [File] The new PDF.
     # @param [Hash] opts the optional parameters
-    # @option opts [Boolean] :wait Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+    # @option opts [Boolean] :wait Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
     # @option opts [Boolean] :reimport_fields Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields.
     # @return [Template]
     def upload_template_document(template_id, document, opts = {})
@@ -3265,7 +3836,7 @@ end
     # @param template_id [String] The template's ID.
     # @param document [File] The new PDF.
     # @param [Hash] opts the optional parameters
-    # @option opts [Boolean] :wait Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+    # @option opts [Boolean] :wait Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
     # @option opts [Boolean] :reimport_fields Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def upload_template_document_with_http_info(template_id, document, opts = {})
@@ -3324,6 +3895,83 @@ end
       data, status_code, headers = @api_client.call_api(:PUT, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#upload_template_document\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Check a submission without creating it
+    # Checks a submission as creating it would (its data against the template's fields, its settings and signature requests) without saving it, generating anything or using credits. It doesn't check your account's credits. The response says whether the submission is valid, and if not, has the error that creating it would return. 
+    # @param template_id [String] The template's ID.
+    # @param body [ValidateSubmissionRequest] The submission's data and settings.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
+    # @return [SubmissionValidation]
+    def validate_submission(template_id, body, opts = {})
+      data, _status_code, _headers = validate_submission_with_http_info(template_id, body, opts)
+      data
+    end
+
+    # Check a submission without creating it
+    # Checks a submission as creating it would (its data against the template's fields, its settings and signature requests) without saving it, generating anything or using credits. It doesn't check your account's credits. The response says whether the submission is valid, and if not, has the error that creating it would return. 
+    # @param template_id [String] The template's ID.
+    # @param body [ValidateSubmissionRequest] The submission's data and settings.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
+    # @return [Array<(SubmissionValidation, Integer, Hash)>] SubmissionValidation data, response status code and response headers
+    def validate_submission_with_http_info(template_id, body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.validate_submission ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.validate_submission"
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.validate_submission"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/submissions/validate'.sub('{template_id}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'version'] = opts[:'version'] if !opts[:'version'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'SubmissionValidation'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.validate_submission",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#validate_submission\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end

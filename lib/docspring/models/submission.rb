@@ -67,7 +67,10 @@ module DocSpring
     # The text of each field that didn't fit in it, by field name. Left out (null) with `data`, and empty once the submission has expired.
     attr_accessor :truncated_text
 
-    # The generated files: `pdf` once the submission has been processed, `audit_trail` once its signature requests are completed, and `preview` once a preview PDF has been generated. Empty once the submission has expired.
+    # What the submission makes: `pdf`, and `png` (an image of each page of the PDF, up to 100 pages) when you ask for it. Default `["pdf"]`. POST /submissions/{submission_id}/generate_files adds `png` to a processed submission.
+    attr_accessor :output_formats
+
+    # The generated files: `pdf` once the submission has been processed, `png` (the images of the PDF's pages, when `output_formats` has it: `files.png.pages[0]` is page 1), `audit_trail` once its signature requests are completed, and `preview` once a preview PDF has been generated. Empty once the submission has expired.
     attr_accessor :files
 
     # When the preview PDF was generated. Null if there is no preview.
@@ -130,6 +133,7 @@ module DocSpring
         :'signature_requests' => :'signature_requests',
         :'actions' => :'actions',
         :'truncated_text' => :'truncated_text',
+        :'output_formats' => :'output_formats',
         :'files' => :'files',
         :'preview_generated_at' => :'preview_generated_at',
         :'expired' => :'expired',
@@ -170,6 +174,7 @@ module DocSpring
         :'signature_requests' => :'Array<SignatureRequest>',
         :'actions' => :'Array<SubmissionAction>',
         :'truncated_text' => :'Hash<String, Array<String>>',
+        :'output_formats' => :'Array<OutputFormat>',
         :'files' => :'SubmissionFiles',
         :'preview_generated_at' => :'Time',
         :'expired' => :'Boolean',
@@ -335,6 +340,14 @@ module DocSpring
         self.truncated_text = nil
       end
 
+      if attributes.key?(:'output_formats')
+        if (value = attributes[:'output_formats']).is_a?(Array)
+          self.output_formats = value
+        end
+      else
+        self.output_formats = nil
+      end
+
       if attributes.key?(:'files')
         self.files = attributes[:'files']
       else
@@ -427,6 +440,10 @@ module DocSpring
         invalid_properties.push('invalid value for "actions", actions cannot be nil.')
       end
 
+      if @output_formats.nil?
+        invalid_properties.push('invalid value for "output_formats", output_formats cannot be nil.')
+      end
+
       if @files.nil?
         invalid_properties.push('invalid value for "files", files cannot be nil.')
       end
@@ -461,6 +478,7 @@ module DocSpring
       return false if @has_password.nil?
       return false if @signature_requests.nil?
       return false if @actions.nil?
+      return false if @output_formats.nil?
       return false if @files.nil?
       return false if @expired.nil?
       return false if @created_at.nil?
@@ -579,6 +597,16 @@ module DocSpring
     end
 
     # Custom attribute writer method with validation
+    # @param [Object] output_formats Value to be assigned
+    def output_formats=(output_formats)
+      if output_formats.nil?
+        fail ArgumentError, 'output_formats cannot be nil'
+      end
+
+      @output_formats = output_formats
+    end
+
+    # Custom attribute writer method with validation
     # @param [Object] files Value to be assigned
     def files=(files)
       if files.nil?
@@ -640,6 +668,7 @@ module DocSpring
           signature_requests == o.signature_requests &&
           actions == o.actions &&
           truncated_text == o.truncated_text &&
+          output_formats == o.output_formats &&
           files == o.files &&
           preview_generated_at == o.preview_generated_at &&
           expired == o.expired &&
@@ -658,7 +687,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, template_id, template_type, template_version, batch_id, source, state, test, editable, data, data_errors, error_message, metadata, has_password, signature_requests, actions, truncated_text, files, preview_generated_at, expired, expires_at, processed_at, created_at, updated_at].hash
+      [id, template_id, template_type, template_version, batch_id, source, state, test, editable, data, data_errors, error_message, metadata, has_password, signature_requests, actions, truncated_text, output_formats, files, preview_generated_at, expired, expires_at, processed_at, created_at, updated_at].hash
     end
 
     # Builds the object from hash

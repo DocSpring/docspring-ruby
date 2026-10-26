@@ -33,7 +33,7 @@ module DocSpring
     # @option config [Configuration] Configuration for initializing the object, default to Configuration.default
     def initialize(config = Configuration.default)
       @config = config
-      @user_agent = "docspring-ruby-4.0.0"
+      @user_agent = "docspring-ruby-4.1.0"
       @default_headers = {
         'Content-Type' => 'application/json',
         'User-Agent' => @user_agent

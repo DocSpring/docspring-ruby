@@ -25,12 +25,15 @@ module DocSpring
     # The preview PDF from POST /submissions/{submission_id}/generate_preview, such as for a submission still waiting for its signature requests.
     attr_accessor :preview
 
+    attr_accessor :png
+
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
         :'pdf' => :'pdf',
         :'audit_trail' => :'audit_trail',
-        :'preview' => :'preview'
+        :'preview' => :'preview',
+        :'png' => :'png'
       }
     end
 
@@ -49,7 +52,8 @@ module DocSpring
       {
         :'pdf' => :'GeneratedFile',
         :'audit_trail' => :'GeneratedFile',
-        :'preview' => :'GeneratedFile'
+        :'preview' => :'GeneratedFile',
+        :'png' => :'PageImages'
       }
     end
 
@@ -96,6 +100,10 @@ module DocSpring
       if attributes.key?(:'preview')
         self.preview = attributes[:'preview']
       end
+
+      if attributes.key?(:'png')
+        self.png = attributes[:'png']
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -120,7 +128,8 @@ module DocSpring
       self.class == o.class &&
           pdf == o.pdf &&
           audit_trail == o.audit_trail &&
-          preview == o.preview
+          preview == o.preview &&
+          png == o.png
     end
 
     # @see the `==` method
@@ -132,7 +141,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [pdf, audit_trail, preview].hash
+      [pdf, audit_trail, preview, png].hash
     end
 
     # Builds the object from hash

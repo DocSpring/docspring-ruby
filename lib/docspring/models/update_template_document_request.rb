@@ -14,12 +14,18 @@ require 'date'
 require 'time'
 
 module DocSpring
-  # The new PDF.
+  # The new PDF, as one of `cache_id`, `document_url` and `document_base64`.
   class UpdateTemplateDocumentRequest < ApiModelBase
     # The `fields.key` of the new PDF, uploaded with the presigned upload (GET /uploads/presign).
     attr_accessor :cache_id
 
-    # The PDF's file name, for a `cache_id` (presigned uploads don't send one).
+    # An https:// link to the template's PDF (up to 100 MB), instead of `cache_id`. DocSpring downloads it after responding, following redirects to other https:// links: the template's `document.state` is `downloading` until then (sync.api hosts wait for it). If it can't be downloaded, the state is `download_failed` and `document.error_message` says why.
+    attr_accessor :document_url
+
+    # The template's PDF, encoded as base64 (a `data:` URI works too), instead of `cache_id`. Up to 7 MB before it's encoded: send a larger file with `cache_id` or `document_url`.
+    attr_accessor :document_base64
+
+    # The PDF's file name, for a `cache_id` (presigned uploads don't send one) or `document_base64`. A `document_url`'s is the last part of its path unless you set it.
     attr_accessor :filename
 
     # Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields.
@@ -29,6 +35,8 @@ module DocSpring
     def self.attribute_map
       {
         :'cache_id' => :'cache_id',
+        :'document_url' => :'document_url',
+        :'document_base64' => :'document_base64',
         :'filename' => :'filename',
         :'reimport_fields' => :'reimport_fields'
       }
@@ -48,6 +56,8 @@ module DocSpring
     def self.openapi_types
       {
         :'cache_id' => :'String',
+        :'document_url' => :'String',
+        :'document_base64' => :'String',
         :'filename' => :'String',
         :'reimport_fields' => :'Boolean'
       }
@@ -87,8 +97,14 @@ module DocSpring
 
       if attributes.key?(:'cache_id')
         self.cache_id = attributes[:'cache_id']
-      else
-        self.cache_id = nil
+      end
+
+      if attributes.key?(:'document_url')
+        self.document_url = attributes[:'document_url']
+      end
+
+      if attributes.key?(:'document_base64')
+        self.document_base64 = attributes[:'document_base64']
       end
 
       if attributes.key?(:'filename')
@@ -105,10 +121,6 @@ module DocSpring
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @cache_id.nil?
-        invalid_properties.push('invalid value for "cache_id", cache_id cannot be nil.')
-      end
-
       invalid_properties
     end
 
@@ -116,18 +128,7 @@ module DocSpring
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @cache_id.nil?
       true
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] cache_id Value to be assigned
-    def cache_id=(cache_id)
-      if cache_id.nil?
-        fail ArgumentError, 'cache_id cannot be nil'
-      end
-
-      @cache_id = cache_id
     end
 
     # Checks equality by comparing each attribute.
@@ -136,6 +137,8 @@ module DocSpring
       return true if self.equal?(o)
       self.class == o.class &&
           cache_id == o.cache_id &&
+          document_url == o.document_url &&
+          document_base64 == o.document_base64 &&
           filename == o.filename &&
           reimport_fields == o.reimport_fields
     end
@@ -149,7 +152,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [cache_id, filename, reimport_fields].hash
+      [cache_id, document_url, document_base64, filename, reimport_fields].hash
     end
 
     # Builds the object from hash

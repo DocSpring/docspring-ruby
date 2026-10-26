@@ -32,6 +32,19 @@ describe 'Client' do
     end
   end
 
+  # unit tests for add_template_fields
+  # Add fields to a template
+  # Adds fields to a template's draft and returns all of its fields. Publish a version for submissions of published versions to have them. 
+  # @param template_id The template's ID.
+  # @param body The fields to add to the template's draft.
+  # @param [Hash] opts the optional parameters
+  # @return [TemplateFields]
+  describe 'add_template_fields test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
   # unit tests for copy_template
   # Copy a template
   # Copies a template (its draft, or a published version) into a new template.
@@ -115,7 +128,7 @@ describe 'Client' do
   # @param body The submission's data and settings.
   # @param [Hash] opts the optional parameters
   # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
-  # @option opts [Boolean] :wait Wait until the PDF has been generated before responding. Default true on sync.api hosts.
+  # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
   # @return [Submission]
   describe 'create_submission test' do
     it 'should work' do
@@ -141,7 +154,7 @@ describe 'Client' do
   # Creates an HTML template, or a PDF template from a PDF you uploaded with the presigned upload (GET /uploads/presign): pass its `fields.key` as `cache_id`. To send the PDF with the request instead, use POST /templates/upload.  A PDF template is ready to generate PDFs once DocSpring has processed its PDF (`ready` is true). On sync.api hosts the request waits for that unless you pass `wait=false`. 
   # @param body The template to create.
   # @param [Hash] opts the optional parameters
-  # @option opts [Boolean] :wait Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+  # @option opts [Boolean] :wait Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
   # @return [Template]
   describe 'create_template test' do
     it 'should work' do
@@ -229,6 +242,20 @@ describe 'Client' do
   # @param [Hash] opts the optional parameters
   # @return [Submission]
   describe 'expire_submission test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for generate_submission_files
+  # Generate more files
+  # Adds formats to a processed submission's files, in the background: `png`, a PNG image of each page of the PDF (up to 100 pages). To make them with the submission, add them to `output_formats` when you create it.  Each new file is listed in `files` while it's made: on sync.api hosts the request waits for them (unless you pass `wait=false`), otherwise poll GET /submissions/{submission_id} until none of their `state` is `pending`. A file that couldn't be made has the state `error` and an `error_message`, and the submission stays processed. Asking for a format the submission already has (or is making) changes nothing. 
+  # @param submission_id The submission's ID.
+  # @param body The formats to make.
+  # @param [Hash] opts the optional parameters
+  # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
+  # @return [Submission]
+  describe 'generate_submission_files test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -343,6 +370,19 @@ describe 'Client' do
     end
   end
 
+  # unit tests for get_template_diff
+  # Compare a version of a template with the one before it
+  # Returns what changed in the template's draft since its latest published version (or in a published version since the one before it): fields added, removed, changed and moved, the settings that changed, and whether the document was replaced. Check it before you publish a version. 
+  # @param template_id The template's ID.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+  # @return [TemplateDiff]
+  describe 'get_template_diff test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
   # unit tests for get_template_model_code
   # Generate typed code for a template's submission data
   # Generates types for a template's submission data in TypeScript, JavaScript, Ruby, Python, PHP, Java, C#, Elixir or Go, so your app catches mistakes before it calls the API. `root_type_name` is the type of the whole `data` object. Java returns every class in `code`, each under a `// ClassName.java` comment. A template with no named fields returns 422. 
@@ -352,6 +392,19 @@ describe 'Client' do
   # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published), the version a submission uses by default.
   # @return [TemplateModelCode]
   describe 'get_template_model_code test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for get_template_page_images
+  # Get images of a template's pages
+  # Returns a JPEG image of each page of a PDF template's PDF, with temporary links to download them: the draft's PDF, or a published version's. Use them to see the pages that fields are placed on. 
+  # @param template_id The template's ID.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+  # @return [TemplatePageImages]
+  describe 'get_template_page_images test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -440,6 +493,19 @@ describe 'Client' do
     end
   end
 
+  # unit tests for list_template_fields
+  # List a template's fields
+  # Returns a template's fields with all of their settings, page by page: the draft's fields, or a published version's. A PDF template's fields are placed on its pages: GET /templates/{template_id}/page_images has images of the pages. 
+  # @param template_id The template's ID.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+  # @return [TemplateFields]
+  describe 'list_template_fields test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
   # unit tests for list_template_submissions
   # List a template's submissions
   # Returns a template's submissions (from every version of the template), newest first.
@@ -519,12 +585,25 @@ describe 'Client' do
 
   # unit tests for publish_template_version
   # Publish a template version
-  # Publishes the template's draft as a new version that doesn't change. `version_type` says which part of the latest version number goes up. 
+  # Publishes the template's draft as a new version that doesn't change. `version_type` says which part of the latest version number goes up. While the template's PDF is downloading or being processed, or DocSpring is setting up its fields, it returns a 409 that says so. 
   # @param template_id The template's ID.
   # @param body The version to publish.
   # @param [Hash] opts the optional parameters
   # @return [TemplateVersion]
   describe 'publish_template_version test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for remove_template_fields
+  # Remove fields from a template
+  # Removes fields from a template's draft and returns the fields that are left. Conditional logic that used only the removed fields is removed too. 
+  # @param template_id The template's ID.
+  # @param body The fields to remove from the template's draft.
+  # @param [Hash] opts the optional parameters
+  # @return [TemplateFields]
+  describe 'remove_template_fields test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -538,6 +617,19 @@ describe 'Client' do
   # @param [Hash] opts the optional parameters
   # @return [Folder]
   describe 'rename_folder test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for reorder_template_fields
+  # Reorder a template's fields
+  # Changes the order of the fields in a template's draft and returns them in their new order. Send every field's ID: each field stays on its page, and a page's fields are printed in this order, so a later field prints over an earlier one where they overlap. Their values are in this order in the template's data schema and forms. 
+  # @param template_id The template's ID.
+  # @param body The new order of the fields in the template's draft.
+  # @param [Hash] opts the optional parameters
+  # @return [TemplateFields]
+  describe 'reorder_template_fields test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -582,7 +674,7 @@ describe 'Client' do
 
   # unit tests for update_template
   # Update a template
-  # Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object. Setting `parent_folder_id` moves the template and all of its published versions. 
+  # Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object, and `field_groups` changes only the groups it lists. Setting `parent_folder_id` moves the template and all of its published versions. 
   # @param template_id The template's ID.
   # @param body The settings to change. Properties left out keep their values.
   # @param [Hash] opts the optional parameters
@@ -595,13 +687,26 @@ describe 'Client' do
 
   # unit tests for update_template_document
   # Replace a template's PDF
-  # Replaces a PDF template's PDF with one you uploaded with the presigned upload (GET /uploads/presign). The fields stay where they are, unless `reimport_fields` replaces them with the new PDF's fillable fields. To send the PDF with the request instead, use PUT /templates/{template_id}/document/upload. 
+  # Replaces a PDF template's PDF with one you uploaded with the presigned upload (GET /uploads/presign) (`cache_id`), a link to download it from (`document_url`), or the file in base64 (`document_base64`). The fields stay where they are, unless `reimport_fields` replaces them with the new PDF's fillable fields. To send the PDF as `multipart/form-data` instead, use PUT /templates/{template_id}/document/upload. 
   # @param template_id The template's ID.
-  # @param body The new PDF.
+  # @param body The new PDF, as one of `cache_id`, `document_url` and `document_base64`.
   # @param [Hash] opts the optional parameters
-  # @option opts [Boolean] :wait Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+  # @option opts [Boolean] :wait Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
   # @return [Template]
   describe 'update_template_document test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for update_template_fields
+  # Update a template's fields
+  # Changes fields of a template's draft and returns all of its fields. Settings left out keep their values. A shared setting (`type`, `required`, `default`, ...) changes for every field with the same name. 
+  # @param template_id The template's ID.
+  # @param body The fields to change in the template's draft.
+  # @param [Hash] opts the optional parameters
+  # @return [TemplateFields]
+  describe 'update_template_fields test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -625,7 +730,7 @@ describe 'Client' do
   # Creates a PDF template from a PDF sent with the request (`multipart/form-data`). For large files, upload the PDF with the presigned upload (GET /uploads/presign) and create the template with POST /templates. 
   # @param document The PDF.
   # @param [Hash] opts the optional parameters
-  # @option opts [Boolean] :wait Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+  # @option opts [Boolean] :wait Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
   # @option opts [String] :name The template's name.
   # @option opts [String] :description The template's description.
   # @option opts [String] :parent_folder_id The folder to put the template in. Left out, it's created at the root.
@@ -647,10 +752,24 @@ describe 'Client' do
   # @param template_id The template's ID.
   # @param document The new PDF.
   # @param [Hash] opts the optional parameters
-  # @option opts [Boolean] :wait Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+  # @option opts [Boolean] :wait Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
   # @option opts [Boolean] :reimport_fields Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields.
   # @return [Template]
   describe 'upload_template_document test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for validate_submission
+  # Check a submission without creating it
+  # Checks a submission as creating it would (its data against the template's fields, its settings and signature requests) without saving it, generating anything or using credits. It doesn't check your account's credits. The response says whether the submission is valid, and if not, has the error that creating it would return. 
+  # @param template_id The template's ID.
+  # @param body The submission's data and settings.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
+  # @return [SubmissionValidation]
+  describe 'validate_submission test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end

@@ -43,6 +43,9 @@
 | **updated_at** | **Time** | When the template was last updated. |  |
 | **defaults** | [**TemplateDefaults**](TemplateDefaults.md) |  |  |
 | **field_dependencies** | [**Array&lt;TemplateFieldDependency&gt;**](TemplateFieldDependency.md) | Conditional logic: each rule shows or hides its target fields, or makes them required, depending on the values of other fields. |  |
+| **field_groups** | [**Array&lt;FieldGroup&gt;**](FieldGroup.md) | The groups of the template's fields, with their settings. A field's name puts it in groups: `address/city` is in the group `address`, and `items/0/price` is in the list `items` and its items' group `items/~`. |  |
+| **predefined_fields** | [**Array&lt;PredefinedField&gt;**](PredefinedField.md) | The field names that people using the embedded template editor choose from, each with the data type and settings a field gets when it's given that name. Setting it replaces the whole list; an empty list turns them off. |  |
+| **predefined_fields_sample_data** | **Hash&lt;String, Object&gt;** | Sample submission data that sets `predefined_fields`: each value becomes a predefined field, with a type that fits it (`string`, `number`, `boolean`, `date`, `email` or `url`) and `required_in_template` true. Nested objects and arrays become names with `/`, such as `customer/email`. Without `predefined_fields` in the same request, it replaces them; with them, it adds to them and sets the types of the ones it has values for. |  |
 | **html** | **String** | The HTML of an HTML template, as a Liquid template. Null for PDF templates. |  |
 | **scss** | **String** | The SCSS of an HTML template. |  |
 | **header_html** | **String** | The HTML printed at the top of each page of an HTML template. |  |
@@ -96,6 +99,9 @@ instance = DocSpring::Template.new(
   updated_at: null,
   defaults: null,
   field_dependencies: null,
+  field_groups: null,
+  predefined_fields: null,
+  predefined_fields_sample_data: null,
   html: null,
   scss: null,
   header_html: null,

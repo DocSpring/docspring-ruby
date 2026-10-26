@@ -31,6 +31,9 @@ module DocSpring
     # A password that the PDF needs to be opened with. It's never returned; `has_password` says if it's set.
     attr_accessor :password
 
+    # What the submission makes: `pdf`, and `png` (an image of each page of the PDF, up to 100 pages) when you ask for it. Default `["pdf"]`. POST /submissions/{submission_id}/generate_files adds `png` to a processed submission.
+    attr_accessor :output_formats
+
     # Seconds after the PDF is generated until the submission expires, up to 10 years (315360000). Default the template's expiration setting. A submission that isn't processed, such as one with invalid data, is kept for at least 48 hours.
     attr_accessor :expires_in
 
@@ -54,6 +57,7 @@ module DocSpring
         :'data' => :'data',
         :'metadata' => :'metadata',
         :'password' => :'password',
+        :'output_formats' => :'output_formats',
         :'expires_in' => :'expires_in',
         :'field_overrides' => :'field_overrides',
         :'html' => :'html',
@@ -80,6 +84,7 @@ module DocSpring
         :'data' => :'Hash<String, Object>',
         :'metadata' => :'Hash<String, Object>',
         :'password' => :'String',
+        :'output_formats' => :'Array<OutputFormat>',
         :'expires_in' => :'Integer',
         :'field_overrides' => :'Hash<String, FieldOverride>',
         :'html' => :'String',
@@ -144,6 +149,12 @@ module DocSpring
         self.password = attributes[:'password']
       end
 
+      if attributes.key?(:'output_formats')
+        if (value = attributes[:'output_formats']).is_a?(Array)
+          self.output_formats = value
+        end
+      end
+
       if attributes.key?(:'expires_in')
         self.expires_in = attributes[:'expires_in']
       end
@@ -184,6 +195,16 @@ module DocSpring
       true
     end
 
+    # Custom attribute writer method with validation
+    # @param [Object] output_formats Value to be assigned
+    def output_formats=(output_formats)
+      if output_formats.nil?
+        fail ArgumentError, 'output_formats cannot be nil'
+      end
+
+      @output_formats = output_formats
+    end
+
     # Checks equality by comparing each attribute.
     # @param [Object] Object to be compared
     def ==(o)
@@ -194,6 +215,7 @@ module DocSpring
           data == o.data &&
           metadata == o.metadata &&
           password == o.password &&
+          output_formats == o.output_formats &&
           expires_in == o.expires_in &&
           field_overrides == o.field_overrides &&
           html == o.html &&
@@ -210,7 +232,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [test, editable, data, metadata, password, expires_in, field_overrides, html, css, signature_requests].hash
+      [test, editable, data, metadata, password, output_formats, expires_in, field_overrides, html, css, signature_requests].hash
     end
 
     # Builds the object from hash

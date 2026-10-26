@@ -20,9 +20,11 @@ module DocSpring
     PASSWORD_REQUIRED = "password_required".freeze
     MALFORMED_PDF = "malformed_pdf".freeze
     UNKNOWN_ERROR = "unknown_error".freeze
+    DOWNLOADING = "downloading".freeze
+    DOWNLOAD_FAILED = "download_failed".freeze
 
     def self.all_vars
-      @all_vars ||= [PENDING, PROCESSED, PASSWORD_REQUIRED, MALFORMED_PDF, UNKNOWN_ERROR].freeze
+      @all_vars ||= [PENDING, PROCESSED, PASSWORD_REQUIRED, MALFORMED_PDF, UNKNOWN_ERROR, DOWNLOADING, DOWNLOAD_FAILED].freeze
     end
 
     # Builds the enum from string

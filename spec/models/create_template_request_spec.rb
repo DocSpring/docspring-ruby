@@ -195,6 +195,18 @@ describe DocSpring::CreateTemplateRequest do
     end
   end
 
+  describe 'test attribute "predefined_fields"' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  describe 'test attribute "predefined_fields_sample_data"' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
   describe 'test attribute "html"' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
@@ -226,6 +238,18 @@ describe DocSpring::CreateTemplateRequest do
   end
 
   describe 'test attribute "cache_id"' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  describe 'test attribute "document_url"' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  describe 'test attribute "document_base64"' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end

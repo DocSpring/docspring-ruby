@@ -132,6 +132,15 @@ module DocSpring
     # Conditional logic: each rule shows or hides its target fields, or makes them required, depending on the values of other fields.
     attr_accessor :field_dependencies
 
+    # The groups of the template's fields, with their settings. A field's name puts it in groups: `address/city` is in the group `address`, and `items/0/price` is in the list `items` and its items' group `items/~`.
+    attr_accessor :field_groups
+
+    # The field names that people using the embedded template editor choose from, each with the data type and settings a field gets when it's given that name. Setting it replaces the whole list; an empty list turns them off.
+    attr_accessor :predefined_fields
+
+    # Sample submission data that sets `predefined_fields`: each value becomes a predefined field, with a type that fits it (`string`, `number`, `boolean`, `date`, `email` or `url`) and `required_in_template` true. Nested objects and arrays become names with `/`, such as `customer/email`. Without `predefined_fields` in the same request, it replaces them; with them, it adds to them and sets the types of the ones it has values for.
+    attr_accessor :predefined_fields_sample_data
+
     # The HTML of an HTML template, as a Liquid template. Null for PDF templates.
     attr_accessor :html
 
@@ -217,6 +226,9 @@ module DocSpring
         :'updated_at' => :'updated_at',
         :'defaults' => :'defaults',
         :'field_dependencies' => :'field_dependencies',
+        :'field_groups' => :'field_groups',
+        :'predefined_fields' => :'predefined_fields',
+        :'predefined_fields_sample_data' => :'predefined_fields_sample_data',
         :'html' => :'html',
         :'scss' => :'scss',
         :'header_html' => :'header_html',
@@ -279,6 +291,9 @@ module DocSpring
         :'updated_at' => :'Time',
         :'defaults' => :'TemplateDefaults',
         :'field_dependencies' => :'Array<TemplateFieldDependency>',
+        :'field_groups' => :'Array<FieldGroup>',
+        :'predefined_fields' => :'Array<PredefinedField>',
+        :'predefined_fields_sample_data' => :'Hash<String, Object>',
         :'html' => :'String',
         :'scss' => :'String',
         :'header_html' => :'String',
@@ -303,6 +318,7 @@ module DocSpring
         :'redirect_url',
         :'last_changed_at',
         :'last_changed_by',
+        :'predefined_fields_sample_data',
         :'html',
         :'scss',
         :'header_html',
@@ -576,6 +592,30 @@ module DocSpring
         self.field_dependencies = nil
       end
 
+      if attributes.key?(:'field_groups')
+        if (value = attributes[:'field_groups']).is_a?(Array)
+          self.field_groups = value
+        end
+      else
+        self.field_groups = nil
+      end
+
+      if attributes.key?(:'predefined_fields')
+        if (value = attributes[:'predefined_fields']).is_a?(Array)
+          self.predefined_fields = value
+        end
+      else
+        self.predefined_fields = nil
+      end
+
+      if attributes.key?(:'predefined_fields_sample_data')
+        if (value = attributes[:'predefined_fields_sample_data']).is_a?(Hash) || value.nil?
+          self.predefined_fields_sample_data = value
+        end
+      else
+        self.predefined_fields_sample_data = nil
+      end
+
       if attributes.key?(:'html')
         self.html = attributes[:'html']
       else
@@ -738,6 +778,14 @@ module DocSpring
         invalid_properties.push('invalid value for "field_dependencies", field_dependencies cannot be nil.')
       end
 
+      if @field_groups.nil?
+        invalid_properties.push('invalid value for "field_groups", field_groups cannot be nil.')
+      end
+
+      if @predefined_fields.nil?
+        invalid_properties.push('invalid value for "predefined_fields", predefined_fields cannot be nil.')
+      end
+
       if @versions.nil?
         invalid_properties.push('invalid value for "versions", versions cannot be nil.')
       end
@@ -777,6 +825,8 @@ module DocSpring
       return false if @updated_at.nil?
       return false if @defaults.nil?
       return false if @field_dependencies.nil?
+      return false if @field_groups.nil?
+      return false if @predefined_fields.nil?
       return false if @versions.nil?
       true
     end
@@ -1062,6 +1112,26 @@ module DocSpring
     end
 
     # Custom attribute writer method with validation
+    # @param [Object] field_groups Value to be assigned
+    def field_groups=(field_groups)
+      if field_groups.nil?
+        fail ArgumentError, 'field_groups cannot be nil'
+      end
+
+      @field_groups = field_groups
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] predefined_fields Value to be assigned
+    def predefined_fields=(predefined_fields)
+      if predefined_fields.nil?
+        fail ArgumentError, 'predefined_fields cannot be nil'
+      end
+
+      @predefined_fields = predefined_fields
+    end
+
+    # Custom attribute writer method with validation
     # @param [Object] versions Value to be assigned
     def versions=(versions)
       if versions.nil?
@@ -1115,6 +1185,9 @@ module DocSpring
           updated_at == o.updated_at &&
           defaults == o.defaults &&
           field_dependencies == o.field_dependencies &&
+          field_groups == o.field_groups &&
+          predefined_fields == o.predefined_fields &&
+          predefined_fields_sample_data == o.predefined_fields_sample_data &&
           html == o.html &&
           scss == o.scss &&
           header_html == o.header_html &&
@@ -1133,7 +1206,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, name, description, template_type, ready, document, parent_folder_id, path, version, latest_version, version_published_at, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, has_encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, has_slack_webhook_url, last_changed_at, last_changed_by, created_at, updated_at, defaults, field_dependencies, html, scss, header_html, footer_html, html_engine_options, embed_edit_token, versions].hash
+      [id, name, description, template_type, ready, document, parent_folder_id, path, version, latest_version, version_published_at, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, has_encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, has_slack_webhook_url, last_changed_at, last_changed_by, created_at, updated_at, defaults, field_dependencies, field_groups, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, embed_edit_token, versions].hash
     end
 
     # Builds the object from hash

@@ -31,6 +31,9 @@
 | **slack_webhook_url** | **String** | A Slack incoming webhook URL that is notified about the template's submissions. It's never returned; `has_slack_webhook_url` says if it's set. | [optional] |
 | **defaults** | [**TemplateDefaultsInput**](TemplateDefaultsInput.md) | The default style of the template's fields. Setting it replaces the whole object. | [optional] |
 | **field_dependencies** | [**Array&lt;TemplateFieldDependencyInput&gt;**](TemplateFieldDependencyInput.md) | The template's conditional logic rules. Setting them replaces all of the rules. | [optional] |
+| **field_groups** | [**Array&lt;FieldGroupInput&gt;**](FieldGroupInput.md) | Changes to the settings of the template's field groups, each with the `name` of the group it changes. Settings left out keep their values, and groups left out are unchanged. | [optional] |
+| **predefined_fields** | [**Array&lt;PredefinedFieldInput&gt;**](PredefinedFieldInput.md) | The field names that people using the embedded template editor choose from, each with the data type and settings a field gets when it's given that name. Setting it replaces the whole list; an empty list turns them off. | [optional] |
+| **predefined_fields_sample_data** | **Hash&lt;String, Object&gt;** | Sample submission data that sets `predefined_fields`: each value becomes a predefined field, with a type that fits it (`string`, `number`, `boolean`, `date`, `email` or `url`) and `required_in_template` true. Nested objects and arrays become names with `/`, such as `customer/email`. Without `predefined_fields` in the same request, it replaces them; with them, it adds to them and sets the types of the ones it has values for. | [optional] |
 | **html** | **String** | The HTML of an HTML template, as a Liquid template. Null for PDF templates. | [optional] |
 | **scss** | **String** | The SCSS of an HTML template. | [optional] |
 | **header_html** | **String** | The HTML printed at the top of each page of an HTML template. | [optional] |
@@ -70,6 +73,9 @@ instance = DocSpring::UpdateTemplateRequest.new(
   slack_webhook_url: null,
   defaults: null,
   field_dependencies: null,
+  field_groups: null,
+  predefined_fields: null,
+  predefined_fields_sample_data: null,
   html: null,
   scss: null,
   header_html: null,

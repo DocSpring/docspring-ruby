@@ -28,6 +28,9 @@ module DocSpring
     # The default `test` for each submission that doesn't set its own.
     attr_accessor :test
 
+    # The default `output_formats` for each submission that doesn't set its own.
+    attr_accessor :output_formats
+
     # Up to 50 submissions. Each one takes the properties of POST /templates/{template_id}/submissions except `signature_requests`, plus `template_id` and `template_version` when it uses a different template from the batch.
     attr_accessor :submissions
 
@@ -38,6 +41,7 @@ module DocSpring
         :'template_id' => :'template_id',
         :'template_version' => :'template_version',
         :'test' => :'test',
+        :'output_formats' => :'output_formats',
         :'submissions' => :'submissions'
       }
     end
@@ -59,6 +63,7 @@ module DocSpring
         :'template_id' => :'String',
         :'template_version' => :'String',
         :'test' => :'Boolean',
+        :'output_formats' => :'Array<OutputFormat>',
         :'submissions' => :'Array<SubmissionInput>'
       }
     end
@@ -113,6 +118,12 @@ module DocSpring
         self.test = attributes[:'test']
       end
 
+      if attributes.key?(:'output_formats')
+        if (value = attributes[:'output_formats']).is_a?(Array)
+          self.output_formats = value
+        end
+      end
+
       if attributes.key?(:'submissions')
         if (value = attributes[:'submissions']).is_a?(Array)
           self.submissions = value
@@ -143,6 +154,16 @@ module DocSpring
     end
 
     # Custom attribute writer method with validation
+    # @param [Object] output_formats Value to be assigned
+    def output_formats=(output_formats)
+      if output_formats.nil?
+        fail ArgumentError, 'output_formats cannot be nil'
+      end
+
+      @output_formats = output_formats
+    end
+
+    # Custom attribute writer method with validation
     # @param [Object] submissions Value to be assigned
     def submissions=(submissions)
       if submissions.nil?
@@ -161,6 +182,7 @@ module DocSpring
           template_id == o.template_id &&
           template_version == o.template_version &&
           test == o.test &&
+          output_formats == o.output_formats &&
           submissions == o.submissions
     end
 
@@ -173,7 +195,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [metadata, template_id, template_version, test, submissions].hash
+      [metadata, template_id, template_version, test, output_formats, submissions].hash
     end
 
     # Builds the object from hash

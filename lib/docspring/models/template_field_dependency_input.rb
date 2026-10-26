@@ -16,7 +16,7 @@ require 'time'
 module DocSpring
   # A conditional logic rule: when other fields' values meet its conditions, it shows its target fields, makes them required, or both.
   class TemplateFieldDependencyInput < ApiModelBase
-    # What the rule does to its targets when its conditions are met.
+    # What the rule does to the fields it applies to when its conditions are met.
     attr_accessor :action
 
     # Whether all of the conditions (the default) or any of them must be met.

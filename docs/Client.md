@@ -4,6 +4,7 @@ All URIs are relative to *https://sync.api.docspring.com/api/v2*
 
 | Method | HTTP request | Description |
 | ------ | ------------ | ----------- |
+| [**add_template_fields**](Client.md#add_template_fields) | **POST** /templates/{template_id}/fields | Add fields to a template |
 | [**copy_template**](Client.md#copy_template) | **POST** /templates/{template_id}/copy | Copy a template |
 | [**create_combined_pdf**](Client.md#create_combined_pdf) | **POST** /combined_pdfs | Combine PDFs |
 | [**create_custom_file_from_upload**](Client.md#create_custom_file_from_upload) | **POST** /custom_files | Create a custom file from an upload |
@@ -20,6 +21,7 @@ All URIs are relative to *https://sync.api.docspring.com/api/v2*
 | [**delete_webhook**](Client.md#delete_webhook) | **DELETE** /webhooks/{webhook_id} | Delete a webhook |
 | [**expire_combined_pdf**](Client.md#expire_combined_pdf) | **DELETE** /combined_pdfs/{combined_pdf_id} | Expire a combined PDF |
 | [**expire_submission**](Client.md#expire_submission) | **DELETE** /submissions/{submission_id} | Expire a submission |
+| [**generate_submission_files**](Client.md#generate_submission_files) | **POST** /submissions/{submission_id}/generate_files | Generate more files |
 | [**generate_submission_preview**](Client.md#generate_submission_preview) | **POST** /submissions/{submission_id}/generate_preview | Generate a preview PDF |
 | [**get_combined_pdf**](Client.md#get_combined_pdf) | **GET** /combined_pdfs/{combined_pdf_id} | Get a combined PDF |
 | [**get_custom_file**](Client.md#get_custom_file) | **GET** /custom_files/{custom_file_id} | Get a custom file |
@@ -29,28 +31,107 @@ All URIs are relative to *https://sync.api.docspring.com/api/v2*
 | [**get_submission**](Client.md#get_submission) | **GET** /submissions/{submission_id} | Get a submission |
 | [**get_submission_batch**](Client.md#get_submission_batch) | **GET** /submissions/batches/{submission_batch_id} | Get a batch |
 | [**get_template**](Client.md#get_template) | **GET** /templates/{template_id} | Get a template |
+| [**get_template_diff**](Client.md#get_template_diff) | **GET** /templates/{template_id}/diff | Compare a version of a template with the one before it |
 | [**get_template_model_code**](Client.md#get_template_model_code) | **GET** /templates/{template_id}/model_code | Generate typed code for a template's submission data |
+| [**get_template_page_images**](Client.md#get_template_page_images) | **GET** /templates/{template_id}/page_images | Get images of a template's pages |
 | [**get_template_schema**](Client.md#get_template_schema) | **GET** /templates/{template_id}/schema | Get the JSON Schema of a template's submission data |
 | [**get_webhook**](Client.md#get_webhook) | **GET** /webhooks/{webhook_id} | Get a webhook |
 | [**list_combined_pdfs**](Client.md#list_combined_pdfs) | **GET** /combined_pdfs | List combined PDFs |
 | [**list_custom_files**](Client.md#list_custom_files) | **GET** /custom_files | List custom files |
 | [**list_folders**](Client.md#list_folders) | **GET** /folders | List folders |
 | [**list_submissions**](Client.md#list_submissions) | **GET** /submissions | List submissions |
+| [**list_template_fields**](Client.md#list_template_fields) | **GET** /templates/{template_id}/fields | List a template's fields |
 | [**list_template_submissions**](Client.md#list_template_submissions) | **GET** /templates/{template_id}/submissions | List a template's submissions |
 | [**list_templates**](Client.md#list_templates) | **GET** /templates | List templates |
 | [**list_webhooks**](Client.md#list_webhooks) | **GET** /webhooks | List webhooks |
 | [**move_folder**](Client.md#move_folder) | **POST** /folders/{folder_id}/move | Move a folder |
 | [**move_template**](Client.md#move_template) | **POST** /templates/{template_id}/move | Move a template to a folder |
 | [**publish_template_version**](Client.md#publish_template_version) | **POST** /templates/{template_id}/publish_version | Publish a template version |
+| [**remove_template_fields**](Client.md#remove_template_fields) | **POST** /templates/{template_id}/fields/remove | Remove fields from a template |
 | [**rename_folder**](Client.md#rename_folder) | **POST** /folders/{folder_id}/rename | Rename a folder |
+| [**reorder_template_fields**](Client.md#reorder_template_fields) | **POST** /templates/{template_id}/fields/reorder | Reorder a template's fields |
 | [**restore_template_version**](Client.md#restore_template_version) | **POST** /templates/{template_id}/restore_version | Restore a template version |
 | [**test_authentication**](Client.md#test_authentication) | **GET** /authentication | Test authentication |
 | [**update_signature_request**](Client.md#update_signature_request) | **PUT** /signature_requests/{signature_request_id} | Update a signature request |
 | [**update_template**](Client.md#update_template) | **PUT** /templates/{template_id} | Update a template |
 | [**update_template_document**](Client.md#update_template_document) | **PUT** /templates/{template_id}/document | Replace a template's PDF |
+| [**update_template_fields**](Client.md#update_template_fields) | **PUT** /templates/{template_id}/fields | Update a template's fields |
 | [**update_webhook**](Client.md#update_webhook) | **PUT** /webhooks/{webhook_id} | Update a webhook |
 | [**upload_template**](Client.md#upload_template) | **POST** /templates/upload | Create a PDF template from an uploaded PDF |
 | [**upload_template_document**](Client.md#upload_template_document) | **PUT** /templates/{template_id}/document/upload | Replace a template's PDF with an uploaded PDF |
+| [**validate_submission**](Client.md#validate_submission) | **POST** /templates/{template_id}/submissions/validate | Check a submission without creating it |
+
+
+## add_template_fields
+
+> <TemplateFields> add_template_fields(template_id, body)
+
+Add fields to a template
+
+Adds fields to a template's draft and returns all of its fields. Publish a version for submissions of published versions to have them. 
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
+body = DocSpring::AddTemplateFieldsRequest.new({fields: [DocSpring::FieldInput.new]}) # AddTemplateFieldsRequest | The fields to add to the template's draft.
+
+begin
+  # Add fields to a template
+  result = api_instance.add_template_fields(template_id, body)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->add_template_fields: #{e}"
+end
+```
+
+#### Using the add_template_fields_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<TemplateFields>, Integer, Hash)> add_template_fields_with_http_info(template_id, body)
+
+```ruby
+begin
+  # Add fields to a template
+  data, status_code, headers = api_instance.add_template_fields_with_http_info(template_id, body)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <TemplateFields>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->add_template_fields_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **template_id** | **String** | The template's ID. |  |
+| **body** | [**AddTemplateFieldsRequest**](AddTemplateFieldsRequest.md) | The fields to add to the template's draft. |  |
+
+### Return type
+
+[**TemplateFields**](TemplateFields.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
 
 
 ## copy_template
@@ -512,7 +593,7 @@ template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
 body = DocSpring::CreateSubmissionRequest.new # CreateSubmissionRequest | The submission's data and settings.
 opts = {
   version: 'version_example', # String | The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
-  wait: true # Boolean | Wait until the PDF has been generated before responding. Default true on sync.api hosts.
+  wait: true # Boolean | Wait until the files have been generated before responding. Default true on sync.api hosts.
 }
 
 begin
@@ -549,7 +630,7 @@ end
 | **template_id** | **String** | The template's ID. |  |
 | **body** | [**CreateSubmissionRequest**](CreateSubmissionRequest.md) | The submission's data and settings. |  |
 | **version** | **String** | The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published). | [optional] |
-| **wait** | **Boolean** | Wait until the PDF has been generated before responding. Default true on sync.api hosts. | [optional] |
+| **wait** | **Boolean** | Wait until the files have been generated before responding. Default true on sync.api hosts. | [optional] |
 
 ### Return type
 
@@ -662,7 +743,7 @@ end
 api_instance = DocSpring::Client.new
 body = DocSpring::CreateTemplateRequest.new({template_type: DocSpring::TemplateType::PDF}) # CreateTemplateRequest | The template to create.
 opts = {
-  wait: true # Boolean | Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+  wait: true # Boolean | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
 }
 
 begin
@@ -697,7 +778,7 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **body** | [**CreateTemplateRequest**](CreateTemplateRequest.md) | The template to create. |  |
-| **wait** | **Boolean** | Wait until the PDF has been processed before responding. Default true on sync.api hosts. | [optional] |
+| **wait** | **Boolean** | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts. | [optional] |
 
 ### Return type
 
@@ -1204,6 +1285,82 @@ end
 ### HTTP request headers
 
 - **Content-Type**: Not defined
+- **Accept**: application/json
+
+
+## generate_submission_files
+
+> <Submission> generate_submission_files(submission_id, body, opts)
+
+Generate more files
+
+Adds formats to a processed submission's files, in the background: `png`, a PNG image of each page of the PDF (up to 100 pages). To make them with the submission, add them to `output_formats` when you create it.  Each new file is listed in `files` while it's made: on sync.api hosts the request waits for them (unless you pass `wait=false`), otherwise poll GET /submissions/{submission_id} until none of their `state` is `pending`. A file that couldn't be made has the state `error` and an `error_message`, and the submission stays processed. Asking for a format the submission already has (or is making) changes nothing. 
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+submission_id = 'sub_1234567890abcdef01' # String | The submission's ID.
+body = DocSpring::GenerateSubmissionFilesRequest.new({formats: [DocSpring::GenerateFilesFormat::PNG]}) # GenerateSubmissionFilesRequest | The formats to make.
+opts = {
+  wait: true # Boolean | Wait until the files have been generated before responding. Default true on sync.api hosts.
+}
+
+begin
+  # Generate more files
+  result = api_instance.generate_submission_files(submission_id, body, opts)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->generate_submission_files: #{e}"
+end
+```
+
+#### Using the generate_submission_files_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<Submission>, Integer, Hash)> generate_submission_files_with_http_info(submission_id, body, opts)
+
+```ruby
+begin
+  # Generate more files
+  data, status_code, headers = api_instance.generate_submission_files_with_http_info(submission_id, body, opts)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <Submission>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->generate_submission_files_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **submission_id** | **String** | The submission's ID. |  |
+| **body** | [**GenerateSubmissionFilesRequest**](GenerateSubmissionFilesRequest.md) | The formats to make. |  |
+| **wait** | **Boolean** | Wait until the files have been generated before responding. Default true on sync.api hosts. | [optional] |
+
+### Return type
+
+[**Submission**](Submission.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
 - **Accept**: application/json
 
 
@@ -1842,6 +1999,80 @@ end
 - **Accept**: application/json
 
 
+## get_template_diff
+
+> <TemplateDiff> get_template_diff(template_id, opts)
+
+Compare a version of a template with the one before it
+
+Returns what changed in the template's draft since its latest published version (or in a published version since the one before it): fields added, removed, changed and moved, the settings that changed, and whether the document was replaced. Check it before you publish a version. 
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
+opts = {
+  version: '0.1.0' # String | A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+}
+
+begin
+  # Compare a version of a template with the one before it
+  result = api_instance.get_template_diff(template_id, opts)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->get_template_diff: #{e}"
+end
+```
+
+#### Using the get_template_diff_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<TemplateDiff>, Integer, Hash)> get_template_diff_with_http_info(template_id, opts)
+
+```ruby
+begin
+  # Compare a version of a template with the one before it
+  data, status_code, headers = api_instance.get_template_diff_with_http_info(template_id, opts)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <TemplateDiff>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->get_template_diff_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **template_id** | **String** | The template's ID. |  |
+| **version** | **String** | A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`. | [optional] |
+
+### Return type
+
+[**TemplateDiff**](TemplateDiff.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+
 ## get_template_model_code
 
 > <TemplateModelCode> get_template_model_code(template_id, lang, opts)
@@ -1907,6 +2138,80 @@ end
 ### Return type
 
 [**TemplateModelCode**](TemplateModelCode.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+
+## get_template_page_images
+
+> <TemplatePageImages> get_template_page_images(template_id, opts)
+
+Get images of a template's pages
+
+Returns a JPEG image of each page of a PDF template's PDF, with temporary links to download them: the draft's PDF, or a published version's. Use them to see the pages that fields are placed on. 
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
+opts = {
+  version: 'latest' # String | A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+}
+
+begin
+  # Get images of a template's pages
+  result = api_instance.get_template_page_images(template_id, opts)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->get_template_page_images: #{e}"
+end
+```
+
+#### Using the get_template_page_images_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<TemplatePageImages>, Integer, Hash)> get_template_page_images_with_http_info(template_id, opts)
+
+```ruby
+begin
+  # Get images of a template's pages
+  data, status_code, headers = api_instance.get_template_page_images_with_http_info(template_id, opts)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <TemplatePageImages>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->get_template_page_images_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **template_id** | **String** | The template's ID. |  |
+| **version** | **String** | A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`. | [optional] |
+
+### Return type
+
+[**TemplatePageImages**](TemplatePageImages.md)
 
 ### Authorization
 
@@ -2370,6 +2675,80 @@ end
 - **Accept**: application/json
 
 
+## list_template_fields
+
+> <TemplateFields> list_template_fields(template_id, opts)
+
+List a template's fields
+
+Returns a template's fields with all of their settings, page by page: the draft's fields, or a published version's. A PDF template's fields are placed on its pages: GET /templates/{template_id}/page_images has images of the pages. 
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
+opts = {
+  version: 'latest' # String | A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+}
+
+begin
+  # List a template's fields
+  result = api_instance.list_template_fields(template_id, opts)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->list_template_fields: #{e}"
+end
+```
+
+#### Using the list_template_fields_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<TemplateFields>, Integer, Hash)> list_template_fields_with_http_info(template_id, opts)
+
+```ruby
+begin
+  # List a template's fields
+  data, status_code, headers = api_instance.list_template_fields_with_http_info(template_id, opts)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <TemplateFields>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->list_template_fields_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **template_id** | **String** | The template's ID. |  |
+| **version** | **String** | A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`. | [optional] |
+
+### Return type
+
+[**TemplateFields**](TemplateFields.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+
 ## list_template_submissions
 
 > <SubmissionList> list_template_submissions(template_id, opts)
@@ -2766,7 +3145,7 @@ end
 
 Publish a template version
 
-Publishes the template's draft as a new version that doesn't change. `version_type` says which part of the latest version number goes up. 
+Publishes the template's draft as a new version that doesn't change. `version_type` says which part of the latest version number goes up. While the template's PDF is downloading or being processed, or DocSpring is setting up its fields, it returns a 409 that says so. 
 
 ### Examples
 
@@ -2821,6 +3200,78 @@ end
 ### Return type
 
 [**TemplateVersion**](TemplateVersion.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
+## remove_template_fields
+
+> <TemplateFields> remove_template_fields(template_id, body)
+
+Remove fields from a template
+
+Removes fields from a template's draft and returns the fields that are left. Conditional logic that used only the removed fields is removed too. 
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
+body = DocSpring::RemoveTemplateFieldsRequest.new({field_ids: [37]}) # RemoveTemplateFieldsRequest | The fields to remove from the template's draft.
+
+begin
+  # Remove fields from a template
+  result = api_instance.remove_template_fields(template_id, body)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->remove_template_fields: #{e}"
+end
+```
+
+#### Using the remove_template_fields_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<TemplateFields>, Integer, Hash)> remove_template_fields_with_http_info(template_id, body)
+
+```ruby
+begin
+  # Remove fields from a template
+  data, status_code, headers = api_instance.remove_template_fields_with_http_info(template_id, body)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <TemplateFields>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->remove_template_fields_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **template_id** | **String** | The template's ID. |  |
+| **body** | [**RemoveTemplateFieldsRequest**](RemoveTemplateFieldsRequest.md) | The fields to remove from the template's draft. |  |
+
+### Return type
+
+[**TemplateFields**](TemplateFields.md)
 
 ### Authorization
 
@@ -2893,6 +3344,78 @@ end
 ### Return type
 
 [**Folder**](Folder.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
+## reorder_template_fields
+
+> <TemplateFields> reorder_template_fields(template_id, body)
+
+Reorder a template's fields
+
+Changes the order of the fields in a template's draft and returns them in their new order. Send every field's ID: each field stays on its page, and a page's fields are printed in this order, so a later field prints over an earlier one where they overlap. Their values are in this order in the template's data schema and forms. 
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
+body = DocSpring::ReorderTemplateFieldsRequest.new({field_ids: [37]}) # ReorderTemplateFieldsRequest | The new order of the fields in the template's draft.
+
+begin
+  # Reorder a template's fields
+  result = api_instance.reorder_template_fields(template_id, body)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->reorder_template_fields: #{e}"
+end
+```
+
+#### Using the reorder_template_fields_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<TemplateFields>, Integer, Hash)> reorder_template_fields_with_http_info(template_id, body)
+
+```ruby
+begin
+  # Reorder a template's fields
+  data, status_code, headers = api_instance.reorder_template_fields_with_http_info(template_id, body)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <TemplateFields>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->reorder_template_fields_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **template_id** | **String** | The template's ID. |  |
+| **body** | [**ReorderTemplateFieldsRequest**](ReorderTemplateFieldsRequest.md) | The new order of the fields in the template's draft. |  |
+
+### Return type
+
+[**TemplateFields**](TemplateFields.md)
 
 ### Authorization
 
@@ -3121,7 +3644,7 @@ end
 
 Update a template
 
-Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object. Setting `parent_folder_id` moves the template and all of its published versions. 
+Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object, and `field_groups` changes only the groups it lists. Setting `parent_folder_id` moves the template and all of its published versions. 
 
 ### Examples
 
@@ -3193,7 +3716,7 @@ end
 
 Replace a template's PDF
 
-Replaces a PDF template's PDF with one you uploaded with the presigned upload (GET /uploads/presign). The fields stay where they are, unless `reimport_fields` replaces them with the new PDF's fillable fields. To send the PDF with the request instead, use PUT /templates/{template_id}/document/upload. 
+Replaces a PDF template's PDF with one you uploaded with the presigned upload (GET /uploads/presign) (`cache_id`), a link to download it from (`document_url`), or the file in base64 (`document_base64`). The fields stay where they are, unless `reimport_fields` replaces them with the new PDF's fillable fields. To send the PDF as `multipart/form-data` instead, use PUT /templates/{template_id}/document/upload. 
 
 ### Examples
 
@@ -3209,9 +3732,9 @@ end
 
 api_instance = DocSpring::Client.new
 template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
-body = DocSpring::UpdateTemplateDocumentRequest.new({cache_id: 'cache_id_example'}) # UpdateTemplateDocumentRequest | The new PDF.
+body = DocSpring::UpdateTemplateDocumentRequest.new # UpdateTemplateDocumentRequest | The new PDF, as one of `cache_id`, `document_url` and `document_base64`.
 opts = {
-  wait: true # Boolean | Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+  wait: true # Boolean | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
 }
 
 begin
@@ -3246,12 +3769,84 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **template_id** | **String** | The template's ID. |  |
-| **body** | [**UpdateTemplateDocumentRequest**](UpdateTemplateDocumentRequest.md) | The new PDF. |  |
-| **wait** | **Boolean** | Wait until the PDF has been processed before responding. Default true on sync.api hosts. | [optional] |
+| **body** | [**UpdateTemplateDocumentRequest**](UpdateTemplateDocumentRequest.md) | The new PDF, as one of `cache_id`, `document_url` and `document_base64`. |  |
+| **wait** | **Boolean** | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts. | [optional] |
 
 ### Return type
 
 [**Template**](Template.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
+## update_template_fields
+
+> <TemplateFields> update_template_fields(template_id, body)
+
+Update a template's fields
+
+Changes fields of a template's draft and returns all of its fields. Settings left out keep their values. A shared setting (`type`, `required`, `default`, ...) changes for every field with the same name. 
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
+body = DocSpring::UpdateTemplateFieldsRequest.new({fields: [DocSpring::FieldInput.new]}) # UpdateTemplateFieldsRequest | The fields to change in the template's draft.
+
+begin
+  # Update a template's fields
+  result = api_instance.update_template_fields(template_id, body)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->update_template_fields: #{e}"
+end
+```
+
+#### Using the update_template_fields_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<TemplateFields>, Integer, Hash)> update_template_fields_with_http_info(template_id, body)
+
+```ruby
+begin
+  # Update a template's fields
+  data, status_code, headers = api_instance.update_template_fields_with_http_info(template_id, body)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <TemplateFields>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->update_template_fields_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **template_id** | **String** | The template's ID. |  |
+| **body** | [**UpdateTemplateFieldsRequest**](UpdateTemplateFieldsRequest.md) | The fields to change in the template's draft. |  |
+
+### Return type
+
+[**TemplateFields**](TemplateFields.md)
 
 ### Authorization
 
@@ -3358,7 +3953,7 @@ end
 api_instance = DocSpring::Client.new
 document = File.new('/path/to/some/file') # File | The PDF.
 opts = {
-  wait: true, # Boolean | Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+  wait: true, # Boolean | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
   name: 'name_example', # String | The template's name.
   description: 'description_example', # String | The template's description.
   parent_folder_id: 'parent_folder_id_example', # String | The folder to put the template in. Left out, it's created at the root.
@@ -3401,7 +3996,7 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **document** | **File** | The PDF. |  |
-| **wait** | **Boolean** | Wait until the PDF has been processed before responding. Default true on sync.api hosts. | [optional] |
+| **wait** | **Boolean** | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts. | [optional] |
 | **name** | **String** | The template's name. | [optional] |
 | **description** | **String** | The template's description. | [optional] |
 | **parent_folder_id** | **String** | The folder to put the template in. Left out, it's created at the root. | [optional] |
@@ -3449,7 +4044,7 @@ api_instance = DocSpring::Client.new
 template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
 document = File.new('/path/to/some/file') # File | The new PDF.
 opts = {
-  wait: true, # Boolean | Wait until the PDF has been processed before responding. Default true on sync.api hosts.
+  wait: true, # Boolean | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
   reimport_fields: true # Boolean | Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields.
 }
 
@@ -3486,7 +4081,7 @@ end
 | ---- | ---- | ----------- | ----- |
 | **template_id** | **String** | The template's ID. |  |
 | **document** | **File** | The new PDF. |  |
-| **wait** | **Boolean** | Wait until the PDF has been processed before responding. Default true on sync.api hosts. | [optional] |
+| **wait** | **Boolean** | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts. | [optional] |
 | **reimport_fields** | **Boolean** | Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields. | [optional] |
 
 ### Return type
@@ -3500,5 +4095,81 @@ end
 ### HTTP request headers
 
 - **Content-Type**: multipart/form-data
+- **Accept**: application/json
+
+
+## validate_submission
+
+> <SubmissionValidation> validate_submission(template_id, body, opts)
+
+Check a submission without creating it
+
+Checks a submission as creating it would (its data against the template's fields, its settings and signature requests) without saving it, generating anything or using credits. It doesn't check your account's credits. The response says whether the submission is valid, and if not, has the error that creating it would return. 
+
+### Examples
+
+```ruby
+require 'time'
+require 'docspring'
+# setup authorization
+DocSpring.configure do |config|
+  # Configure HTTP basic authorization: api_token_basic
+  config.username = 'YOUR USERNAME'
+  config.password = 'YOUR PASSWORD'
+end
+
+api_instance = DocSpring::Client.new
+template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
+body = DocSpring::ValidateSubmissionRequest.new # ValidateSubmissionRequest | The submission's data and settings.
+opts = {
+  version: 'latest' # String | The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
+}
+
+begin
+  # Check a submission without creating it
+  result = api_instance.validate_submission(template_id, body, opts)
+  p result
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->validate_submission: #{e}"
+end
+```
+
+#### Using the validate_submission_with_http_info variant
+
+This returns an Array which contains the response data, status code and headers.
+
+> <Array(<SubmissionValidation>, Integer, Hash)> validate_submission_with_http_info(template_id, body, opts)
+
+```ruby
+begin
+  # Check a submission without creating it
+  data, status_code, headers = api_instance.validate_submission_with_http_info(template_id, body, opts)
+  p status_code # => 2xx
+  p headers # => { ... }
+  p data # => <SubmissionValidation>
+rescue DocSpring::ApiError => e
+  puts "Error when calling Client->validate_submission_with_http_info: #{e}"
+end
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **template_id** | **String** | The template's ID. |  |
+| **body** | [**ValidateSubmissionRequest**](ValidateSubmissionRequest.md) | The submission's data and settings. |  |
+| **version** | **String** | The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published). | [optional] |
+
+### Return type
+
+[**SubmissionValidation**](SubmissionValidation.md)
+
+### Authorization
+
+[api_token_basic](../README.md#api_token_basic)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
 - **Accept**: application/json
 

@@ -9,7 +9,7 @@ templates with your data, generates PDFs from HTML templates, combines PDFs and 
 The code in this repository is generated from DocSpring's OpenAPI spec ([About this SDK](#about-this-sdk)). Issues and
 pull requests are welcome.
 
-Version 4.0.0. Requires Ruby >= 2.7.
+Version 4.1.0. Requires Ruby >= 2.7.
 
 ## Install and configure
 
@@ -86,6 +86,7 @@ Ruby code for every method.
 
 | Method | Description |
 | ------ | ----------- |
+| [`add_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#add_template_fields) | Add fields to a template |
 | [`copy_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#copy_template) | Copy a template |
 | [`create_combined_pdf`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_combined_pdf) | Combine PDFs |
 | [`create_custom_file_from_upload`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_custom_file_from_upload) | Create a custom file from an upload |
@@ -102,6 +103,7 @@ Ruby code for every method.
 | [`delete_webhook`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#delete_webhook) | Delete a webhook |
 | [`expire_combined_pdf`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#expire_combined_pdf) | Expire a combined PDF |
 | [`expire_submission`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#expire_submission) | Expire a submission |
+| [`generate_submission_files`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#generate_submission_files) | Generate more files |
 | [`generate_submission_preview`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#generate_submission_preview) | Generate a preview PDF |
 | [`get_combined_pdf`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_combined_pdf) | Get a combined PDF |
 | [`get_custom_file`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_custom_file) | Get a custom file |
@@ -111,28 +113,35 @@ Ruby code for every method.
 | [`get_submission`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_submission) | Get a submission |
 | [`get_submission_batch`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_submission_batch) | Get a batch |
 | [`get_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template) | Get a template |
+| [`get_template_diff`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_diff) | Compare a version of a template with the one before it |
 | [`get_template_model_code`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_model_code) | Generate typed code for a template's submission data |
+| [`get_template_page_images`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_page_images) | Get images of a template's pages |
 | [`get_template_schema`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_schema) | Get the JSON Schema of a template's submission data |
 | [`get_webhook`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_webhook) | Get a webhook |
 | [`list_combined_pdfs`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_combined_pdfs) | List combined PDFs |
 | [`list_custom_files`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_custom_files) | List custom files |
 | [`list_folders`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_folders) | List folders |
 | [`list_submissions`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_submissions) | List submissions |
+| [`list_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_template_fields) | List a template's fields |
 | [`list_template_submissions`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_template_submissions) | List a template's submissions |
 | [`list_templates`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_templates) | List templates |
 | [`list_webhooks`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_webhooks) | List webhooks |
 | [`move_folder`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#move_folder) | Move a folder |
 | [`move_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#move_template) | Move a template to a folder |
 | [`publish_template_version`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#publish_template_version) | Publish a template version |
+| [`remove_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#remove_template_fields) | Remove fields from a template |
 | [`rename_folder`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#rename_folder) | Rename a folder |
+| [`reorder_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#reorder_template_fields) | Reorder a template's fields |
 | [`restore_template_version`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#restore_template_version) | Restore a template version |
 | [`test_authentication`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#test_authentication) | Test authentication |
 | [`update_signature_request`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_signature_request) | Update a signature request |
 | [`update_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_template) | Update a template |
 | [`update_template_document`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_template_document) | Replace a template's PDF |
+| [`update_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_template_fields) | Update a template's fields |
 | [`update_webhook`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_webhook) | Update a webhook |
 | [`upload_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#upload_template) | Create a PDF template from an uploaded PDF |
 | [`upload_template_document`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#upload_template_document) | Replace a template's PDF with an uploaded PDF |
+| [`validate_submission`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#validate_submission) | Check a submission without creating it |
 
 ## Errors
 

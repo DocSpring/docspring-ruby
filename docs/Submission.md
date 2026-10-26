@@ -21,7 +21,8 @@
 | **signature_requests** | [**Array&lt;SignatureRequest&gt;**](SignatureRequest.md) | The people asked to sign the submission (and fill in their fields), in order. |  |
 | **actions** | [**Array&lt;SubmissionAction&gt;**](SubmissionAction.md) | The uploads of the submission's PDF to your storage (account integrations). |  |
 | **truncated_text** | **Hash&lt;String, Array&lt;String&gt;&gt;** | The text of each field that didn't fit in it, by field name. Left out (null) with `data`, and empty once the submission has expired. |  |
-| **files** | [**SubmissionFiles**](SubmissionFiles.md) | The generated files: `pdf` once the submission has been processed, `audit_trail` once its signature requests are completed, and `preview` once a preview PDF has been generated. Empty once the submission has expired. |  |
+| **output_formats** | [**Array&lt;OutputFormat&gt;**](OutputFormat.md) | What the submission makes: `pdf`, and `png` (an image of each page of the PDF, up to 100 pages) when you ask for it. Default `["pdf"]`. POST /submissions/{submission_id}/generate_files adds `png` to a processed submission. |  |
+| **files** | [**SubmissionFiles**](SubmissionFiles.md) | The generated files: `pdf` once the submission has been processed, `png` (the images of the PDF's pages, when `output_formats` has it: `files.png.pages[0]` is page 1), `audit_trail` once its signature requests are completed, and `preview` once a preview PDF has been generated. Empty once the submission has expired. |  |
 | **preview_generated_at** | **Time** | When the preview PDF was generated. Null if there is no preview. |  |
 | **expired** | **Boolean** | An expired submission's data, metadata, password and PDF have been deleted. |  |
 | **expires_at** | **Time** | When the submission expires. Null if it's kept until you delete it. |  |
@@ -52,6 +53,7 @@ instance = DocSpring::Submission.new(
   signature_requests: null,
   actions: null,
   truncated_text: null,
+  output_formats: null,
   files: null,
   preview_generated_at: null,
   expired: null,

@@ -100,6 +100,12 @@ module DocSpring
     # The template's conditional logic rules. Setting them replaces all of the rules.
     attr_accessor :field_dependencies
 
+    # The field names that people using the embedded template editor choose from, each with the data type and settings a field gets when it's given that name. Setting it replaces the whole list; an empty list turns them off.
+    attr_accessor :predefined_fields
+
+    # Sample submission data that sets `predefined_fields`: each value becomes a predefined field, with a type that fits it (`string`, `number`, `boolean`, `date`, `email` or `url`) and `required_in_template` true. Nested objects and arrays become names with `/`, such as `customer/email`. Without `predefined_fields` in the same request, it replaces them; with them, it adds to them and sets the types of the ones it has values for.
+    attr_accessor :predefined_fields_sample_data
+
     # The HTML of an HTML template, as a Liquid template. Null for PDF templates.
     attr_accessor :html
 
@@ -115,10 +121,16 @@ module DocSpring
     # Null resets the options to their defaults.
     attr_accessor :html_engine_options
 
-    # A PDF template's document: the `fields.key` of a file you uploaded with the presigned upload (GET /uploads/presign). Required for a PDF template. To upload the PDF with the request, use POST /templates/upload.
+    # A PDF template's document: the `fields.key` of a file you uploaded with the presigned upload (GET /uploads/presign). A PDF template needs one of `cache_id`, `document_url` and `document_base64`. To upload the PDF with the request, use POST /templates/upload.
     attr_accessor :cache_id
 
-    # The PDF's file name, for a `cache_id` (presigned uploads don't send one).
+    # An https:// link to the template's PDF (up to 100 MB), instead of `cache_id`. DocSpring downloads it after responding, following redirects to other https:// links: the template's `document.state` is `downloading` until then (sync.api hosts wait for it). If it can't be downloaded, the state is `download_failed` and `document.error_message` says why.
+    attr_accessor :document_url
+
+    # The template's PDF, encoded as base64 (a `data:` URI works too), instead of `cache_id`. Up to 7 MB before it's encoded: send a larger file with `cache_id` or `document_url`.
+    attr_accessor :document_base64
+
+    # The PDF's file name, for a `cache_id` (presigned uploads don't send one) or `document_base64`. A `document_url`'s is the last part of its path unless you set it.
     attr_accessor :filename
 
     # Set up the PDF's fields as DocSpring's "Automatically detect fields" upload option does: import or detect the fields, name them with AI, and set up conditional logic. `field_source`, `field_naming` and `field_logic` choose how. Default false. `document.page_processing_statuses` and `document.field_logic_status` show how it's going, and `document.state` becomes `processed` once every page's fields are set up.
@@ -186,12 +198,16 @@ module DocSpring
         :'slack_webhook_url' => :'slack_webhook_url',
         :'defaults' => :'defaults',
         :'field_dependencies' => :'field_dependencies',
+        :'predefined_fields' => :'predefined_fields',
+        :'predefined_fields_sample_data' => :'predefined_fields_sample_data',
         :'html' => :'html',
         :'scss' => :'scss',
         :'header_html' => :'header_html',
         :'footer_html' => :'footer_html',
         :'html_engine_options' => :'html_engine_options',
         :'cache_id' => :'cache_id',
+        :'document_url' => :'document_url',
+        :'document_base64' => :'document_base64',
         :'filename' => :'filename',
         :'detect_fields' => :'detect_fields',
         :'field_source' => :'field_source',
@@ -241,12 +257,16 @@ module DocSpring
         :'slack_webhook_url' => :'String',
         :'defaults' => :'TemplateDefaultsInput',
         :'field_dependencies' => :'Array<TemplateFieldDependencyInput>',
+        :'predefined_fields' => :'Array<PredefinedFieldInput>',
+        :'predefined_fields_sample_data' => :'Hash<String, Object>',
         :'html' => :'String',
         :'scss' => :'String',
         :'header_html' => :'String',
         :'footer_html' => :'String',
         :'html_engine_options' => :'HtmlEngineOptionsInput',
         :'cache_id' => :'String',
+        :'document_url' => :'String',
+        :'document_base64' => :'String',
         :'filename' => :'String',
         :'detect_fields' => :'Boolean',
         :'field_source' => :'FieldSetupSource',
@@ -263,6 +283,7 @@ module DocSpring
         :'encrypt_pdfs_password',
         :'redirect_url',
         :'slack_webhook_url',
+        :'predefined_fields_sample_data',
         :'html',
         :'scss',
         :'header_html',
@@ -415,6 +436,18 @@ module DocSpring
         end
       end
 
+      if attributes.key?(:'predefined_fields')
+        if (value = attributes[:'predefined_fields']).is_a?(Array)
+          self.predefined_fields = value
+        end
+      end
+
+      if attributes.key?(:'predefined_fields_sample_data')
+        if (value = attributes[:'predefined_fields_sample_data']).is_a?(Hash) || value.nil?
+          self.predefined_fields_sample_data = value
+        end
+      end
+
       if attributes.key?(:'html')
         self.html = attributes[:'html']
       end
@@ -437,6 +470,14 @@ module DocSpring
 
       if attributes.key?(:'cache_id')
         self.cache_id = attributes[:'cache_id']
+      end
+
+      if attributes.key?(:'document_url')
+        self.document_url = attributes[:'document_url']
+      end
+
+      if attributes.key?(:'document_base64')
+        self.document_base64 = attributes[:'document_base64']
       end
 
       if attributes.key?(:'filename')
@@ -523,12 +564,16 @@ module DocSpring
           slack_webhook_url == o.slack_webhook_url &&
           defaults == o.defaults &&
           field_dependencies == o.field_dependencies &&
+          predefined_fields == o.predefined_fields &&
+          predefined_fields_sample_data == o.predefined_fields_sample_data &&
           html == o.html &&
           scss == o.scss &&
           header_html == o.header_html &&
           footer_html == o.footer_html &&
           html_engine_options == o.html_engine_options &&
           cache_id == o.cache_id &&
+          document_url == o.document_url &&
+          document_base64 == o.document_base64 &&
           filename == o.filename &&
           detect_fields == o.detect_fields &&
           field_source == o.field_source &&
@@ -545,7 +590,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [name, description, template_type, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, slack_webhook_url, defaults, field_dependencies, html, scss, header_html, footer_html, html_engine_options, cache_id, filename, detect_fields, field_source, field_naming, field_logic].hash
+      [name, description, template_type, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, slack_webhook_url, defaults, field_dependencies, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, cache_id, document_url, document_base64, filename, detect_fields, field_source, field_naming, field_logic].hash
     end
 
     # Builds the object from hash

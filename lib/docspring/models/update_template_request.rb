@@ -97,6 +97,15 @@ module DocSpring
     # The template's conditional logic rules. Setting them replaces all of the rules.
     attr_accessor :field_dependencies
 
+    # Changes to the settings of the template's field groups, each with the `name` of the group it changes. Settings left out keep their values, and groups left out are unchanged.
+    attr_accessor :field_groups
+
+    # The field names that people using the embedded template editor choose from, each with the data type and settings a field gets when it's given that name. Setting it replaces the whole list; an empty list turns them off.
+    attr_accessor :predefined_fields
+
+    # Sample submission data that sets `predefined_fields`: each value becomes a predefined field, with a type that fits it (`string`, `number`, `boolean`, `date`, `email` or `url`) and `required_in_template` true. Nested objects and arrays become names with `/`, such as `customer/email`. Without `predefined_fields` in the same request, it replaces them; with them, it adds to them and sets the types of the ones it has values for.
+    attr_accessor :predefined_fields_sample_data
+
     # The HTML of an HTML template, as a Liquid template. Null for PDF templates.
     attr_accessor :html
 
@@ -164,6 +173,9 @@ module DocSpring
         :'slack_webhook_url' => :'slack_webhook_url',
         :'defaults' => :'defaults',
         :'field_dependencies' => :'field_dependencies',
+        :'field_groups' => :'field_groups',
+        :'predefined_fields' => :'predefined_fields',
+        :'predefined_fields_sample_data' => :'predefined_fields_sample_data',
         :'html' => :'html',
         :'scss' => :'scss',
         :'header_html' => :'header_html',
@@ -212,6 +224,9 @@ module DocSpring
         :'slack_webhook_url' => :'String',
         :'defaults' => :'TemplateDefaultsInput',
         :'field_dependencies' => :'Array<TemplateFieldDependencyInput>',
+        :'field_groups' => :'Array<FieldGroupInput>',
+        :'predefined_fields' => :'Array<PredefinedFieldInput>',
+        :'predefined_fields_sample_data' => :'Hash<String, Object>',
         :'html' => :'String',
         :'scss' => :'String',
         :'header_html' => :'String',
@@ -228,6 +243,7 @@ module DocSpring
         :'encrypt_pdfs_password',
         :'redirect_url',
         :'slack_webhook_url',
+        :'predefined_fields_sample_data',
         :'html',
         :'scss',
         :'header_html',
@@ -374,6 +390,24 @@ module DocSpring
         end
       end
 
+      if attributes.key?(:'field_groups')
+        if (value = attributes[:'field_groups']).is_a?(Array)
+          self.field_groups = value
+        end
+      end
+
+      if attributes.key?(:'predefined_fields')
+        if (value = attributes[:'predefined_fields']).is_a?(Array)
+          self.predefined_fields = value
+        end
+      end
+
+      if attributes.key?(:'predefined_fields_sample_data')
+        if (value = attributes[:'predefined_fields_sample_data']).is_a?(Hash) || value.nil?
+          self.predefined_fields_sample_data = value
+        end
+      end
+
       if attributes.key?(:'html')
         self.html = attributes[:'html']
       end
@@ -442,6 +476,9 @@ module DocSpring
           slack_webhook_url == o.slack_webhook_url &&
           defaults == o.defaults &&
           field_dependencies == o.field_dependencies &&
+          field_groups == o.field_groups &&
+          predefined_fields == o.predefined_fields &&
+          predefined_fields_sample_data == o.predefined_fields_sample_data &&
           html == o.html &&
           scss == o.scss &&
           header_html == o.header_html &&
@@ -458,7 +495,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [name, description, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, slack_webhook_url, defaults, field_dependencies, html, scss, header_html, footer_html, html_engine_options].hash
+      [name, description, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, slack_webhook_url, defaults, field_dependencies, field_groups, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options].hash
     end
 
     # Builds the object from hash
