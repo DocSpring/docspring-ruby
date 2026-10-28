@@ -29,6 +29,7 @@ docs/CreateSignatureRequestEventRequest.md
 docs/CreateSignatureRequestTokenRequest.md
 docs/CreateSubmissionBatchRequest.md
 docs/CreateSubmissionRequest.md
+docs/CreateTemplatePreviewRequest.md
 docs/CreateTemplateRequest.md
 docs/CreateWebhookRequest.md
 docs/CustomFile.md
@@ -110,6 +111,7 @@ docs/SubmissionList.md
 docs/SubmissionSource.md
 docs/SubmissionSourcePdf.md
 docs/SubmissionState.md
+docs/SubmissionSummary.md
 docs/SubmissionValidation.md
 docs/Template.md
 docs/TemplateActor.md
@@ -120,6 +122,7 @@ docs/TemplateDiff.md
 docs/TemplateDiffSummary.md
 docs/TemplateDocument.md
 docs/TemplateDocumentState.md
+docs/TemplateDocumentSummary.md
 docs/TemplateFieldChange.md
 docs/TemplateFieldChanges.md
 docs/TemplateFieldDependency.md
@@ -140,6 +143,8 @@ docs/TemplatePageFieldsStatus.md
 docs/TemplatePageImageStatus.md
 docs/TemplatePageImages.md
 docs/TemplatePageProcessingStatus.md
+docs/TemplatePreview.md
+docs/TemplatePreviewState.md
 docs/TemplateSourcePdf.md
 docs/TemplateSummary.md
 docs/TemplateSummaryList.md
@@ -193,6 +198,7 @@ lib/docspring/models/create_signature_request_event_request.rb
 lib/docspring/models/create_signature_request_token_request.rb
 lib/docspring/models/create_submission_batch_request.rb
 lib/docspring/models/create_submission_request.rb
+lib/docspring/models/create_template_preview_request.rb
 lib/docspring/models/create_template_request.rb
 lib/docspring/models/create_webhook_request.rb
 lib/docspring/models/custom_file.rb
@@ -274,6 +280,7 @@ lib/docspring/models/submission_list.rb
 lib/docspring/models/submission_source.rb
 lib/docspring/models/submission_source_pdf.rb
 lib/docspring/models/submission_state.rb
+lib/docspring/models/submission_summary.rb
 lib/docspring/models/submission_validation.rb
 lib/docspring/models/template.rb
 lib/docspring/models/template_actor.rb
@@ -284,6 +291,7 @@ lib/docspring/models/template_diff.rb
 lib/docspring/models/template_diff_summary.rb
 lib/docspring/models/template_document.rb
 lib/docspring/models/template_document_state.rb
+lib/docspring/models/template_document_summary.rb
 lib/docspring/models/template_field_change.rb
 lib/docspring/models/template_field_changes.rb
 lib/docspring/models/template_field_dependency.rb
@@ -304,6 +312,8 @@ lib/docspring/models/template_page_fields_status.rb
 lib/docspring/models/template_page_image_status.rb
 lib/docspring/models/template_page_images.rb
 lib/docspring/models/template_page_processing_status.rb
+lib/docspring/models/template_preview.rb
+lib/docspring/models/template_preview_state.rb
 lib/docspring/models/template_source_pdf.rb
 lib/docspring/models/template_summary.rb
 lib/docspring/models/template_summary_list.rb
@@ -351,6 +361,7 @@ spec/models/create_signature_request_event_request_spec.rb
 spec/models/create_signature_request_token_request_spec.rb
 spec/models/create_submission_batch_request_spec.rb
 spec/models/create_submission_request_spec.rb
+spec/models/create_template_preview_request_spec.rb
 spec/models/create_template_request_spec.rb
 spec/models/create_webhook_request_spec.rb
 spec/models/custom_file_list_spec.rb
@@ -432,6 +443,7 @@ spec/models/submission_source_pdf_spec.rb
 spec/models/submission_source_spec.rb
 spec/models/submission_spec.rb
 spec/models/submission_state_spec.rb
+spec/models/submission_summary_spec.rb
 spec/models/submission_validation_spec.rb
 spec/models/template_actor_spec.rb
 spec/models/template_actor_type_spec.rb
@@ -441,6 +453,7 @@ spec/models/template_diff_spec.rb
 spec/models/template_diff_summary_spec.rb
 spec/models/template_document_spec.rb
 spec/models/template_document_state_spec.rb
+spec/models/template_document_summary_spec.rb
 spec/models/template_field_change_spec.rb
 spec/models/template_field_changes_spec.rb
 spec/models/template_field_dependency_action_spec.rb
@@ -461,6 +474,8 @@ spec/models/template_page_fields_status_spec.rb
 spec/models/template_page_image_status_spec.rb
 spec/models/template_page_images_spec.rb
 spec/models/template_page_processing_status_spec.rb
+spec/models/template_preview_spec.rb
+spec/models/template_preview_state_spec.rb
 spec/models/template_source_pdf_spec.rb
 spec/models/template_spec.rb
 spec/models/template_summary_list_spec.rb

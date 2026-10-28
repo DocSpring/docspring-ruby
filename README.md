@@ -9,7 +9,7 @@ templates with your data, generates PDFs from HTML templates, combines PDFs and 
 The code in this repository is generated from DocSpring's OpenAPI spec ([About this SDK](#about-this-sdk)). Issues and
 pull requests are welcome.
 
-Version 4.1.0. Requires Ruby >= 2.7.
+Version 4.2.0. Requires Ruby >= 2.7.
 
 ## Install and configure
 
@@ -96,6 +96,7 @@ Ruby code for every method.
 | [`create_submission`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_submission) | Generate a PDF |
 | [`create_submission_batch`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_submission_batch) | Generate PDFs in a batch |
 | [`create_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_template) | Create a template |
+| [`create_template_preview`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_template_preview) | Preview a template with data |
 | [`create_webhook`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_webhook) | Create a webhook |
 | [`delete_custom_file`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#delete_custom_file) | Delete a custom file |
 | [`delete_folder`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#delete_folder) | Delete a folder |
@@ -116,6 +117,7 @@ Ruby code for every method.
 | [`get_template_diff`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_diff) | Compare a version of a template with the one before it |
 | [`get_template_model_code`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_model_code) | Generate typed code for a template's submission data |
 | [`get_template_page_images`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_page_images) | Get images of a template's pages |
+| [`get_template_preview`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_preview) | Get a template preview |
 | [`get_template_schema`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_schema) | Get the JSON Schema of a template's submission data |
 | [`get_webhook`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_webhook) | Get a webhook |
 | [`list_combined_pdfs`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_combined_pdfs) | List combined PDFs |
@@ -175,6 +177,8 @@ On top of the generated code, we add:
 
 - A client constructor that reads your credentials, region and host from the environment.
 - A fix for multipart PUT requests in Ethon (file uploads to `upload_template_document`).
+- Dates and times in a request (`created_after`, a model's date-time attribute) can be a `Time`, `DateTime` or `Date`, sent as RFC 3339 strings. A `Date` is midnight UTC.
+- `DocSpring.verify_webhook_signature(payload, signature_header, secret)` checks a webhook request's `X-DocSpring-Signature` header, with `tolerance:` and `now:` keywords.
 
 Each release regenerates every file, so a change made only here would be lost in the next one. Issues and pull
 requests are welcome all the same: [open an issue](https://github.com/DocSpring/docspring-ruby/issues) or a pull request, or email

@@ -43,7 +43,7 @@ module DocSpring
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'data' => :'Array<Submission>',
+        :'data' => :'Array<SubmissionSummary>',
         :'next_cursor' => :'String'
       }
     end

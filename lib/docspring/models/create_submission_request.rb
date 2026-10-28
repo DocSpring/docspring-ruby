@@ -25,7 +25,7 @@ module DocSpring
     # The values of the template's fields, by field name. Required for a PDF template, unless `signature_requests` collects the values.
     attr_accessor :data
 
-    # Your own data about the submission, such as an ID from your app. It isn't printed on the PDF.
+    # Your own data about the submission, such as an ID from your app. It isn't printed on the PDF. Two keys also change the PDF: `pdf_filename` names its file (`files.pdf.filename`, and its download), and `pdf_title` is its title in the PDF's document properties (and an HTML template's `<title>`, unless its HTML has one). Without `pdf_title`, the title is the template's name. In `pdf_filename`, a `.pdf` ending is removed, each run of characters other than letters, digits, `-`, `_` and `.` becomes one `_`, and the first 128 characters are kept, then `.pdf` is added. Without it, the file is named after the submission's ID (`sub_1234567890abcdef01.pdf`).
     attr_accessor :metadata
 
     # A password that the PDF needs to be opened with. It's never returned; `has_password` says if it's set.
@@ -43,7 +43,7 @@ module DocSpring
     # For an HTML template, HTML to use instead of the template's.
     attr_accessor :html
 
-    # For an HTML template, CSS to use instead of the template's.
+    # For an HTML template, SCSS (plain CSS works too) added after the template's styles, on the page and in its header and footer. It doesn't replace them: its rules come later, so they win over the template's rules of the same specificity.
     attr_accessor :css
 
     # The people who sign the PDF, and fill in their fields first. The PDF is generated once every signature request is completed. PDF templates only. Without `role`s, the first signature request is `Signer 1`, the second `Signer 2`, and so on. To leave a signer out, give every signature request its `role` and leave that one's out. Only the signers sign: a value for a signature or initials field in `data` makes the submission `invalid_data`.

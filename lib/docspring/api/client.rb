@@ -215,6 +215,7 @@ end
     # @param body [CreateCombinedPdfRequest] The PDFs to merge, and the combined PDF's settings.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the PDF has been generated before responding. Default true on sync.api hosts.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another combined PDF. Send a new key with each new combined PDF, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
     # @return [CombinedPdf]
     def create_combined_pdf(body, opts = {})
       data, _status_code, _headers = create_combined_pdf_with_http_info(body, opts)
@@ -226,6 +227,7 @@ end
     # @param body [CreateCombinedPdfRequest] The PDFs to merge, and the combined PDF's settings.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the PDF has been generated before responding. Default true on sync.api hosts.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another combined PDF. Send a new key with each new combined PDF, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
     # @return [Array<(CombinedPdf, Integer, Hash)>] CombinedPdf data, response status code and response headers
     def create_combined_pdf_with_http_info(body, opts = {})
       if @api_client.config.debugging
@@ -251,6 +253,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -418,7 +421,7 @@ end
     end
 
     # Record a signature request event
-    # Records something that happened outside DocSpring in the signature request's audit trail: you sent the request to the person (`send_request`). The audit trail shows it as reported by your account. 
+    # Records something that happened outside DocSpring in the signature request's audit trail: you sent the request to the person (`send_request`). The audit trail shows it as reported by your account. A finished (completed, declined or expired) signature request's audit trail takes no more events, and a test API token can't record one for a live signature request. 
     # @param signature_request_id [String] The signature request's ID.
     # @param body [CreateSignatureRequestEventRequest] The event to record.
     # @param [Hash] opts the optional parameters
@@ -429,7 +432,7 @@ end
     end
 
     # Record a signature request event
-    # Records something that happened outside DocSpring in the signature request's audit trail: you sent the request to the person (`send_request`). The audit trail shows it as reported by your account. 
+    # Records something that happened outside DocSpring in the signature request's audit trail: you sent the request to the person (`send_request`). The audit trail shows it as reported by your account. A finished (completed, declined or expired) signature request's audit trail takes no more events, and a test API token can't record one for a live signature request. 
     # @param signature_request_id [String] The signature request's ID.
     # @param body [CreateSignatureRequestEventRequest] The event to record.
     # @param [Hash] opts the optional parameters
@@ -568,6 +571,7 @@ end
     # @param [Hash] opts the optional parameters
     # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
     # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another submission. Send a new key with each new submission, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
     # @return [Submission]
     def create_submission(template_id, body, opts = {})
       data, _status_code, _headers = create_submission_with_http_info(template_id, body, opts)
@@ -581,6 +585,7 @@ end
     # @param [Hash] opts the optional parameters
     # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
     # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another submission. Send a new key with each new submission, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
     # @return [Array<(Submission, Integer, Hash)>] Submission data, response status code and response headers
     def create_submission_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -611,6 +616,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -646,6 +652,7 @@ end
     # @param body [CreateSubmissionBatchRequest] The submissions to create, and the settings they share.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until every PDF in the batch has been generated before responding. Default true on sync.api hosts.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another batch. Send a new key with each new batch, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
     # @return [SubmissionBatch]
     def create_submission_batch(body, opts = {})
       data, _status_code, _headers = create_submission_batch_with_http_info(body, opts)
@@ -657,6 +664,7 @@ end
     # @param body [CreateSubmissionBatchRequest] The submissions to create, and the settings they share.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until every PDF in the batch has been generated before responding. Default true on sync.api hosts.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another batch. Send a new key with each new batch, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
     # @return [Array<(SubmissionBatch, Integer, Hash)>] SubmissionBatch data, response status code and response headers
     def create_submission_batch_with_http_info(body, opts = {})
       if @api_client.config.debugging
@@ -682,6 +690,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -779,6 +788,83 @@ end
       data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#create_template\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Preview a template with data
+    # Makes PNG images of a template's pages filled in with the data you send (not a PDF), so you can check how an HTML or PDF template prints with your data before you publish a version or send live data. It renders the template's draft, or the published `version` you ask for. A preview makes no submission and uses no credits, and its pages are watermarked like a test submission's PDF. It's `pending` while it renders: get it with GET /templates/{template_id}/previews/{preview_id} until it's `processed`, with an image of each page, or `error`. 
+    # @param template_id [String] The template's ID.
+    # @param body [CreateTemplatePreviewRequest] The data to render the template with.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @return [TemplatePreview]
+    def create_template_preview(template_id, body, opts = {})
+      data, _status_code, _headers = create_template_preview_with_http_info(template_id, body, opts)
+      data
+    end
+
+    # Preview a template with data
+    # Makes PNG images of a template's pages filled in with the data you send (not a PDF), so you can check how an HTML or PDF template prints with your data before you publish a version or send live data. It renders the template's draft, or the published `version` you ask for. A preview makes no submission and uses no credits, and its pages are watermarked like a test submission's PDF. It's `pending` while it renders: get it with GET /templates/{template_id}/previews/{preview_id} until it's `processed`, with an image of each page, or `error`. 
+    # @param template_id [String] The template's ID.
+    # @param body [CreateTemplatePreviewRequest] The data to render the template with.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @return [Array<(TemplatePreview, Integer, Hash)>] TemplatePreview data, response status code and response headers
+    def create_template_preview_with_http_info(template_id, body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.create_template_preview ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.create_template_preview"
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.create_template_preview"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/previews'.sub('{template_id}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'version'] = opts[:'version'] if !opts[:'version'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'TemplatePreview'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.create_template_preview",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#create_template_preview\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -1943,11 +2029,12 @@ end
     end
 
     # Generate typed code for a template's submission data
-    # Generates types for a template's submission data in TypeScript, JavaScript, Ruby, Python, PHP, Java, C#, Elixir or Go, so your app catches mistakes before it calls the API. `root_type_name` is the type of the whole `data` object. Java returns every class in `code`, each under a `// ClassName.java` comment. A template with no named fields returns 422. 
+    # Generates types for a template's submission data in TypeScript, JavaScript, Ruby, Python, PHP, Java, C#, Elixir or Go, so your app catches mistakes before it calls the API. `root_type_name` is the type of the whole `data` object, and `just_types=true` leaves out the code that converts JSON to and from the types. Java returns every class in `code`, each under a `// ClassName.java` comment. A template with no named fields returns 422. 
     # @param template_id [String] The template's ID.
     # @param lang [ModelCodeLanguage] The language to generate the code in.
     # @param [Hash] opts the optional parameters
     # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published), the version a submission uses by default.
+    # @option opts [Boolean] :just_types Return only the types (interfaces, classes or structs), without the code that converts JSON to and from them. Default false. JavaScript has no types and PHP no types-only code, so theirs is the same either way.
     # @return [TemplateModelCode]
     def get_template_model_code(template_id, lang, opts = {})
       data, _status_code, _headers = get_template_model_code_with_http_info(template_id, lang, opts)
@@ -1955,11 +2042,12 @@ end
     end
 
     # Generate typed code for a template's submission data
-    # Generates types for a template's submission data in TypeScript, JavaScript, Ruby, Python, PHP, Java, C#, Elixir or Go, so your app catches mistakes before it calls the API. `root_type_name` is the type of the whole `data` object. Java returns every class in `code`, each under a `// ClassName.java` comment. A template with no named fields returns 422. 
+    # Generates types for a template's submission data in TypeScript, JavaScript, Ruby, Python, PHP, Java, C#, Elixir or Go, so your app catches mistakes before it calls the API. `root_type_name` is the type of the whole `data` object, and `just_types=true` leaves out the code that converts JSON to and from the types. Java returns every class in `code`, each under a `// ClassName.java` comment. A template with no named fields returns 422. 
     # @param template_id [String] The template's ID.
     # @param lang [ModelCodeLanguage] The language to generate the code in.
     # @param [Hash] opts the optional parameters
     # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published), the version a submission uses by default.
+    # @option opts [Boolean] :just_types Return only the types (interfaces, classes or structs), without the code that converts JSON to and from them. Default false. JavaScript has no types and PHP no types-only code, so theirs is the same either way.
     # @return [Array<(TemplateModelCode, Integer, Hash)>] TemplateModelCode data, response status code and response headers
     def get_template_model_code_with_http_info(template_id, lang, opts = {})
       if @api_client.config.debugging
@@ -1980,6 +2068,7 @@ end
       query_params = opts[:query_params] || {}
       query_params[:'lang'] = lang
       query_params[:'version'] = opts[:'version'] if !opts[:'version'].nil?
+      query_params[:'just_types'] = opts[:'just_types'] if !opts[:'just_types'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}
@@ -2077,6 +2166,75 @@ end
       data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#get_template_page_images\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Get a template preview
+    # Returns a preview made with POST /templates/{template_id}/previews. Once it's `processed`, `pages` has a PNG image of each page with a temporary link to download it: a preview has no PDF. Previews are deleted an hour after they're created. 
+    # @param template_id [String] The template's ID.
+    # @param preview_id [String] The preview's ID.
+    # @param [Hash] opts the optional parameters
+    # @return [TemplatePreview]
+    def get_template_preview(template_id, preview_id, opts = {})
+      data, _status_code, _headers = get_template_preview_with_http_info(template_id, preview_id, opts)
+      data
+    end
+
+    # Get a template preview
+    # Returns a preview made with POST /templates/{template_id}/previews. Once it's `processed`, `pages` has a PNG image of each page with a temporary link to download it: a preview has no PDF. Previews are deleted an hour after they're created. 
+    # @param template_id [String] The template's ID.
+    # @param preview_id [String] The preview's ID.
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(TemplatePreview, Integer, Hash)>] TemplatePreview data, response status code and response headers
+    def get_template_preview_with_http_info(template_id, preview_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.get_template_preview ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.get_template_preview"
+      end
+      # verify the required parameter 'preview_id' is set
+      if @api_client.config.client_side_validation && preview_id.nil?
+        fail ArgumentError, "Missing the required parameter 'preview_id' when calling Client.get_template_preview"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/previews/{preview_id}'.sub('{template_id}', CGI.escape(template_id.to_s)).sub('{preview_id}', CGI.escape(preview_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'TemplatePreview'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.get_template_preview",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#get_template_preview\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -2403,7 +2561,7 @@ end
     end
 
     # List submissions
-    # Returns the submissions in your account, newest first, one page at a time. Lists leave out each submission's `data` unless you pass `include_data=true`. 
+    # Returns the submissions in your account, newest first, one page at a time. Each one is a summary: its `data` is null unless you pass `include_data=true`, and its `files` are empty unless you pass `include_files=true`. Get a submission by its ID for its signature requests, uploads and page images. 
     # @param [Hash] opts the optional parameters
     # @option opts [String] :template_id Only list this template's submissions.
     # @option opts [Boolean] :test Only list test submissions (true) or live submissions (false).
@@ -2412,6 +2570,8 @@ end
     # @option opts [Boolean] :include_data Include each submission's `data` (null without it).
     # @option opts [Integer] :limit How many items to return (1-100, default 50). (default to 50)
     # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+    # @option opts [SubmissionState] :state Only list submissions in this state (one state per request). The ones that failed are `invalid_data`, `error`, `syntax_error`, `image_download_failed` and `image_processing_failed`, and one still `pending` an hour after it was created is stuck.
+    # @option opts [Boolean] :include_files Include each submission's generated files and their download links (`files`, empty without it), without the page images' links.
     # @return [SubmissionList]
     def list_submissions(opts = {})
       data, _status_code, _headers = list_submissions_with_http_info(opts)
@@ -2419,7 +2579,7 @@ end
     end
 
     # List submissions
-    # Returns the submissions in your account, newest first, one page at a time. Lists leave out each submission's `data` unless you pass `include_data=true`. 
+    # Returns the submissions in your account, newest first, one page at a time. Each one is a summary: its `data` is null unless you pass `include_data=true`, and its `files` are empty unless you pass `include_files=true`. Get a submission by its ID for its signature requests, uploads and page images. 
     # @param [Hash] opts the optional parameters
     # @option opts [String] :template_id Only list this template's submissions.
     # @option opts [Boolean] :test Only list test submissions (true) or live submissions (false).
@@ -2428,6 +2588,8 @@ end
     # @option opts [Boolean] :include_data Include each submission's `data` (null without it).
     # @option opts [Integer] :limit How many items to return (1-100, default 50). (default to 50)
     # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+    # @option opts [SubmissionState] :state Only list submissions in this state (one state per request). The ones that failed are `invalid_data`, `error`, `syntax_error`, `image_download_failed` and `image_processing_failed`, and one still `pending` an hour after it was created is stuck.
+    # @option opts [Boolean] :include_files Include each submission's generated files and their download links (`files`, empty without it), without the page images' links.
     # @return [Array<(SubmissionList, Integer, Hash)>] SubmissionList data, response status code and response headers
     def list_submissions_with_http_info(opts = {})
       if @api_client.config.debugging
@@ -2445,6 +2607,8 @@ end
       query_params[:'include_data'] = opts[:'include_data'] if !opts[:'include_data'].nil?
       query_params[:'limit'] = opts[:'limit'] if !opts[:'limit'].nil?
       query_params[:'cursor'] = opts[:'cursor'] if !opts[:'cursor'].nil?
+      query_params[:'state'] = opts[:'state'] if !opts[:'state'].nil?
+      query_params[:'include_files'] = opts[:'include_files'] if !opts[:'include_files'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}
@@ -2556,6 +2720,8 @@ end
     # @option opts [Boolean] :include_data Include each submission's `data` (null without it).
     # @option opts [Integer] :limit How many items to return (1-100, default 50). (default to 50)
     # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+    # @option opts [SubmissionState] :state Only list submissions in this state (one state per request). The ones that failed are `invalid_data`, `error`, `syntax_error`, `image_download_failed` and `image_processing_failed`, and one still `pending` an hour after it was created is stuck.
+    # @option opts [Boolean] :include_files Include each submission's generated files and their download links (`files`, empty without it), without the page images' links.
     # @return [SubmissionList]
     def list_template_submissions(template_id, opts = {})
       data, _status_code, _headers = list_template_submissions_with_http_info(template_id, opts)
@@ -2572,6 +2738,8 @@ end
     # @option opts [Boolean] :include_data Include each submission's `data` (null without it).
     # @option opts [Integer] :limit How many items to return (1-100, default 50). (default to 50)
     # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+    # @option opts [SubmissionState] :state Only list submissions in this state (one state per request). The ones that failed are `invalid_data`, `error`, `syntax_error`, `image_download_failed` and `image_processing_failed`, and one still `pending` an hour after it was created is stuck.
+    # @option opts [Boolean] :include_files Include each submission's generated files and their download links (`files`, empty without it), without the page images' links.
     # @return [Array<(SubmissionList, Integer, Hash)>] SubmissionList data, response status code and response headers
     def list_template_submissions_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
@@ -2592,6 +2760,8 @@ end
       query_params[:'include_data'] = opts[:'include_data'] if !opts[:'include_data'].nil?
       query_params[:'limit'] = opts[:'limit'] if !opts[:'limit'].nil?
       query_params[:'cursor'] = opts[:'cursor'] if !opts[:'cursor'].nil?
+      query_params[:'state'] = opts[:'state'] if !opts[:'state'].nil?
+      query_params[:'include_files'] = opts[:'include_files'] if !opts[:'include_files'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}
@@ -2628,7 +2798,7 @@ end
     end
 
     # List templates
-    # Returns the templates in your account (their drafts), newest first, one page at a time. Get a template by its ID for its HTML, defaults and published versions. 
+    # Returns the templates in your account (their drafts), newest first, one page at a time. Each one is a summary: get a template by its ID for its settings, its PDF in full, its HTML, defaults and published versions. 
     # @param [Hash] opts the optional parameters
     # @option opts [String] :query Only list templates whose name contains this text (ignoring case).
     # @option opts [String] :parent_folder_id Only list the templates in this folder (not in its subfolders).
@@ -2641,7 +2811,7 @@ end
     end
 
     # List templates
-    # Returns the templates in your account (their drafts), newest first, one page at a time. Get a template by its ID for its HTML, defaults and published versions. 
+    # Returns the templates in your account (their drafts), newest first, one page at a time. Each one is a summary: get a template by its ID for its settings, its PDF in full, its HTML, defaults and published versions. 
     # @param [Hash] opts the optional parameters
     # @option opts [String] :query Only list templates whose name contains this text (ignoring case).
     # @option opts [String] :parent_folder_id Only list the templates in this folder (not in its subfolders).

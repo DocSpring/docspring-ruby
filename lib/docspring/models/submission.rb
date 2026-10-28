@@ -43,7 +43,7 @@ module DocSpring
     # `true` keeps the PDF's text and check fields fillable, and `false` flattens every field. Left out, the template decides: its `editable_submissions` setting, or each field's own Editable option. A response shows the template's setting when the request left this out. Can't be `true` with `signature_requests`.
     attr_accessor :editable
 
-    # The submission's data, with the values entered in completed signature requests. Lists leave it out (null) unless you pass `include_data=true`. Empty once the submission has expired.
+    # The submission's data, with the values entered in completed signature requests. Empty once the submission has expired. Null in a batch's submissions unless you pass `include_data=true`, and in the events of a webhook that leaves out submission data.
     attr_accessor :data
 
     # Why the data doesn't match the template's fields, when `state` is `invalid_data`: the same details as the 422 response that recorded it, with pointers into the request that created the submission (`/data/name`). Cleared once the submission has expired.
@@ -52,8 +52,26 @@ module DocSpring
     # Why the PDF couldn't be generated, when `state` is `error`.
     attr_accessor :error_message
 
-    # Your own data about the submission, such as an ID from your app. It isn't printed on the PDF.
+    # Your own data about the submission, such as an ID from your app. It isn't printed on the PDF. Two keys also change the PDF: `pdf_filename` names its file (`files.pdf.filename`, and its download), and `pdf_title` is its title in the PDF's document properties (and an HTML template's `<title>`, unless its HTML has one). Without `pdf_title`, the title is the template's name. In `pdf_filename`, a `.pdf` ending is removed, each run of characters other than letters, digits, `-`, `_` and `.` becomes one `_`, and the first 128 characters are kept, then `.pdf` is added. Without it, the file is named after the submission's ID (`sub_1234567890abcdef01.pdf`).
     attr_accessor :metadata
+
+    # The generated files: `pdf` once the submission has been processed, `png` (the images of the PDF's pages, when `output_formats` has it: `files.png.pages[0]` is page 1), `audit_trail` once its signature requests are completed, and `preview` once a preview PDF has been generated. Empty once the submission has expired.
+    attr_accessor :files
+
+    # An expired submission's data, metadata, password and PDF have been deleted.
+    attr_accessor :expired
+
+    # When the submission expires. Null if it's kept until you delete it.
+    attr_accessor :expires_at
+
+    # When the PDF was generated. Null until then.
+    attr_accessor :processed_at
+
+    # When the submission was created.
+    attr_accessor :created_at
+
+    # When the submission was last updated.
+    attr_accessor :updated_at
 
     # Whether the PDF needs a password to open (`password`).
     attr_accessor :has_password
@@ -70,26 +88,8 @@ module DocSpring
     # What the submission makes: `pdf`, and `png` (an image of each page of the PDF, up to 100 pages) when you ask for it. Default `["pdf"]`. POST /submissions/{submission_id}/generate_files adds `png` to a processed submission.
     attr_accessor :output_formats
 
-    # The generated files: `pdf` once the submission has been processed, `png` (the images of the PDF's pages, when `output_formats` has it: `files.png.pages[0]` is page 1), `audit_trail` once its signature requests are completed, and `preview` once a preview PDF has been generated. Empty once the submission has expired.
-    attr_accessor :files
-
     # When the preview PDF was generated. Null if there is no preview.
     attr_accessor :preview_generated_at
-
-    # An expired submission's data, metadata, password and PDF have been deleted.
-    attr_accessor :expired
-
-    # When the submission expires. Null if it's kept until you delete it.
-    attr_accessor :expires_at
-
-    # When the PDF was generated. Null until then.
-    attr_accessor :processed_at
-
-    # When the submission was created.
-    attr_accessor :created_at
-
-    # When the submission was last updated.
-    attr_accessor :updated_at
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -129,18 +129,18 @@ module DocSpring
         :'data_errors' => :'data_errors',
         :'error_message' => :'error_message',
         :'metadata' => :'metadata',
+        :'files' => :'files',
+        :'expired' => :'expired',
+        :'expires_at' => :'expires_at',
+        :'processed_at' => :'processed_at',
+        :'created_at' => :'created_at',
+        :'updated_at' => :'updated_at',
         :'has_password' => :'has_password',
         :'signature_requests' => :'signature_requests',
         :'actions' => :'actions',
         :'truncated_text' => :'truncated_text',
         :'output_formats' => :'output_formats',
-        :'files' => :'files',
-        :'preview_generated_at' => :'preview_generated_at',
-        :'expired' => :'expired',
-        :'expires_at' => :'expires_at',
-        :'processed_at' => :'processed_at',
-        :'created_at' => :'created_at',
-        :'updated_at' => :'updated_at'
+        :'preview_generated_at' => :'preview_generated_at'
       }
     end
 
@@ -170,18 +170,18 @@ module DocSpring
         :'data_errors' => :'Array<ErrorDetail>',
         :'error_message' => :'String',
         :'metadata' => :'Hash<String, Object>',
+        :'files' => :'SubmissionFiles',
+        :'expired' => :'Boolean',
+        :'expires_at' => :'Time',
+        :'processed_at' => :'Time',
+        :'created_at' => :'Time',
+        :'updated_at' => :'Time',
         :'has_password' => :'Boolean',
         :'signature_requests' => :'Array<SignatureRequest>',
         :'actions' => :'Array<SubmissionAction>',
         :'truncated_text' => :'Hash<String, Array<String>>',
         :'output_formats' => :'Array<OutputFormat>',
-        :'files' => :'SubmissionFiles',
-        :'preview_generated_at' => :'Time',
-        :'expired' => :'Boolean',
-        :'expires_at' => :'Time',
-        :'processed_at' => :'Time',
-        :'created_at' => :'Time',
-        :'updated_at' => :'Time'
+        :'preview_generated_at' => :'Time'
       }
     end
 
@@ -193,10 +193,10 @@ module DocSpring
         :'batch_id',
         :'data',
         :'error_message',
-        :'truncated_text',
-        :'preview_generated_at',
         :'expires_at',
         :'processed_at',
+        :'truncated_text',
+        :'preview_generated_at'
       ])
     end
 
@@ -310,6 +310,42 @@ module DocSpring
         self.metadata = nil
       end
 
+      if attributes.key?(:'files')
+        self.files = attributes[:'files']
+      else
+        self.files = nil
+      end
+
+      if attributes.key?(:'expired')
+        self.expired = attributes[:'expired']
+      else
+        self.expired = nil
+      end
+
+      if attributes.key?(:'expires_at')
+        self.expires_at = attributes[:'expires_at']
+      else
+        self.expires_at = nil
+      end
+
+      if attributes.key?(:'processed_at')
+        self.processed_at = attributes[:'processed_at']
+      else
+        self.processed_at = nil
+      end
+
+      if attributes.key?(:'created_at')
+        self.created_at = attributes[:'created_at']
+      else
+        self.created_at = nil
+      end
+
+      if attributes.key?(:'updated_at')
+        self.updated_at = attributes[:'updated_at']
+      else
+        self.updated_at = nil
+      end
+
       if attributes.key?(:'has_password')
         self.has_password = attributes[:'has_password']
       else
@@ -348,46 +384,10 @@ module DocSpring
         self.output_formats = nil
       end
 
-      if attributes.key?(:'files')
-        self.files = attributes[:'files']
-      else
-        self.files = nil
-      end
-
       if attributes.key?(:'preview_generated_at')
         self.preview_generated_at = attributes[:'preview_generated_at']
       else
         self.preview_generated_at = nil
-      end
-
-      if attributes.key?(:'expired')
-        self.expired = attributes[:'expired']
-      else
-        self.expired = nil
-      end
-
-      if attributes.key?(:'expires_at')
-        self.expires_at = attributes[:'expires_at']
-      else
-        self.expires_at = nil
-      end
-
-      if attributes.key?(:'processed_at')
-        self.processed_at = attributes[:'processed_at']
-      else
-        self.processed_at = nil
-      end
-
-      if attributes.key?(:'created_at')
-        self.created_at = attributes[:'created_at']
-      else
-        self.created_at = nil
-      end
-
-      if attributes.key?(:'updated_at')
-        self.updated_at = attributes[:'updated_at']
-      else
-        self.updated_at = nil
       end
     end
 
@@ -428,22 +428,6 @@ module DocSpring
         invalid_properties.push('invalid value for "metadata", metadata cannot be nil.')
       end
 
-      if @has_password.nil?
-        invalid_properties.push('invalid value for "has_password", has_password cannot be nil.')
-      end
-
-      if @signature_requests.nil?
-        invalid_properties.push('invalid value for "signature_requests", signature_requests cannot be nil.')
-      end
-
-      if @actions.nil?
-        invalid_properties.push('invalid value for "actions", actions cannot be nil.')
-      end
-
-      if @output_formats.nil?
-        invalid_properties.push('invalid value for "output_formats", output_formats cannot be nil.')
-      end
-
       if @files.nil?
         invalid_properties.push('invalid value for "files", files cannot be nil.')
       end
@@ -458,6 +442,22 @@ module DocSpring
 
       if @updated_at.nil?
         invalid_properties.push('invalid value for "updated_at", updated_at cannot be nil.')
+      end
+
+      if @has_password.nil?
+        invalid_properties.push('invalid value for "has_password", has_password cannot be nil.')
+      end
+
+      if @signature_requests.nil?
+        invalid_properties.push('invalid value for "signature_requests", signature_requests cannot be nil.')
+      end
+
+      if @actions.nil?
+        invalid_properties.push('invalid value for "actions", actions cannot be nil.')
+      end
+
+      if @output_formats.nil?
+        invalid_properties.push('invalid value for "output_formats", output_formats cannot be nil.')
       end
 
       invalid_properties
@@ -475,14 +475,14 @@ module DocSpring
       return false if @editable.nil?
       return false if @data_errors.nil?
       return false if @metadata.nil?
-      return false if @has_password.nil?
-      return false if @signature_requests.nil?
-      return false if @actions.nil?
-      return false if @output_formats.nil?
       return false if @files.nil?
       return false if @expired.nil?
       return false if @created_at.nil?
       return false if @updated_at.nil?
+      return false if @has_password.nil?
+      return false if @signature_requests.nil?
+      return false if @actions.nil?
+      return false if @output_formats.nil?
       true
     end
 
@@ -567,46 +567,6 @@ module DocSpring
     end
 
     # Custom attribute writer method with validation
-    # @param [Object] has_password Value to be assigned
-    def has_password=(has_password)
-      if has_password.nil?
-        fail ArgumentError, 'has_password cannot be nil'
-      end
-
-      @has_password = has_password
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] signature_requests Value to be assigned
-    def signature_requests=(signature_requests)
-      if signature_requests.nil?
-        fail ArgumentError, 'signature_requests cannot be nil'
-      end
-
-      @signature_requests = signature_requests
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] actions Value to be assigned
-    def actions=(actions)
-      if actions.nil?
-        fail ArgumentError, 'actions cannot be nil'
-      end
-
-      @actions = actions
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] output_formats Value to be assigned
-    def output_formats=(output_formats)
-      if output_formats.nil?
-        fail ArgumentError, 'output_formats cannot be nil'
-      end
-
-      @output_formats = output_formats
-    end
-
-    # Custom attribute writer method with validation
     # @param [Object] files Value to be assigned
     def files=(files)
       if files.nil?
@@ -646,6 +606,46 @@ module DocSpring
       @updated_at = updated_at
     end
 
+    # Custom attribute writer method with validation
+    # @param [Object] has_password Value to be assigned
+    def has_password=(has_password)
+      if has_password.nil?
+        fail ArgumentError, 'has_password cannot be nil'
+      end
+
+      @has_password = has_password
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] signature_requests Value to be assigned
+    def signature_requests=(signature_requests)
+      if signature_requests.nil?
+        fail ArgumentError, 'signature_requests cannot be nil'
+      end
+
+      @signature_requests = signature_requests
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] actions Value to be assigned
+    def actions=(actions)
+      if actions.nil?
+        fail ArgumentError, 'actions cannot be nil'
+      end
+
+      @actions = actions
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] output_formats Value to be assigned
+    def output_formats=(output_formats)
+      if output_formats.nil?
+        fail ArgumentError, 'output_formats cannot be nil'
+      end
+
+      @output_formats = output_formats
+    end
+
     # Checks equality by comparing each attribute.
     # @param [Object] Object to be compared
     def ==(o)
@@ -664,18 +664,18 @@ module DocSpring
           data_errors == o.data_errors &&
           error_message == o.error_message &&
           metadata == o.metadata &&
+          files == o.files &&
+          expired == o.expired &&
+          expires_at == o.expires_at &&
+          processed_at == o.processed_at &&
+          created_at == o.created_at &&
+          updated_at == o.updated_at &&
           has_password == o.has_password &&
           signature_requests == o.signature_requests &&
           actions == o.actions &&
           truncated_text == o.truncated_text &&
           output_formats == o.output_formats &&
-          files == o.files &&
-          preview_generated_at == o.preview_generated_at &&
-          expired == o.expired &&
-          expires_at == o.expires_at &&
-          processed_at == o.processed_at &&
-          created_at == o.created_at &&
-          updated_at == o.updated_at
+          preview_generated_at == o.preview_generated_at
     end
 
     # @see the `==` method
@@ -687,7 +687,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, template_id, template_type, template_version, batch_id, source, state, test, editable, data, data_errors, error_message, metadata, has_password, signature_requests, actions, truncated_text, output_formats, files, preview_generated_at, expired, expires_at, processed_at, created_at, updated_at].hash
+      [id, template_id, template_type, template_version, batch_id, source, state, test, editable, data, data_errors, error_message, metadata, files, expired, expires_at, processed_at, created_at, updated_at, has_password, signature_requests, actions, truncated_text, output_formats, preview_generated_at].hash
     end
 
     # Builds the object from hash

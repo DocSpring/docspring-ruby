@@ -16,6 +16,7 @@ require 'logger'
 require 'tempfile'
 require 'time'
 require 'typhoeus'
+require 'docspring/date_time_values'
 require 'docspring/ethon_multipart_put_fix'
 
 
@@ -33,7 +34,7 @@ module DocSpring
     # @option config [Configuration] Configuration for initializing the object, default to Configuration.default
     def initialize(config = Configuration.default)
       @config = config
-      @user_agent = "docspring-ruby-4.1.0"
+      @user_agent = "docspring-ruby-4.2.0"
       @default_headers = {
         'Content-Type' => 'application/json',
         'User-Agent' => @user_agent
@@ -49,6 +50,7 @@ module DocSpring
     # @return [Array<(Object, Integer, Hash)>] an array of 3 elements:
     #   the data deserialized from response body (may be a Tempfile or nil), response status code and response headers.
     def call_api(http_method, path, opts = {})
+opts = opts.merge(query_params: DateTimeValues.serialize(opts[:query_params], query: true)) if opts[:query_params]
 if @config.client_side_validation
   form_params = opts[:form_params] || {}
   RequestValidator.validate!(opts[:operation], query: opts[:query_params] || {}, body: form_params.empty? ? opts[:body] : form_params)
@@ -365,7 +367,7 @@ end
       else
         local_body = object_to_hash(model)
       end
-      local_body.to_json
+      DateTimeValues.serialize(local_body).to_json
     end
 
     # Convert object(non-array) to hash.

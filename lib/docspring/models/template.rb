@@ -28,7 +28,7 @@ module DocSpring
     # `pdf`: fields placed on an uploaded PDF. `html`: a PDF rendered from HTML and SCSS. It can't be changed after the template is created.
     attr_accessor :template_type
 
-    # Whether the template can generate PDFs. HTML templates are always ready. A PDF template is ready once its document has been processed (`document.state` is `processed`).
+    # Whether the template can generate PDFs. HTML templates are always ready. A PDF template is ready once DocSpring has stored its PDF, made an image of each page and finished looking for fields on each page, which can be after `document.state` becomes `processed`. A PDF template with no PDF (`document` is null) isn't ready.
     attr_accessor :ready
 
     # The PDF of a PDF template. Null for HTML templates, and for a PDF template that has no PDF yet.
@@ -40,9 +40,6 @@ module DocSpring
     # The path of the folder the template is in, such as `/Contracts`. `/` for a template at the root.
     attr_accessor :path
 
-    # The published version this is, such as `1.2.0`. Null for the draft.
-    attr_accessor :version
-
     # The template's latest published version. Null if no version has been published.
     attr_accessor :latest_version
 
@@ -51,6 +48,18 @@ module DocSpring
 
     # A locked template can't be changed or deleted until it's unlocked (`locked` can always be changed).
     attr_accessor :locked
+
+    # When the draft was last changed.
+    attr_accessor :last_changed_at
+
+    # When the template was created.
+    attr_accessor :created_at
+
+    # When the template was last updated.
+    attr_accessor :updated_at
+
+    # The published version this is, such as `1.2.0`. Null for the draft.
+    attr_accessor :version
 
     # Print the submission ID in the footer of each page of PDFs signed through signature requests.
     attr_accessor :add_signature_request_submission_id_footers
@@ -70,7 +79,7 @@ module DocSpring
     # Generate PDFs whose text and check fields stay fillable ("Generate Editable PDFs"). A submission's `editable` overrides it.
     attr_accessor :editable_submissions
 
-    # The sites where the template's signature requests, forms and embedded template editor can be loaded: a host such as `app.example.com`, with an optional leading wildcard (`*.example.com`), port (`localhost:3000`) or scheme (`https://app.example.com`; without one, `http` and `https` both work). When it's empty, live signature requests don't load on any site, and the embedded template editor loads on every site.
+    # The sites that can embed the template's live signature requests and its embedded template editor: a host such as `app.example.com`, with an optional leading wildcard (`*.example.com`), port (`localhost:3000`) or scheme (`https://app.example.com`; without one, `http` and `https` both work). Browsers open a live signature request in a frame only on these sites (and DocSpring's), so with an empty list it can't be embedded anywhere; a test signature request can be embedded on any site. The embedded template editor loads only for a page on one of these sites (by its Referer or Origin header), and on any site when the list is empty. Forms embedded on a page (Visual Forms JS and the simple form) aren't restricted.
     attr_accessor :embed_domains
 
     # Allow the embedded template editor to change sensitive template settings (webhooks, redirect URL, encryption, public access, expiration and so on).
@@ -115,17 +124,8 @@ module DocSpring
     # Whether `slack_webhook_url` is set.
     attr_accessor :has_slack_webhook_url
 
-    # When the draft was last changed.
-    attr_accessor :last_changed_at
-
     # Who last changed the draft: a user in your account, an API token, or someone using the embedded template editor. Null if no change has been recorded.
     attr_accessor :last_changed_by
-
-    # When the template was created.
-    attr_accessor :created_at
-
-    # When the template was last updated.
-    attr_accessor :updated_at
 
     attr_accessor :defaults
 
@@ -155,6 +155,9 @@ module DocSpring
 
     # How an HTML template's PDFs are printed. Null for PDF templates. Setting it replaces the whole object: options left out use their defaults.
     attr_accessor :html_engine_options
+
+    # Whether an HTML template HTML-escapes the values it prints. When true, `{{ value }}` prints a value as text, so a `<` or `&` in it is printed as that character, and `{{ value | raw }}` prints a value as HTML. New HTML templates default to true. Templates created before October 2026, or with API v1, default to false, which prints every value as HTML. Null for PDF templates.
+    attr_accessor :html_escape_data
 
     # The token that opens the template in the embedded template editor.
     attr_accessor :embed_edit_token
@@ -195,10 +198,13 @@ module DocSpring
         :'document' => :'document',
         :'parent_folder_id' => :'parent_folder_id',
         :'path' => :'path',
-        :'version' => :'version',
         :'latest_version' => :'latest_version',
         :'version_published_at' => :'version_published_at',
         :'locked' => :'locked',
+        :'last_changed_at' => :'last_changed_at',
+        :'created_at' => :'created_at',
+        :'updated_at' => :'updated_at',
+        :'version' => :'version',
         :'add_signature_request_submission_id_footers' => :'add_signature_request_submission_id_footers',
         :'ai_field_naming_language' => :'ai_field_naming_language',
         :'allow_additional_properties' => :'allow_additional_properties',
@@ -220,10 +226,7 @@ module DocSpring
         :'public_web_form' => :'public_web_form',
         :'redirect_url' => :'redirect_url',
         :'has_slack_webhook_url' => :'has_slack_webhook_url',
-        :'last_changed_at' => :'last_changed_at',
         :'last_changed_by' => :'last_changed_by',
-        :'created_at' => :'created_at',
-        :'updated_at' => :'updated_at',
         :'defaults' => :'defaults',
         :'field_dependencies' => :'field_dependencies',
         :'field_groups' => :'field_groups',
@@ -234,6 +237,7 @@ module DocSpring
         :'header_html' => :'header_html',
         :'footer_html' => :'footer_html',
         :'html_engine_options' => :'html_engine_options',
+        :'html_escape_data' => :'html_escape_data',
         :'embed_edit_token' => :'embed_edit_token',
         :'versions' => :'versions'
       }
@@ -260,10 +264,13 @@ module DocSpring
         :'document' => :'TemplateDocument',
         :'parent_folder_id' => :'String',
         :'path' => :'String',
-        :'version' => :'String',
         :'latest_version' => :'String',
         :'version_published_at' => :'Time',
         :'locked' => :'Boolean',
+        :'last_changed_at' => :'Time',
+        :'created_at' => :'Time',
+        :'updated_at' => :'Time',
+        :'version' => :'String',
         :'add_signature_request_submission_id_footers' => :'Boolean',
         :'ai_field_naming_language' => :'AiFieldNamingLanguage',
         :'allow_additional_properties' => :'Boolean',
@@ -285,10 +292,7 @@ module DocSpring
         :'public_web_form' => :'Boolean',
         :'redirect_url' => :'String',
         :'has_slack_webhook_url' => :'Boolean',
-        :'last_changed_at' => :'Time',
         :'last_changed_by' => :'TemplateActor',
-        :'created_at' => :'Time',
-        :'updated_at' => :'Time',
         :'defaults' => :'TemplateDefaults',
         :'field_dependencies' => :'Array<TemplateFieldDependency>',
         :'field_groups' => :'Array<FieldGroup>',
@@ -299,6 +303,7 @@ module DocSpring
         :'header_html' => :'String',
         :'footer_html' => :'String',
         :'html_engine_options' => :'HtmlEngineOptions',
+        :'html_escape_data' => :'Boolean',
         :'embed_edit_token' => :'String',
         :'versions' => :'Array<TemplateVersion>'
       }
@@ -311,12 +316,12 @@ module DocSpring
         :'description',
         :'document',
         :'parent_folder_id',
-        :'version',
         :'latest_version',
         :'version_published_at',
+        :'last_changed_at',
+        :'version',
         :'ai_field_naming_language',
         :'redirect_url',
-        :'last_changed_at',
         :'last_changed_by',
         :'predefined_fields_sample_data',
         :'html',
@@ -324,6 +329,7 @@ module DocSpring
         :'header_html',
         :'footer_html',
         :'html_engine_options',
+        :'html_escape_data',
         :'embed_edit_token',
       ])
     end
@@ -402,12 +408,6 @@ module DocSpring
         self.path = nil
       end
 
-      if attributes.key?(:'version')
-        self.version = attributes[:'version']
-      else
-        self.version = nil
-      end
-
       if attributes.key?(:'latest_version')
         self.latest_version = attributes[:'latest_version']
       else
@@ -424,6 +424,30 @@ module DocSpring
         self.locked = attributes[:'locked']
       else
         self.locked = nil
+      end
+
+      if attributes.key?(:'last_changed_at')
+        self.last_changed_at = attributes[:'last_changed_at']
+      else
+        self.last_changed_at = nil
+      end
+
+      if attributes.key?(:'created_at')
+        self.created_at = attributes[:'created_at']
+      else
+        self.created_at = nil
+      end
+
+      if attributes.key?(:'updated_at')
+        self.updated_at = attributes[:'updated_at']
+      else
+        self.updated_at = nil
+      end
+
+      if attributes.key?(:'version')
+        self.version = attributes[:'version']
+      else
+        self.version = nil
       end
 
       if attributes.key?(:'add_signature_request_submission_id_footers')
@@ -554,28 +578,10 @@ module DocSpring
         self.has_slack_webhook_url = nil
       end
 
-      if attributes.key?(:'last_changed_at')
-        self.last_changed_at = attributes[:'last_changed_at']
-      else
-        self.last_changed_at = nil
-      end
-
       if attributes.key?(:'last_changed_by')
         self.last_changed_by = attributes[:'last_changed_by']
       else
         self.last_changed_by = nil
-      end
-
-      if attributes.key?(:'created_at')
-        self.created_at = attributes[:'created_at']
-      else
-        self.created_at = nil
-      end
-
-      if attributes.key?(:'updated_at')
-        self.updated_at = attributes[:'updated_at']
-      else
-        self.updated_at = nil
       end
 
       if attributes.key?(:'defaults')
@@ -646,6 +652,12 @@ module DocSpring
         self.html_engine_options = nil
       end
 
+      if attributes.key?(:'html_escape_data')
+        self.html_escape_data = attributes[:'html_escape_data']
+      else
+        self.html_escape_data = nil
+      end
+
       if attributes.key?(:'embed_edit_token')
         self.embed_edit_token = attributes[:'embed_edit_token']
       else
@@ -684,6 +696,14 @@ module DocSpring
 
       if @locked.nil?
         invalid_properties.push('invalid value for "locked", locked cannot be nil.')
+      end
+
+      if @created_at.nil?
+        invalid_properties.push('invalid value for "created_at", created_at cannot be nil.')
+      end
+
+      if @updated_at.nil?
+        invalid_properties.push('invalid value for "updated_at", updated_at cannot be nil.')
       end
 
       if @add_signature_request_submission_id_footers.nil?
@@ -762,14 +782,6 @@ module DocSpring
         invalid_properties.push('invalid value for "has_slack_webhook_url", has_slack_webhook_url cannot be nil.')
       end
 
-      if @created_at.nil?
-        invalid_properties.push('invalid value for "created_at", created_at cannot be nil.')
-      end
-
-      if @updated_at.nil?
-        invalid_properties.push('invalid value for "updated_at", updated_at cannot be nil.')
-      end
-
       if @defaults.nil?
         invalid_properties.push('invalid value for "defaults", defaults cannot be nil.')
       end
@@ -802,6 +814,8 @@ module DocSpring
       return false if @ready.nil?
       return false if @path.nil?
       return false if @locked.nil?
+      return false if @created_at.nil?
+      return false if @updated_at.nil?
       return false if @add_signature_request_submission_id_footers.nil?
       return false if @allow_additional_properties.nil?
       return false if @allow_skipping_optional_fields.nil?
@@ -821,8 +835,6 @@ module DocSpring
       return false if @public_submissions.nil?
       return false if @public_web_form.nil?
       return false if @has_slack_webhook_url.nil?
-      return false if @created_at.nil?
-      return false if @updated_at.nil?
       return false if @defaults.nil?
       return false if @field_dependencies.nil?
       return false if @field_groups.nil?
@@ -879,6 +891,26 @@ module DocSpring
       end
 
       @locked = locked
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] created_at Value to be assigned
+    def created_at=(created_at)
+      if created_at.nil?
+        fail ArgumentError, 'created_at cannot be nil'
+      end
+
+      @created_at = created_at
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] updated_at Value to be assigned
+    def updated_at=(updated_at)
+      if updated_at.nil?
+        fail ArgumentError, 'updated_at cannot be nil'
+      end
+
+      @updated_at = updated_at
     end
 
     # Custom attribute writer method with validation
@@ -1072,26 +1104,6 @@ module DocSpring
     end
 
     # Custom attribute writer method with validation
-    # @param [Object] created_at Value to be assigned
-    def created_at=(created_at)
-      if created_at.nil?
-        fail ArgumentError, 'created_at cannot be nil'
-      end
-
-      @created_at = created_at
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] updated_at Value to be assigned
-    def updated_at=(updated_at)
-      if updated_at.nil?
-        fail ArgumentError, 'updated_at cannot be nil'
-      end
-
-      @updated_at = updated_at
-    end
-
-    # Custom attribute writer method with validation
     # @param [Object] defaults Value to be assigned
     def defaults=(defaults)
       if defaults.nil?
@@ -1154,10 +1166,13 @@ module DocSpring
           document == o.document &&
           parent_folder_id == o.parent_folder_id &&
           path == o.path &&
-          version == o.version &&
           latest_version == o.latest_version &&
           version_published_at == o.version_published_at &&
           locked == o.locked &&
+          last_changed_at == o.last_changed_at &&
+          created_at == o.created_at &&
+          updated_at == o.updated_at &&
+          version == o.version &&
           add_signature_request_submission_id_footers == o.add_signature_request_submission_id_footers &&
           ai_field_naming_language == o.ai_field_naming_language &&
           allow_additional_properties == o.allow_additional_properties &&
@@ -1179,10 +1194,7 @@ module DocSpring
           public_web_form == o.public_web_form &&
           redirect_url == o.redirect_url &&
           has_slack_webhook_url == o.has_slack_webhook_url &&
-          last_changed_at == o.last_changed_at &&
           last_changed_by == o.last_changed_by &&
-          created_at == o.created_at &&
-          updated_at == o.updated_at &&
           defaults == o.defaults &&
           field_dependencies == o.field_dependencies &&
           field_groups == o.field_groups &&
@@ -1193,6 +1205,7 @@ module DocSpring
           header_html == o.header_html &&
           footer_html == o.footer_html &&
           html_engine_options == o.html_engine_options &&
+          html_escape_data == o.html_escape_data &&
           embed_edit_token == o.embed_edit_token &&
           versions == o.versions
     end
@@ -1206,7 +1219,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, name, description, template_type, ready, document, parent_folder_id, path, version, latest_version, version_published_at, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, has_encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, has_slack_webhook_url, last_changed_at, last_changed_by, created_at, updated_at, defaults, field_dependencies, field_groups, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, embed_edit_token, versions].hash
+      [id, name, description, template_type, ready, document, parent_folder_id, path, latest_version, version_published_at, locked, last_changed_at, created_at, updated_at, version, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, has_encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, has_slack_webhook_url, last_changed_by, defaults, field_dependencies, field_groups, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, html_escape_data, embed_edit_token, versions].hash
     end
 
     # Builds the object from hash

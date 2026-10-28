@@ -14,7 +14,7 @@ require 'date'
 require 'time'
 
 module DocSpring
-  # A template in a list. Get a template by its ID for its HTML, defaults, field dependency rules and published versions.
+  # A template in a list: its name, type, folder, latest published version and whether it's ready. Get a template by its ID for its settings, its PDF in full, its HTML, defaults, field dependency rules and published versions.
   class TemplateSummary < ApiModelBase
     # The template's ID.
     attr_accessor :id
@@ -28,10 +28,10 @@ module DocSpring
     # `pdf`: fields placed on an uploaded PDF. `html`: a PDF rendered from HTML and SCSS. It can't be changed after the template is created.
     attr_accessor :template_type
 
-    # Whether the template can generate PDFs. HTML templates are always ready. A PDF template is ready once its document has been processed (`document.state` is `processed`).
+    # Whether the template can generate PDFs. HTML templates are always ready. A PDF template is ready once DocSpring has stored its PDF, made an image of each page and finished looking for fields on each page, which can be after `document.state` becomes `processed`. A PDF template with no PDF (`document` is null) isn't ready.
     attr_accessor :ready
 
-    # The PDF of a PDF template. Null for HTML templates, and for a PDF template that has no PDF yet.
+    # The PDF of a PDF template: its file name, page count and processing state. Null for HTML templates, and for a PDF template that has no PDF yet.
     attr_accessor :document
 
     # The ID of the folder the template is in. Null for a template at the root. Setting it moves the template and all of its published versions.
@@ -39,9 +39,6 @@ module DocSpring
 
     # The path of the folder the template is in, such as `/Contracts`. `/` for a template at the root.
     attr_accessor :path
-
-    # The published version this is, such as `1.2.0`. Null for the draft.
-    attr_accessor :version
 
     # The template's latest published version. Null if no version has been published.
     attr_accessor :latest_version
@@ -52,74 +49,8 @@ module DocSpring
     # A locked template can't be changed or deleted until it's unlocked (`locked` can always be changed).
     attr_accessor :locked
 
-    # Print the submission ID in the footer of each page of PDFs signed through signature requests.
-    attr_accessor :add_signature_request_submission_id_footers
-
-    # The language AI field setup names fields in: `auto` uses the form's language when it's written in the Latin alphabet without accents, and English otherwise; `english` always uses English; `form_language` uses the form's language and script. New templates take it from your account's template settings. Null for HTML templates.
-    attr_accessor :ai_field_naming_language
-
-    # Accept submission data with properties that aren't fields of the template.
-    attr_accessor :allow_additional_properties
-
-    # Visual forms and signature request forms show the Continue button as soon as the required fields are filled in, without visiting each optional field. The `allowSkippingOptionalFields` embed option overrides it.
-    attr_accessor :allow_skipping_optional_fields
-
-    # The hosted form that /templates/{template_id}/form shows when its URL has no `mode` parameter: `web` (the web form), `visual` (the visual form, where fields are filled in on the PDF) or `dual` (both, in tabs). HTML templates have no visual form, so `web` is the only value they accept.
-    attr_accessor :default_form_mode
-
-    # Generate PDFs whose text and check fields stay fillable ("Generate Editable PDFs"). A submission's `editable` overrides it.
-    attr_accessor :editable_submissions
-
-    # The sites where the template's signature requests, forms and embedded template editor can be loaded: a host such as `app.example.com`, with an optional leading wildcard (`*.example.com`), port (`localhost:3000`) or scheme (`https://app.example.com`; without one, `http` and `https` both work). When it's empty, live signature requests don't load on any site, and the embedded template editor loads on every site.
-    attr_accessor :embed_domains
-
-    # Allow the embedded template editor to change sensitive template settings (webhooks, redirect URL, encryption, public access, expiration and so on).
-    attr_accessor :embed_edit_allow_settings
-
-    # Allow the embedded template editor to publish, restore, compare and delete published versions.
-    attr_accessor :embed_edit_allow_versioning
-
-    # Allow the embedded template editor to replace the template's PDF.
-    attr_accessor :embed_edit_allow_document_replacement
-
-    # Encrypt generated PDFs with `encrypt_pdfs_password`.
-    attr_accessor :encrypt_pdfs
-
-    # Whether `encrypt_pdfs_password` is set.
-    attr_accessor :has_encrypt_pdfs_password
-
-    # Delete each submission's data and PDF after `expire_after` `expiration_interval`.
-    attr_accessor :expire_submissions
-
-    # How many `expiration_interval`s a submission's data and PDF are kept for, when `expire_submissions` is on. At most 5256000 (10 years in minutes).
-    attr_accessor :expire_after
-
-    # The unit of `expire_after`.
-    attr_accessor :expiration_interval
-
-    # Add the audit trail to the end of PDFs signed through signature requests.
-    attr_accessor :merge_audit_trail_pdf
-
-    # Date fields also accept NN/NN/YYYY dates (with slashes, dashes or dots), read in the order of the template's default date format: month first for %m/%d/%Y, day first for %d/%m/%Y. When false, date fields only accept YYYY-MM-DD. Applies to PDF templates: an HTML template's date fields only accept YYYY-MM-DD. Date fields that include a time take RFC 3339 date-times either way.
-    attr_accessor :parse_dates_using_template_date_format
-
-    # Allow anyone with a submission's ID to download its PDF.
-    attr_accessor :public_submissions
-
-    # Allow anyone to fill in the template's web form.
-    attr_accessor :public_web_form
-
-    # Where the web form sends people after they submit it.
-    attr_accessor :redirect_url
-
-    # Whether `slack_webhook_url` is set.
-    attr_accessor :has_slack_webhook_url
-
     # When the draft was last changed.
     attr_accessor :last_changed_at
-
-    # Who last changed the draft: a user in your account, an API token, or someone using the embedded template editor. Null if no change has been recorded.
-    attr_accessor :last_changed_by
 
     # When the template was created.
     attr_accessor :created_at
@@ -160,33 +91,10 @@ module DocSpring
         :'document' => :'document',
         :'parent_folder_id' => :'parent_folder_id',
         :'path' => :'path',
-        :'version' => :'version',
         :'latest_version' => :'latest_version',
         :'version_published_at' => :'version_published_at',
         :'locked' => :'locked',
-        :'add_signature_request_submission_id_footers' => :'add_signature_request_submission_id_footers',
-        :'ai_field_naming_language' => :'ai_field_naming_language',
-        :'allow_additional_properties' => :'allow_additional_properties',
-        :'allow_skipping_optional_fields' => :'allow_skipping_optional_fields',
-        :'default_form_mode' => :'default_form_mode',
-        :'editable_submissions' => :'editable_submissions',
-        :'embed_domains' => :'embed_domains',
-        :'embed_edit_allow_settings' => :'embed_edit_allow_settings',
-        :'embed_edit_allow_versioning' => :'embed_edit_allow_versioning',
-        :'embed_edit_allow_document_replacement' => :'embed_edit_allow_document_replacement',
-        :'encrypt_pdfs' => :'encrypt_pdfs',
-        :'has_encrypt_pdfs_password' => :'has_encrypt_pdfs_password',
-        :'expire_submissions' => :'expire_submissions',
-        :'expire_after' => :'expire_after',
-        :'expiration_interval' => :'expiration_interval',
-        :'merge_audit_trail_pdf' => :'merge_audit_trail_pdf',
-        :'parse_dates_using_template_date_format' => :'parse_dates_using_template_date_format',
-        :'public_submissions' => :'public_submissions',
-        :'public_web_form' => :'public_web_form',
-        :'redirect_url' => :'redirect_url',
-        :'has_slack_webhook_url' => :'has_slack_webhook_url',
         :'last_changed_at' => :'last_changed_at',
-        :'last_changed_by' => :'last_changed_by',
         :'created_at' => :'created_at',
         :'updated_at' => :'updated_at'
       }
@@ -210,36 +118,13 @@ module DocSpring
         :'description' => :'String',
         :'template_type' => :'TemplateType',
         :'ready' => :'Boolean',
-        :'document' => :'TemplateDocument',
+        :'document' => :'TemplateDocumentSummary',
         :'parent_folder_id' => :'String',
         :'path' => :'String',
-        :'version' => :'String',
         :'latest_version' => :'String',
         :'version_published_at' => :'Time',
         :'locked' => :'Boolean',
-        :'add_signature_request_submission_id_footers' => :'Boolean',
-        :'ai_field_naming_language' => :'AiFieldNamingLanguage',
-        :'allow_additional_properties' => :'Boolean',
-        :'allow_skipping_optional_fields' => :'Boolean',
-        :'default_form_mode' => :'TemplateFormMode',
-        :'editable_submissions' => :'Boolean',
-        :'embed_domains' => :'Array<String>',
-        :'embed_edit_allow_settings' => :'Boolean',
-        :'embed_edit_allow_versioning' => :'Boolean',
-        :'embed_edit_allow_document_replacement' => :'Boolean',
-        :'encrypt_pdfs' => :'Boolean',
-        :'has_encrypt_pdfs_password' => :'Boolean',
-        :'expire_submissions' => :'Boolean',
-        :'expire_after' => :'Integer',
-        :'expiration_interval' => :'ExpirationInterval',
-        :'merge_audit_trail_pdf' => :'Boolean',
-        :'parse_dates_using_template_date_format' => :'Boolean',
-        :'public_submissions' => :'Boolean',
-        :'public_web_form' => :'Boolean',
-        :'redirect_url' => :'String',
-        :'has_slack_webhook_url' => :'Boolean',
         :'last_changed_at' => :'Time',
-        :'last_changed_by' => :'TemplateActor',
         :'created_at' => :'Time',
         :'updated_at' => :'Time'
       }
@@ -252,13 +137,9 @@ module DocSpring
         :'description',
         :'document',
         :'parent_folder_id',
-        :'version',
         :'latest_version',
         :'version_published_at',
-        :'ai_field_naming_language',
-        :'redirect_url',
         :'last_changed_at',
-        :'last_changed_by',
       ])
     end
 
@@ -336,12 +217,6 @@ module DocSpring
         self.path = nil
       end
 
-      if attributes.key?(:'version')
-        self.version = attributes[:'version']
-      else
-        self.version = nil
-      end
-
       if attributes.key?(:'latest_version')
         self.latest_version = attributes[:'latest_version']
       else
@@ -360,144 +235,10 @@ module DocSpring
         self.locked = nil
       end
 
-      if attributes.key?(:'add_signature_request_submission_id_footers')
-        self.add_signature_request_submission_id_footers = attributes[:'add_signature_request_submission_id_footers']
-      else
-        self.add_signature_request_submission_id_footers = nil
-      end
-
-      if attributes.key?(:'ai_field_naming_language')
-        self.ai_field_naming_language = attributes[:'ai_field_naming_language']
-      else
-        self.ai_field_naming_language = nil
-      end
-
-      if attributes.key?(:'allow_additional_properties')
-        self.allow_additional_properties = attributes[:'allow_additional_properties']
-      else
-        self.allow_additional_properties = nil
-      end
-
-      if attributes.key?(:'allow_skipping_optional_fields')
-        self.allow_skipping_optional_fields = attributes[:'allow_skipping_optional_fields']
-      else
-        self.allow_skipping_optional_fields = nil
-      end
-
-      if attributes.key?(:'default_form_mode')
-        self.default_form_mode = attributes[:'default_form_mode']
-      else
-        self.default_form_mode = nil
-      end
-
-      if attributes.key?(:'editable_submissions')
-        self.editable_submissions = attributes[:'editable_submissions']
-      else
-        self.editable_submissions = nil
-      end
-
-      if attributes.key?(:'embed_domains')
-        if (value = attributes[:'embed_domains']).is_a?(Array)
-          self.embed_domains = value
-        end
-      else
-        self.embed_domains = nil
-      end
-
-      if attributes.key?(:'embed_edit_allow_settings')
-        self.embed_edit_allow_settings = attributes[:'embed_edit_allow_settings']
-      else
-        self.embed_edit_allow_settings = nil
-      end
-
-      if attributes.key?(:'embed_edit_allow_versioning')
-        self.embed_edit_allow_versioning = attributes[:'embed_edit_allow_versioning']
-      else
-        self.embed_edit_allow_versioning = nil
-      end
-
-      if attributes.key?(:'embed_edit_allow_document_replacement')
-        self.embed_edit_allow_document_replacement = attributes[:'embed_edit_allow_document_replacement']
-      else
-        self.embed_edit_allow_document_replacement = nil
-      end
-
-      if attributes.key?(:'encrypt_pdfs')
-        self.encrypt_pdfs = attributes[:'encrypt_pdfs']
-      else
-        self.encrypt_pdfs = nil
-      end
-
-      if attributes.key?(:'has_encrypt_pdfs_password')
-        self.has_encrypt_pdfs_password = attributes[:'has_encrypt_pdfs_password']
-      else
-        self.has_encrypt_pdfs_password = nil
-      end
-
-      if attributes.key?(:'expire_submissions')
-        self.expire_submissions = attributes[:'expire_submissions']
-      else
-        self.expire_submissions = nil
-      end
-
-      if attributes.key?(:'expire_after')
-        self.expire_after = attributes[:'expire_after']
-      else
-        self.expire_after = nil
-      end
-
-      if attributes.key?(:'expiration_interval')
-        self.expiration_interval = attributes[:'expiration_interval']
-      else
-        self.expiration_interval = nil
-      end
-
-      if attributes.key?(:'merge_audit_trail_pdf')
-        self.merge_audit_trail_pdf = attributes[:'merge_audit_trail_pdf']
-      else
-        self.merge_audit_trail_pdf = nil
-      end
-
-      if attributes.key?(:'parse_dates_using_template_date_format')
-        self.parse_dates_using_template_date_format = attributes[:'parse_dates_using_template_date_format']
-      else
-        self.parse_dates_using_template_date_format = nil
-      end
-
-      if attributes.key?(:'public_submissions')
-        self.public_submissions = attributes[:'public_submissions']
-      else
-        self.public_submissions = nil
-      end
-
-      if attributes.key?(:'public_web_form')
-        self.public_web_form = attributes[:'public_web_form']
-      else
-        self.public_web_form = nil
-      end
-
-      if attributes.key?(:'redirect_url')
-        self.redirect_url = attributes[:'redirect_url']
-      else
-        self.redirect_url = nil
-      end
-
-      if attributes.key?(:'has_slack_webhook_url')
-        self.has_slack_webhook_url = attributes[:'has_slack_webhook_url']
-      else
-        self.has_slack_webhook_url = nil
-      end
-
       if attributes.key?(:'last_changed_at')
         self.last_changed_at = attributes[:'last_changed_at']
       else
         self.last_changed_at = nil
-      end
-
-      if attributes.key?(:'last_changed_by')
-        self.last_changed_by = attributes[:'last_changed_by']
-      else
-        self.last_changed_by = nil
       end
 
       if attributes.key?(:'created_at')
@@ -538,82 +279,6 @@ module DocSpring
         invalid_properties.push('invalid value for "locked", locked cannot be nil.')
       end
 
-      if @add_signature_request_submission_id_footers.nil?
-        invalid_properties.push('invalid value for "add_signature_request_submission_id_footers", add_signature_request_submission_id_footers cannot be nil.')
-      end
-
-      if @allow_additional_properties.nil?
-        invalid_properties.push('invalid value for "allow_additional_properties", allow_additional_properties cannot be nil.')
-      end
-
-      if @allow_skipping_optional_fields.nil?
-        invalid_properties.push('invalid value for "allow_skipping_optional_fields", allow_skipping_optional_fields cannot be nil.')
-      end
-
-      if @default_form_mode.nil?
-        invalid_properties.push('invalid value for "default_form_mode", default_form_mode cannot be nil.')
-      end
-
-      if @editable_submissions.nil?
-        invalid_properties.push('invalid value for "editable_submissions", editable_submissions cannot be nil.')
-      end
-
-      if @embed_domains.nil?
-        invalid_properties.push('invalid value for "embed_domains", embed_domains cannot be nil.')
-      end
-
-      if @embed_edit_allow_settings.nil?
-        invalid_properties.push('invalid value for "embed_edit_allow_settings", embed_edit_allow_settings cannot be nil.')
-      end
-
-      if @embed_edit_allow_versioning.nil?
-        invalid_properties.push('invalid value for "embed_edit_allow_versioning", embed_edit_allow_versioning cannot be nil.')
-      end
-
-      if @embed_edit_allow_document_replacement.nil?
-        invalid_properties.push('invalid value for "embed_edit_allow_document_replacement", embed_edit_allow_document_replacement cannot be nil.')
-      end
-
-      if @encrypt_pdfs.nil?
-        invalid_properties.push('invalid value for "encrypt_pdfs", encrypt_pdfs cannot be nil.')
-      end
-
-      if @has_encrypt_pdfs_password.nil?
-        invalid_properties.push('invalid value for "has_encrypt_pdfs_password", has_encrypt_pdfs_password cannot be nil.')
-      end
-
-      if @expire_submissions.nil?
-        invalid_properties.push('invalid value for "expire_submissions", expire_submissions cannot be nil.')
-      end
-
-      if @expire_after.nil?
-        invalid_properties.push('invalid value for "expire_after", expire_after cannot be nil.')
-      end
-
-      if @expiration_interval.nil?
-        invalid_properties.push('invalid value for "expiration_interval", expiration_interval cannot be nil.')
-      end
-
-      if @merge_audit_trail_pdf.nil?
-        invalid_properties.push('invalid value for "merge_audit_trail_pdf", merge_audit_trail_pdf cannot be nil.')
-      end
-
-      if @parse_dates_using_template_date_format.nil?
-        invalid_properties.push('invalid value for "parse_dates_using_template_date_format", parse_dates_using_template_date_format cannot be nil.')
-      end
-
-      if @public_submissions.nil?
-        invalid_properties.push('invalid value for "public_submissions", public_submissions cannot be nil.')
-      end
-
-      if @public_web_form.nil?
-        invalid_properties.push('invalid value for "public_web_form", public_web_form cannot be nil.')
-      end
-
-      if @has_slack_webhook_url.nil?
-        invalid_properties.push('invalid value for "has_slack_webhook_url", has_slack_webhook_url cannot be nil.')
-      end
-
       if @created_at.nil?
         invalid_properties.push('invalid value for "created_at", created_at cannot be nil.')
       end
@@ -634,25 +299,6 @@ module DocSpring
       return false if @ready.nil?
       return false if @path.nil?
       return false if @locked.nil?
-      return false if @add_signature_request_submission_id_footers.nil?
-      return false if @allow_additional_properties.nil?
-      return false if @allow_skipping_optional_fields.nil?
-      return false if @default_form_mode.nil?
-      return false if @editable_submissions.nil?
-      return false if @embed_domains.nil?
-      return false if @embed_edit_allow_settings.nil?
-      return false if @embed_edit_allow_versioning.nil?
-      return false if @embed_edit_allow_document_replacement.nil?
-      return false if @encrypt_pdfs.nil?
-      return false if @has_encrypt_pdfs_password.nil?
-      return false if @expire_submissions.nil?
-      return false if @expire_after.nil?
-      return false if @expiration_interval.nil?
-      return false if @merge_audit_trail_pdf.nil?
-      return false if @parse_dates_using_template_date_format.nil?
-      return false if @public_submissions.nil?
-      return false if @public_web_form.nil?
-      return false if @has_slack_webhook_url.nil?
       return false if @created_at.nil?
       return false if @updated_at.nil?
       true
@@ -709,196 +355,6 @@ module DocSpring
     end
 
     # Custom attribute writer method with validation
-    # @param [Object] add_signature_request_submission_id_footers Value to be assigned
-    def add_signature_request_submission_id_footers=(add_signature_request_submission_id_footers)
-      if add_signature_request_submission_id_footers.nil?
-        fail ArgumentError, 'add_signature_request_submission_id_footers cannot be nil'
-      end
-
-      @add_signature_request_submission_id_footers = add_signature_request_submission_id_footers
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] allow_additional_properties Value to be assigned
-    def allow_additional_properties=(allow_additional_properties)
-      if allow_additional_properties.nil?
-        fail ArgumentError, 'allow_additional_properties cannot be nil'
-      end
-
-      @allow_additional_properties = allow_additional_properties
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] allow_skipping_optional_fields Value to be assigned
-    def allow_skipping_optional_fields=(allow_skipping_optional_fields)
-      if allow_skipping_optional_fields.nil?
-        fail ArgumentError, 'allow_skipping_optional_fields cannot be nil'
-      end
-
-      @allow_skipping_optional_fields = allow_skipping_optional_fields
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] default_form_mode Value to be assigned
-    def default_form_mode=(default_form_mode)
-      if default_form_mode.nil?
-        fail ArgumentError, 'default_form_mode cannot be nil'
-      end
-
-      @default_form_mode = default_form_mode
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] editable_submissions Value to be assigned
-    def editable_submissions=(editable_submissions)
-      if editable_submissions.nil?
-        fail ArgumentError, 'editable_submissions cannot be nil'
-      end
-
-      @editable_submissions = editable_submissions
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] embed_domains Value to be assigned
-    def embed_domains=(embed_domains)
-      if embed_domains.nil?
-        fail ArgumentError, 'embed_domains cannot be nil'
-      end
-
-      @embed_domains = embed_domains
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] embed_edit_allow_settings Value to be assigned
-    def embed_edit_allow_settings=(embed_edit_allow_settings)
-      if embed_edit_allow_settings.nil?
-        fail ArgumentError, 'embed_edit_allow_settings cannot be nil'
-      end
-
-      @embed_edit_allow_settings = embed_edit_allow_settings
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] embed_edit_allow_versioning Value to be assigned
-    def embed_edit_allow_versioning=(embed_edit_allow_versioning)
-      if embed_edit_allow_versioning.nil?
-        fail ArgumentError, 'embed_edit_allow_versioning cannot be nil'
-      end
-
-      @embed_edit_allow_versioning = embed_edit_allow_versioning
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] embed_edit_allow_document_replacement Value to be assigned
-    def embed_edit_allow_document_replacement=(embed_edit_allow_document_replacement)
-      if embed_edit_allow_document_replacement.nil?
-        fail ArgumentError, 'embed_edit_allow_document_replacement cannot be nil'
-      end
-
-      @embed_edit_allow_document_replacement = embed_edit_allow_document_replacement
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] encrypt_pdfs Value to be assigned
-    def encrypt_pdfs=(encrypt_pdfs)
-      if encrypt_pdfs.nil?
-        fail ArgumentError, 'encrypt_pdfs cannot be nil'
-      end
-
-      @encrypt_pdfs = encrypt_pdfs
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] has_encrypt_pdfs_password Value to be assigned
-    def has_encrypt_pdfs_password=(has_encrypt_pdfs_password)
-      if has_encrypt_pdfs_password.nil?
-        fail ArgumentError, 'has_encrypt_pdfs_password cannot be nil'
-      end
-
-      @has_encrypt_pdfs_password = has_encrypt_pdfs_password
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] expire_submissions Value to be assigned
-    def expire_submissions=(expire_submissions)
-      if expire_submissions.nil?
-        fail ArgumentError, 'expire_submissions cannot be nil'
-      end
-
-      @expire_submissions = expire_submissions
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] expire_after Value to be assigned
-    def expire_after=(expire_after)
-      if expire_after.nil?
-        fail ArgumentError, 'expire_after cannot be nil'
-      end
-
-      @expire_after = expire_after
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] expiration_interval Value to be assigned
-    def expiration_interval=(expiration_interval)
-      if expiration_interval.nil?
-        fail ArgumentError, 'expiration_interval cannot be nil'
-      end
-
-      @expiration_interval = expiration_interval
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] merge_audit_trail_pdf Value to be assigned
-    def merge_audit_trail_pdf=(merge_audit_trail_pdf)
-      if merge_audit_trail_pdf.nil?
-        fail ArgumentError, 'merge_audit_trail_pdf cannot be nil'
-      end
-
-      @merge_audit_trail_pdf = merge_audit_trail_pdf
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] parse_dates_using_template_date_format Value to be assigned
-    def parse_dates_using_template_date_format=(parse_dates_using_template_date_format)
-      if parse_dates_using_template_date_format.nil?
-        fail ArgumentError, 'parse_dates_using_template_date_format cannot be nil'
-      end
-
-      @parse_dates_using_template_date_format = parse_dates_using_template_date_format
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] public_submissions Value to be assigned
-    def public_submissions=(public_submissions)
-      if public_submissions.nil?
-        fail ArgumentError, 'public_submissions cannot be nil'
-      end
-
-      @public_submissions = public_submissions
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] public_web_form Value to be assigned
-    def public_web_form=(public_web_form)
-      if public_web_form.nil?
-        fail ArgumentError, 'public_web_form cannot be nil'
-      end
-
-      @public_web_form = public_web_form
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] has_slack_webhook_url Value to be assigned
-    def has_slack_webhook_url=(has_slack_webhook_url)
-      if has_slack_webhook_url.nil?
-        fail ArgumentError, 'has_slack_webhook_url cannot be nil'
-      end
-
-      @has_slack_webhook_url = has_slack_webhook_url
-    end
-
-    # Custom attribute writer method with validation
     # @param [Object] created_at Value to be assigned
     def created_at=(created_at)
       if created_at.nil?
@@ -931,33 +387,10 @@ module DocSpring
           document == o.document &&
           parent_folder_id == o.parent_folder_id &&
           path == o.path &&
-          version == o.version &&
           latest_version == o.latest_version &&
           version_published_at == o.version_published_at &&
           locked == o.locked &&
-          add_signature_request_submission_id_footers == o.add_signature_request_submission_id_footers &&
-          ai_field_naming_language == o.ai_field_naming_language &&
-          allow_additional_properties == o.allow_additional_properties &&
-          allow_skipping_optional_fields == o.allow_skipping_optional_fields &&
-          default_form_mode == o.default_form_mode &&
-          editable_submissions == o.editable_submissions &&
-          embed_domains == o.embed_domains &&
-          embed_edit_allow_settings == o.embed_edit_allow_settings &&
-          embed_edit_allow_versioning == o.embed_edit_allow_versioning &&
-          embed_edit_allow_document_replacement == o.embed_edit_allow_document_replacement &&
-          encrypt_pdfs == o.encrypt_pdfs &&
-          has_encrypt_pdfs_password == o.has_encrypt_pdfs_password &&
-          expire_submissions == o.expire_submissions &&
-          expire_after == o.expire_after &&
-          expiration_interval == o.expiration_interval &&
-          merge_audit_trail_pdf == o.merge_audit_trail_pdf &&
-          parse_dates_using_template_date_format == o.parse_dates_using_template_date_format &&
-          public_submissions == o.public_submissions &&
-          public_web_form == o.public_web_form &&
-          redirect_url == o.redirect_url &&
-          has_slack_webhook_url == o.has_slack_webhook_url &&
           last_changed_at == o.last_changed_at &&
-          last_changed_by == o.last_changed_by &&
           created_at == o.created_at &&
           updated_at == o.updated_at
     end
@@ -971,7 +404,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, name, description, template_type, ready, document, parent_folder_id, path, version, latest_version, version_published_at, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, has_encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, has_slack_webhook_url, last_changed_at, last_changed_by, created_at, updated_at].hash
+      [id, name, description, template_type, ready, document, parent_folder_id, path, latest_version, version_published_at, locked, last_changed_at, created_at, updated_at].hash
     end
 
     # Builds the object from hash

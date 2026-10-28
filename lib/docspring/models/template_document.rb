@@ -19,20 +19,20 @@ module DocSpring
     # The PDF's file name. Null until a `document_url` has been downloaded.
     attr_accessor :filename
 
-    # The MD5 hash of the PDF.
-    attr_accessor :md5
-
-    # `pending` while DocSpring processes the PDF, then `processed`. `password_required`, `malformed_pdf` and `unknown_error` mean the PDF couldn't be processed, and `error_message` says why: upload it again or upload another one. `downloading` while DocSpring downloads a `document_url`, then as for an upload. `download_failed` means it couldn't be downloaded, and `error_message` says why. A template keeps its PDF while a new one is downloaded, and when it couldn't be.
+    # `pending` while DocSpring processes the PDF, then `processed` (`ready` says when its pages are done too). `password_required`, `malformed_pdf` and `unknown_error` mean the PDF couldn't be processed, and `error_message` says why: upload it again or upload another one. `downloading` while DocSpring downloads a `document_url`, then as for an upload. `download_failed` means it couldn't be downloaded, and `error_message` says why. A template keeps its PDF while a new one is downloaded, and when it couldn't be.
     attr_accessor :state
 
     # Why the PDF couldn't be processed or downloaded, and how to fix it. Null unless `state` is an error.
     attr_accessor :error_message
 
-    # Whether the fields are being re-imported from this PDF (`reimport_fields` when the PDF was replaced): `requested` while DocSpring processes the PDF, then `imported`, or `no_fields` when the PDF had no fillable fields and the template kept its fields. `none` when no re-import was asked for, or when it couldn't run (the PDF couldn't be processed, or the template was locked or published while it was).
-    attr_accessor :field_reimport_state
-
     # 0 until the PDF has been processed.
     attr_accessor :page_count
+
+    # The MD5 hash of the PDF.
+    attr_accessor :md5
+
+    # Whether the fields are being re-imported from this PDF (`reimport_fields` when the PDF was replaced): `requested` while DocSpring processes the PDF, then `imported`, or `no_fields` when the PDF had no fillable fields and the template kept its fields. `none` when no re-import was asked for, or when it couldn't run (the PDF couldn't be processed, or the template was locked or published while it was).
+    attr_accessor :field_reimport_state
 
     # Each page's width and height in PDF points. Null until the PDF has been processed.
     attr_accessor :page_dimensions
@@ -78,11 +78,11 @@ module DocSpring
     def self.attribute_map
       {
         :'filename' => :'filename',
-        :'md5' => :'md5',
         :'state' => :'state',
         :'error_message' => :'error_message',
-        :'field_reimport_state' => :'field_reimport_state',
         :'page_count' => :'page_count',
+        :'md5' => :'md5',
+        :'field_reimport_state' => :'field_reimport_state',
         :'page_dimensions' => :'page_dimensions',
         :'has_fillable_fields' => :'has_fillable_fields',
         :'page_processing_statuses' => :'page_processing_statuses',
@@ -106,11 +106,11 @@ module DocSpring
     def self.openapi_types
       {
         :'filename' => :'String',
-        :'md5' => :'String',
         :'state' => :'TemplateDocumentState',
         :'error_message' => :'String',
-        :'field_reimport_state' => :'FieldReimportState',
         :'page_count' => :'Integer',
+        :'md5' => :'String',
+        :'field_reimport_state' => :'FieldReimportState',
         :'page_dimensions' => :'Array<Array<Float>>',
         :'has_fillable_fields' => :'Boolean',
         :'page_processing_statuses' => :'Array<TemplatePageProcessingStatus>',
@@ -124,8 +124,8 @@ module DocSpring
     def self.openapi_nullable
       Set.new([
         :'filename',
-        :'md5',
         :'error_message',
+        :'md5',
         :'page_dimensions',
         :'has_fillable_fields',
         :'field_logic_status',
@@ -166,12 +166,6 @@ module DocSpring
         self.filename = nil
       end
 
-      if attributes.key?(:'md5')
-        self.md5 = attributes[:'md5']
-      else
-        self.md5 = nil
-      end
-
       if attributes.key?(:'state')
         self.state = attributes[:'state']
       else
@@ -184,16 +178,22 @@ module DocSpring
         self.error_message = nil
       end
 
-      if attributes.key?(:'field_reimport_state')
-        self.field_reimport_state = attributes[:'field_reimport_state']
-      else
-        self.field_reimport_state = nil
-      end
-
       if attributes.key?(:'page_count')
         self.page_count = attributes[:'page_count']
       else
         self.page_count = nil
+      end
+
+      if attributes.key?(:'md5')
+        self.md5 = attributes[:'md5']
+      else
+        self.md5 = nil
+      end
+
+      if attributes.key?(:'field_reimport_state')
+        self.field_reimport_state = attributes[:'field_reimport_state']
+      else
+        self.field_reimport_state = nil
       end
 
       if attributes.key?(:'page_dimensions')
@@ -246,12 +246,12 @@ module DocSpring
         invalid_properties.push('invalid value for "state", state cannot be nil.')
       end
 
-      if @field_reimport_state.nil?
-        invalid_properties.push('invalid value for "field_reimport_state", field_reimport_state cannot be nil.')
-      end
-
       if @page_count.nil?
         invalid_properties.push('invalid value for "page_count", page_count cannot be nil.')
+      end
+
+      if @field_reimport_state.nil?
+        invalid_properties.push('invalid value for "field_reimport_state", field_reimport_state cannot be nil.')
       end
 
       if @page_processing_statuses.nil?
@@ -266,8 +266,8 @@ module DocSpring
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
       return false if @state.nil?
-      return false if @field_reimport_state.nil?
       return false if @page_count.nil?
+      return false if @field_reimport_state.nil?
       return false if @page_processing_statuses.nil?
       true
     end
@@ -283,16 +283,6 @@ module DocSpring
     end
 
     # Custom attribute writer method with validation
-    # @param [Object] field_reimport_state Value to be assigned
-    def field_reimport_state=(field_reimport_state)
-      if field_reimport_state.nil?
-        fail ArgumentError, 'field_reimport_state cannot be nil'
-      end
-
-      @field_reimport_state = field_reimport_state
-    end
-
-    # Custom attribute writer method with validation
     # @param [Object] page_count Value to be assigned
     def page_count=(page_count)
       if page_count.nil?
@@ -300,6 +290,16 @@ module DocSpring
       end
 
       @page_count = page_count
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] field_reimport_state Value to be assigned
+    def field_reimport_state=(field_reimport_state)
+      if field_reimport_state.nil?
+        fail ArgumentError, 'field_reimport_state cannot be nil'
+      end
+
+      @field_reimport_state = field_reimport_state
     end
 
     # Custom attribute writer method with validation
@@ -318,11 +318,11 @@ module DocSpring
       return true if self.equal?(o)
       self.class == o.class &&
           filename == o.filename &&
-          md5 == o.md5 &&
           state == o.state &&
           error_message == o.error_message &&
-          field_reimport_state == o.field_reimport_state &&
           page_count == o.page_count &&
+          md5 == o.md5 &&
+          field_reimport_state == o.field_reimport_state &&
           page_dimensions == o.page_dimensions &&
           has_fillable_fields == o.has_fillable_fields &&
           page_processing_statuses == o.page_processing_statuses &&
@@ -340,7 +340,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [filename, md5, state, error_message, field_reimport_state, page_count, page_dimensions, has_fillable_fields, page_processing_statuses, field_logic_status, download_url, permanent_url].hash
+      [filename, state, error_message, page_count, md5, field_reimport_state, page_dimensions, has_fillable_fields, page_processing_statuses, field_logic_status, download_url, permanent_url].hash
     end
 
     # Builds the object from hash

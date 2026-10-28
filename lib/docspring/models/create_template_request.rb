@@ -49,7 +49,7 @@ module DocSpring
     # Generate PDFs whose text and check fields stay fillable ("Generate Editable PDFs"). A submission's `editable` overrides it.
     attr_accessor :editable_submissions
 
-    # The sites where the template's signature requests, forms and embedded template editor can be loaded: a host such as `app.example.com`, with an optional leading wildcard (`*.example.com`), port (`localhost:3000`) or scheme (`https://app.example.com`; without one, `http` and `https` both work). When it's empty, live signature requests don't load on any site, and the embedded template editor loads on every site.
+    # The sites that can embed the template's live signature requests and its embedded template editor: a host such as `app.example.com`, with an optional leading wildcard (`*.example.com`), port (`localhost:3000`) or scheme (`https://app.example.com`; without one, `http` and `https` both work). Browsers open a live signature request in a frame only on these sites (and DocSpring's), so with an empty list it can't be embedded anywhere; a test signature request can be embedded on any site. The embedded template editor loads only for a page on one of these sites (by its Referer or Origin header), and on any site when the list is empty. Forms embedded on a page (Visual Forms JS and the simple form) aren't restricted.
     attr_accessor :embed_domains
 
     # Allow the embedded template editor to change sensitive template settings (webhooks, redirect URL, encryption, public access, expiration and so on).
@@ -120,6 +120,9 @@ module DocSpring
 
     # Null resets the options to their defaults.
     attr_accessor :html_engine_options
+
+    # Whether an HTML template HTML-escapes the values it prints. When true, `{{ value }}` prints a value as text, so a `<` or `&` in it is printed as that character, and `{{ value | raw }}` prints a value as HTML. New HTML templates default to true. Templates created before October 2026, or with API v1, default to false, which prints every value as HTML. Null for PDF templates.
+    attr_accessor :html_escape_data
 
     # A PDF template's document: the `fields.key` of a file you uploaded with the presigned upload (GET /uploads/presign). A PDF template needs one of `cache_id`, `document_url` and `document_base64`. To upload the PDF with the request, use POST /templates/upload.
     attr_accessor :cache_id
@@ -205,6 +208,7 @@ module DocSpring
         :'header_html' => :'header_html',
         :'footer_html' => :'footer_html',
         :'html_engine_options' => :'html_engine_options',
+        :'html_escape_data' => :'html_escape_data',
         :'cache_id' => :'cache_id',
         :'document_url' => :'document_url',
         :'document_base64' => :'document_base64',
@@ -264,6 +268,7 @@ module DocSpring
         :'header_html' => :'String',
         :'footer_html' => :'String',
         :'html_engine_options' => :'HtmlEngineOptionsInput',
+        :'html_escape_data' => :'Boolean',
         :'cache_id' => :'String',
         :'document_url' => :'String',
         :'document_base64' => :'String',
@@ -468,6 +473,10 @@ module DocSpring
         self.html_engine_options = attributes[:'html_engine_options']
       end
 
+      if attributes.key?(:'html_escape_data')
+        self.html_escape_data = attributes[:'html_escape_data']
+      end
+
       if attributes.key?(:'cache_id')
         self.cache_id = attributes[:'cache_id']
       end
@@ -571,6 +580,7 @@ module DocSpring
           header_html == o.header_html &&
           footer_html == o.footer_html &&
           html_engine_options == o.html_engine_options &&
+          html_escape_data == o.html_escape_data &&
           cache_id == o.cache_id &&
           document_url == o.document_url &&
           document_base64 == o.document_base64 &&
@@ -590,7 +600,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [name, description, template_type, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, slack_webhook_url, defaults, field_dependencies, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, cache_id, document_url, document_base64, filename, detect_fields, field_source, field_naming, field_logic].hash
+      [name, description, template_type, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, slack_webhook_url, defaults, field_dependencies, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, html_escape_data, cache_id, document_url, document_base64, filename, detect_fields, field_source, field_naming, field_logic].hash
     end
 
     # Builds the object from hash

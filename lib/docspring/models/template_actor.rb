@@ -16,7 +16,7 @@ require 'time'
 module DocSpring
   # A user in your account, an API token, or someone using the embedded template editor.
   class TemplateActor < ApiModelBase
-    # `user`: a user in your account. `api`: an API token. `external_user`: someone using the embedded template editor, as identified by your app.
+    # `user`: a user in your account, also when they make the change with an app they connected (an OAuth access token). `api`: an API token. `external_user`: someone using the embedded template editor, as identified by your app.
     attr_accessor :type
 
     # The user's ID, for `user`.

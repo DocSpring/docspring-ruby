@@ -25,7 +25,7 @@ module DocSpring
     # A JSON pointer to the value in the request body (RFC 6901). An empty string means the whole body. In a submission's `data_errors`, it points into the request that created the submission.
     attr_accessor :pointer
 
-    # The query parameter the detail is about.
+    # The query parameter or header the detail is about.
     attr_accessor :parameter
 
     # For a batch item that failed validation, the ID of the submission recorded for it.
