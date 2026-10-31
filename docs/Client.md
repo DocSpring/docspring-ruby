@@ -56,11 +56,11 @@ All URIs are relative to *https://sync.api.docspring.com/api/v2*
 | [**test_authentication**](Client.md#test_authentication) | **GET** /authentication | Test authentication |
 | [**update_signature_request**](Client.md#update_signature_request) | **PUT** /signature_requests/{signature_request_id} | Update a signature request |
 | [**update_template**](Client.md#update_template) | **PUT** /templates/{template_id} | Update a template |
-| [**update_template_document**](Client.md#update_template_document) | **PUT** /templates/{template_id}/document | Replace a template's PDF |
+| [**update_template_document**](Client.md#update_template_document) | **PUT** /templates/{template_id}/document | Replace a template's document |
 | [**update_template_fields**](Client.md#update_template_fields) | **PUT** /templates/{template_id}/fields | Update a template's fields |
 | [**update_webhook**](Client.md#update_webhook) | **PUT** /webhooks/{webhook_id} | Update a webhook |
-| [**upload_template**](Client.md#upload_template) | **POST** /templates/upload | Create a PDF template from an uploaded PDF |
-| [**upload_template_document**](Client.md#upload_template_document) | **PUT** /templates/{template_id}/document/upload | Replace a template's PDF with an uploaded PDF |
+| [**upload_template**](Client.md#upload_template) | **POST** /templates/upload | Create a template from an uploaded PDF or Word document |
+| [**upload_template_document**](Client.md#upload_template_document) | **PUT** /templates/{template_id}/document/upload | Replace a template's document with an uploaded file |
 | [**validate_submission**](Client.md#validate_submission) | **POST** /templates/{template_id}/submissions/validate | Check a submission without creating it |
 
 
@@ -128,7 +128,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -202,7 +202,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -278,7 +278,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -348,7 +348,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -418,7 +418,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -490,7 +490,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -564,7 +564,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -644,7 +644,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -675,7 +675,7 @@ end
 api_instance = DocSpring::Client.new
 body = DocSpring::CreateSubmissionBatchRequest.new({submissions: [DocSpring::SubmissionInput.new]}) # CreateSubmissionBatchRequest | The submissions to create, and the settings they share.
 opts = {
-  wait: true, # Boolean | Wait until every PDF in the batch has been generated before responding. Default true on sync.api hosts.
+  wait: true, # Boolean | Wait until every file in the batch has been generated before responding. Default true on sync.api hosts.
   idempotency_key: 'idempotency_key_example' # String | A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another batch. Send a new key with each new batch, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
 }
 
@@ -711,7 +711,7 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **body** | [**CreateSubmissionBatchRequest**](CreateSubmissionBatchRequest.md) | The submissions to create, and the settings they share. |  |
-| **wait** | **Boolean** | Wait until every PDF in the batch has been generated before responding. Default true on sync.api hosts. | [optional] |
+| **wait** | **Boolean** | Wait until every file in the batch has been generated before responding. Default true on sync.api hosts. | [optional] |
 | **idempotency_key** | **String** | A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another batch. Send a new key with each new batch, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds. | [optional] |
 
 ### Return type
@@ -720,7 +720,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -734,7 +734,7 @@ end
 
 Create a template
 
-Creates an HTML template, or a PDF template from a PDF you uploaded with the presigned upload (GET /uploads/presign): pass its `fields.key` as `cache_id`. To send the PDF with the request instead, use POST /templates/upload.  A PDF template is ready to generate PDFs once DocSpring has processed its PDF (`ready` is true). On sync.api hosts the request waits for that unless you pass `wait=false`. 
+Creates an HTML template, or a PDF or Word template from a file you uploaded with the presigned upload (GET /uploads/presign): pass its `fields.key` as `cache_id`. You can send a link to the file (`document_url`) or the file in base64 (`document_base64`) instead, or send the file with the request with POST /templates/upload. A Word template is made from a Word document (.docx) or an OpenDocument text file (.odt), which DocSpring converts to a Word document. It needs its `output_format`: what each submission makes, a Word document (`docx`), an OpenDocument file (`odt`) or a PDF.  A PDF template is ready to generate PDFs once DocSpring has processed its PDF, a template created from a `document_url` once its document has been downloaded, and one created from an .odt once it has been converted (`ready` is true). On sync.api hosts the request waits for that unless you pass `wait=false`. 
 
 ### Examples
 
@@ -751,7 +751,7 @@ end
 api_instance = DocSpring::Client.new
 body = DocSpring::CreateTemplateRequest.new({template_type: DocSpring::TemplateType::PDF}) # CreateTemplateRequest | The template to create.
 opts = {
-  wait: true # Boolean | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
+  wait: true # Boolean | Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
 }
 
 begin
@@ -786,7 +786,7 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **body** | [**CreateTemplateRequest**](CreateTemplateRequest.md) | The template to create. |  |
-| **wait** | **Boolean** | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts. | [optional] |
+| **wait** | **Boolean** | Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts. | [optional] |
 
 ### Return type
 
@@ -794,7 +794,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -808,7 +808,7 @@ end
 
 Preview a template with data
 
-Makes PNG images of a template's pages filled in with the data you send (not a PDF), so you can check how an HTML or PDF template prints with your data before you publish a version or send live data. It renders the template's draft, or the published `version` you ask for. A preview makes no submission and uses no credits, and its pages are watermarked like a test submission's PDF. It's `pending` while it renders: get it with GET /templates/{template_id}/previews/{preview_id} until it's `processed`, with an image of each page, or `error`. 
+Makes PNG images of a template's pages filled in with the data you send (not a PDF), so you can check how an HTML, PDF or Word template prints with your data before you publish a version or send live data. A Word template's pages are its PDF's, whatever its `output_format`. It renders the template's draft, or the published `version` you ask for. A preview makes no submission and uses no credits, and its pages are watermarked like a test submission's PDF. It's `pending` while it renders: get it with GET /templates/{template_id}/previews/{preview_id} until it's `processed`, with an image of each page, or `error`. 
 
 ### Examples
 
@@ -870,7 +870,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -940,7 +940,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1010,7 +1010,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1080,7 +1080,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1154,7 +1154,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1224,7 +1224,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1294,7 +1294,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1364,7 +1364,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1378,7 +1378,7 @@ end
 
 Generate more files
 
-Adds formats to a processed submission's files, in the background: `png`, a PNG image of each page of the PDF (up to 100 pages). To make them with the submission, add them to `output_formats` when you create it.  Each new file is listed in `files` while it's made: on sync.api hosts the request waits for them (unless you pass `wait=false`), otherwise poll GET /submissions/{submission_id} until none of their `state` is `pending`. A file that couldn't be made has the state `error` and an `error_message`, and the submission stays processed. Asking for a format the submission already has (or is making) changes nothing. 
+Adds formats to a processed submission's files, in the background, without using credits again: `pdf`, the PDF of a Word template's submission that made only its Word document (converted from that document), `docx`, the Word document of a Word template's submission that made only its PDF (made again from its data and the template version it used), `odt`, a Word template's submission's OpenDocument file (converted from its Word document, or from one made again when it didn't keep one), and `png`, a PNG image of each page of the PDF (up to 100 pages), which makes the PDF first when the submission doesn't have one. To make them with the submission, add them to `output_formats` when you create it.  Each new file is listed in `files` while it's made: on sync.api hosts the request waits for them (unless you pass `wait=false`), otherwise poll GET /submissions/{submission_id} until none of their `state` is `pending`. A file that couldn't be made has the state `error` and an `error_message`, and the submission stays processed. Asking for a format the submission already has (or is making) changes nothing. 
 
 ### Examples
 
@@ -1394,7 +1394,7 @@ end
 
 api_instance = DocSpring::Client.new
 submission_id = 'sub_1234567890abcdef01' # String | The submission's ID.
-body = DocSpring::GenerateSubmissionFilesRequest.new({formats: [DocSpring::GenerateFilesFormat::PNG]}) # GenerateSubmissionFilesRequest | The formats to make.
+body = DocSpring::GenerateSubmissionFilesRequest.new({formats: [DocSpring::GenerateFilesFormat::PDF]}) # GenerateSubmissionFilesRequest | The formats to make.
 opts = {
   wait: true # Boolean | Wait until the files have been generated before responding. Default true on sync.api hosts.
 }
@@ -1440,7 +1440,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1510,7 +1510,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1580,7 +1580,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1650,7 +1650,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1720,7 +1720,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1787,7 +1787,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1857,7 +1857,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -1927,7 +1927,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2001,7 +2001,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2075,7 +2075,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2149,7 +2149,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2163,7 +2163,7 @@ end
 
 Generate typed code for a template's submission data
 
-Generates types for a template's submission data in TypeScript, JavaScript, Ruby, Python, PHP, Java, C#, Elixir or Go, so your app catches mistakes before it calls the API. `root_type_name` is the type of the whole `data` object, and `just_types=true` leaves out the code that converts JSON to and from the types. Java returns every class in `code`, each under a `// ClassName.java` comment. A template with no named fields returns 422. 
+Generates types for a template's submission data in TypeScript, JavaScript, Ruby, Python, PHP, Java, C#, Elixir, Go or Rust, so your app catches mistakes before it calls the API. `root_type_name` is the type of the whole `data` object, and `just_types=true` leaves out the code that converts JSON to and from the types. Java returns every class in `code`, each under a `// ClassName.java` comment. A template with no named fields returns 422. 
 
 ### Examples
 
@@ -2182,7 +2182,7 @@ template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
 lang = DocSpring::ModelCodeLanguage::TYPESCRIPT # ModelCodeLanguage | The language to generate the code in.
 opts = {
   version: 'draft', # String | The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published), the version a submission uses by default.
-  just_types: true # Boolean | Return only the types (interfaces, classes or structs), without the code that converts JSON to and from them. Default false. JavaScript has no types and PHP no types-only code, so theirs is the same either way.
+  just_types: true # Boolean | Return only the types (interfaces, classes or structs), without the code that converts JSON to and from them. Default false. JavaScript has no types, PHP has no types-only code, and Rust's code is only types (serde converts the JSON), so theirs is the same either way.
 }
 
 begin
@@ -2219,7 +2219,7 @@ end
 | **template_id** | **String** | The template's ID. |  |
 | **lang** | [**ModelCodeLanguage**](.md) | The language to generate the code in. |  |
 | **version** | **String** | The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published), the version a submission uses by default. | [optional] |
-| **just_types** | **Boolean** | Return only the types (interfaces, classes or structs), without the code that converts JSON to and from them. Default false. JavaScript has no types and PHP no types-only code, so theirs is the same either way. | [optional] |
+| **just_types** | **Boolean** | Return only the types (interfaces, classes or structs), without the code that converts JSON to and from them. Default false. JavaScript has no types, PHP has no types-only code, and Rust's code is only types (serde converts the JSON), so theirs is the same either way. | [optional] |
 
 ### Return type
 
@@ -2227,7 +2227,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2301,7 +2301,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2373,7 +2373,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2447,7 +2447,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2517,7 +2517,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2591,7 +2591,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2665,7 +2665,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2741,7 +2741,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2829,7 +2829,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2903,7 +2903,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -2991,7 +2991,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3069,7 +3069,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3153,7 +3153,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3225,7 +3225,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3297,7 +3297,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3311,7 +3311,7 @@ end
 
 Publish a template version
 
-Publishes the template's draft as a new version that doesn't change. `version_type` says which part of the latest version number goes up. While the template's PDF is downloading or being processed, or DocSpring is setting up its fields, it returns a 409 that says so. 
+Publishes the template's draft as a new version. Its content (the PDF or HTML, fields, name and description) never changes, while settings such as `webhook_url` and `public_submissions` keep following the draft. `version_type` says which part of the latest version number goes up. While the template's PDF is downloading or being processed, or DocSpring is setting up its fields, it returns a 409 that says so. 
 
 ### Examples
 
@@ -3369,7 +3369,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3441,7 +3441,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3513,7 +3513,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3585,7 +3585,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3599,7 +3599,7 @@ end
 
 Restore a template version
 
-Replaces the template's draft with a copy of one of its published versions.
+Replaces the template's draft with a copy of one of its published versions. The draft keeps its settings that apply to every version, such as `webhook_url`.
 
 ### Examples
 
@@ -3657,7 +3657,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3724,7 +3724,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3796,7 +3796,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3810,7 +3810,7 @@ end
 
 Update a template
 
-Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object, and `field_groups` changes only the groups it lists. Setting `parent_folder_id` moves the template and all of its published versions. 
+Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object, and `field_groups` changes only the groups it lists. Settings such as `webhook_url`, `public_submissions` and `expire_after` apply to every published version too, and setting `parent_folder_id` moves the template and all of its published versions. 
 
 ### Examples
 
@@ -3868,7 +3868,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -3880,9 +3880,9 @@ end
 
 > <Template> update_template_document(template_id, body, opts)
 
-Replace a template's PDF
+Replace a template's document
 
-Replaces a PDF template's PDF with one you uploaded with the presigned upload (GET /uploads/presign) (`cache_id`), a link to download it from (`document_url`), or the file in base64 (`document_base64`). The fields stay where they are, unless `reimport_fields` replaces them with the new PDF's fillable fields. To send the PDF as `multipart/form-data` instead, use PUT /templates/{template_id}/document/upload. 
+Replaces a PDF template's PDF, or a Word template's Word document (from a .docx or an .odt), with one you uploaded with the presigned upload (GET /uploads/presign) (`cache_id`), a link to download it from (`document_url`), or the file in base64 (`document_base64`). A PDF template's fields stay where they are, unless `reimport_fields` replaces them with the new PDF's fillable fields, and a Word template gets a field for each new tag. To send the file as `multipart/form-data` instead, use PUT /templates/{template_id}/document/upload. 
 
 ### Examples
 
@@ -3898,13 +3898,13 @@ end
 
 api_instance = DocSpring::Client.new
 template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
-body = DocSpring::UpdateTemplateDocumentRequest.new # UpdateTemplateDocumentRequest | The new PDF, as one of `cache_id`, `document_url` and `document_base64`.
+body = DocSpring::UpdateTemplateDocumentRequest.new # UpdateTemplateDocumentRequest | The new PDF, or a Word template's new Word document, as one of `cache_id`, `document_url` and `document_base64`.
 opts = {
-  wait: true # Boolean | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
+  wait: true # Boolean | Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
 }
 
 begin
-  # Replace a template's PDF
+  # Replace a template's document
   result = api_instance.update_template_document(template_id, body, opts)
   p result
 rescue DocSpring::ApiError => e
@@ -3920,7 +3920,7 @@ This returns an Array which contains the response data, status code and headers.
 
 ```ruby
 begin
-  # Replace a template's PDF
+  # Replace a template's document
   data, status_code, headers = api_instance.update_template_document_with_http_info(template_id, body, opts)
   p status_code # => 2xx
   p headers # => { ... }
@@ -3935,8 +3935,8 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **template_id** | **String** | The template's ID. |  |
-| **body** | [**UpdateTemplateDocumentRequest**](UpdateTemplateDocumentRequest.md) | The new PDF, as one of `cache_id`, `document_url` and `document_base64`. |  |
-| **wait** | **Boolean** | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts. | [optional] |
+| **body** | [**UpdateTemplateDocumentRequest**](UpdateTemplateDocumentRequest.md) | The new PDF, or a Word template's new Word document, as one of `cache_id`, `document_url` and `document_base64`. |  |
+| **wait** | **Boolean** | Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts. | [optional] |
 
 ### Return type
 
@@ -3944,7 +3944,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -4016,7 +4016,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -4088,7 +4088,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -4100,9 +4100,9 @@ end
 
 > <Template> upload_template(document, opts)
 
-Create a PDF template from an uploaded PDF
+Create a template from an uploaded PDF or Word document
 
-Creates a PDF template from a PDF sent with the request (`multipart/form-data`). For large files, upload the PDF with the presigned upload (GET /uploads/presign) and create the template with POST /templates. 
+Creates a PDF template from a PDF, or a Word template from a Word document (.docx) or an OpenDocument text file (.odt), sent with the request (`multipart/form-data`). A Word template needs its `output_format`. For large files, upload the file with the presigned upload (GET /uploads/presign) and create the template with POST /templates. 
 
 ### Examples
 
@@ -4117,9 +4117,9 @@ DocSpring.configure do |config|
 end
 
 api_instance = DocSpring::Client.new
-document = File.new('/path/to/some/file') # File | The PDF.
+document = File.new('/path/to/some/file') # File | A PDF (for a PDF template) or a Word document (.docx or .odt, for a Word template). DocSpring converts an OpenDocument text file (.odt) to a Word document after responding: the template's `document.state` is `converting` until then (sync.api hosts wait for it).
 opts = {
-  wait: true, # Boolean | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
+  wait: true, # Boolean | Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
   name: 'name_example', # String | The template's name.
   description: 'description_example', # String | The template's description.
   parent_folder_id: 'parent_folder_id_example', # String | The folder to put the template in. Left out, it's created at the root.
@@ -4127,11 +4127,12 @@ opts = {
   detect_fields: true, # Boolean | Set up the PDF's fields as DocSpring's "Automatically detect fields" upload option does: import or detect the fields, name them with AI, and set up conditional logic. `field_source`, `field_naming` and `field_logic` choose how. Default false. `document.page_processing_statuses` and `document.field_logic_status` show how it's going, and `document.state` becomes `processed` once every page's fields are set up.
   field_source: DocSpring::FieldSetupSource::AUTO, # FieldSetupSource | With `detect_fields`, where the fields come from. `auto` (the default) imports the form fields of a fillable PDF and detects the fields of a PDF without them; `pdf_detection` detects the fields from the page layout, even on a fillable PDF; `pdf_form_fields` only imports the PDF's form fields.
   field_naming: DocSpring::FieldSetupNaming::AI, # FieldSetupNaming | With `detect_fields`, how the fields are named. `ai` (the default) names them and sets their types and settings with AI; `preserve` keeps the names of the PDF's form fields, and AI only names the fields it detected. `preserve` needs `field_source` `auto` or `pdf_form_fields`.
-  field_logic: DocSpring::FieldSetupLogic::AI # FieldSetupLogic | With `detect_fields`, whether AI reads the whole form once the fields are named and sets up conditional logic and required fields (`ai`) or not (`none`). Default: your account's template settings.
+  field_logic: DocSpring::FieldSetupLogic::AI, # FieldSetupLogic | With `detect_fields`, whether AI reads the whole form once the fields are named and sets up conditional logic and required fields (`ai`) or not (`none`). Default: your account's template settings.
+  output_format: DocSpring::OutputFormat::PDF # OutputFormat | What each submission of a Word template makes unless its request sets `output_formats`: `docx` (a Word document), `odt` (an OpenDocument file, converted from the Word document) or `pdf`. Required when `document` is a Word document.
 }
 
 begin
-  # Create a PDF template from an uploaded PDF
+  # Create a template from an uploaded PDF or Word document
   result = api_instance.upload_template(document, opts)
   p result
 rescue DocSpring::ApiError => e
@@ -4147,7 +4148,7 @@ This returns an Array which contains the response data, status code and headers.
 
 ```ruby
 begin
-  # Create a PDF template from an uploaded PDF
+  # Create a template from an uploaded PDF or Word document
   data, status_code, headers = api_instance.upload_template_with_http_info(document, opts)
   p status_code # => 2xx
   p headers # => { ... }
@@ -4161,8 +4162,8 @@ end
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **document** | **File** | The PDF. |  |
-| **wait** | **Boolean** | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts. | [optional] |
+| **document** | **File** | A PDF (for a PDF template) or a Word document (.docx or .odt, for a Word template). DocSpring converts an OpenDocument text file (.odt) to a Word document after responding: the template's `document.state` is `converting` until then (sync.api hosts wait for it). |  |
+| **wait** | **Boolean** | Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts. | [optional] |
 | **name** | **String** | The template's name. | [optional] |
 | **description** | **String** | The template's description. | [optional] |
 | **parent_folder_id** | **String** | The folder to put the template in. Left out, it's created at the root. | [optional] |
@@ -4171,6 +4172,7 @@ end
 | **field_source** | [**FieldSetupSource**](FieldSetupSource.md) | With `detect_fields`, where the fields come from. `auto` (the default) imports the form fields of a fillable PDF and detects the fields of a PDF without them; `pdf_detection` detects the fields from the page layout, even on a fillable PDF; `pdf_form_fields` only imports the PDF's form fields. | [optional] |
 | **field_naming** | [**FieldSetupNaming**](FieldSetupNaming.md) | With `detect_fields`, how the fields are named. `ai` (the default) names them and sets their types and settings with AI; `preserve` keeps the names of the PDF's form fields, and AI only names the fields it detected. `preserve` needs `field_source` `auto` or `pdf_form_fields`. | [optional] |
 | **field_logic** | [**FieldSetupLogic**](FieldSetupLogic.md) | With `detect_fields`, whether AI reads the whole form once the fields are named and sets up conditional logic and required fields (`ai`) or not (`none`). Default: your account's template settings. | [optional] |
+| **output_format** | [**OutputFormat**](OutputFormat.md) | What each submission of a Word template makes unless its request sets `output_formats`: `docx` (a Word document), `odt` (an OpenDocument file, converted from the Word document) or `pdf`. Required when `document` is a Word document. | [optional] |
 
 ### Return type
 
@@ -4178,7 +4180,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -4190,9 +4192,9 @@ end
 
 > <Template> upload_template_document(template_id, document, opts)
 
-Replace a template's PDF with an uploaded PDF
+Replace a template's document with an uploaded file
 
-Replaces a PDF template's PDF with one sent with the request (`multipart/form-data`). The fields stay where they are, unless `reimport_fields` replaces them with the new PDF's fillable fields. 
+Replaces a PDF template's PDF, or a Word template's Word document, with one sent with the request (`multipart/form-data`). A PDF template's fields stay where they are, unless `reimport_fields` replaces them with the new PDF's fillable fields, and a Word template gets a field for each new tag. 
 
 ### Examples
 
@@ -4208,14 +4210,14 @@ end
 
 api_instance = DocSpring::Client.new
 template_id = 'tpl_1234567890abcdef01' # String | The template's ID.
-document = File.new('/path/to/some/file') # File | The new PDF.
+document = File.new('/path/to/some/file') # File | The new PDF, or the new Word document (.docx or .odt) of a Word template.
 opts = {
-  wait: true, # Boolean | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts.
-  reimport_fields: true # Boolean | Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields.
+  wait: true, # Boolean | Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
+  reimport_fields: true # Boolean | Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields. Only for PDF templates: a Word template adds a field for each new tag.
 }
 
 begin
-  # Replace a template's PDF with an uploaded PDF
+  # Replace a template's document with an uploaded file
   result = api_instance.upload_template_document(template_id, document, opts)
   p result
 rescue DocSpring::ApiError => e
@@ -4231,7 +4233,7 @@ This returns an Array which contains the response data, status code and headers.
 
 ```ruby
 begin
-  # Replace a template's PDF with an uploaded PDF
+  # Replace a template's document with an uploaded file
   data, status_code, headers = api_instance.upload_template_document_with_http_info(template_id, document, opts)
   p status_code # => 2xx
   p headers # => { ... }
@@ -4246,9 +4248,9 @@ end
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **template_id** | **String** | The template's ID. |  |
-| **document** | **File** | The new PDF. |  |
-| **wait** | **Boolean** | Wait until the PDF has been processed, and a `document_url` downloaded, before responding. Default true on sync.api hosts. | [optional] |
-| **reimport_fields** | **Boolean** | Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields. | [optional] |
+| **document** | **File** | The new PDF, or the new Word document (.docx or .odt) of a Word template. |  |
+| **wait** | **Boolean** | Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts. | [optional] |
+| **reimport_fields** | **Boolean** | Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields. Only for PDF templates: a Word template adds a field for each new tag. | [optional] |
 
 ### Return type
 
@@ -4256,7 +4258,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 
@@ -4332,7 +4334,7 @@ end
 
 ### Authorization
 
-[api_token_basic](../README.md#api_token_basic)
+[api_token_basic](../README.md#install-and-configure)
 
 ### HTTP request headers
 

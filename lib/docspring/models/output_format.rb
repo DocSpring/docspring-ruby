@@ -1,7 +1,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to fill PDF forms, generate PDFs and Word documents from HTML or Word templates, merge PDFs, and request legally binding e-signatures.
 
 The version of the OpenAPI document: v2
 
@@ -16,10 +16,12 @@ require 'time'
 module DocSpring
   class OutputFormat
     PDF = "pdf".freeze
+    DOCX = "docx".freeze
+    ODT = "odt".freeze
     PNG = "png".freeze
 
     def self.all_vars
-      @all_vars ||= [PDF, PNG].freeze
+      @all_vars ||= [PDF, DOCX, ODT, PNG].freeze
     end
 
     # Builds the enum from string

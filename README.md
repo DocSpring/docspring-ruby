@@ -1,7 +1,8 @@
 # DocSpring Ruby SDK
 
 The official Ruby client for the [DocSpring API](https://docspring.com/docs/api/). DocSpring fills PDF
-templates with your data, generates PDFs from HTML templates, combines PDFs and collects e-signatures.
+forms with your data, generates PDFs and Word documents from HTML and Word templates, combines PDFs and collects
+e-signatures.
 
 [Documentation](https://docspring.com/docs/) · [API reference](https://docspring.com/docs/api/) ·
 [RubyGems](https://rubygems.org/gems/docspring) · [Changelog](https://github.com/DocSpring/docspring-ruby/blob/main/CHANGELOG.md)
@@ -9,7 +10,7 @@ templates with your data, generates PDFs from HTML templates, combines PDFs and 
 The code in this repository is generated from DocSpring's OpenAPI spec ([About this SDK](#about-this-sdk)). Issues and
 pull requests are welcome.
 
-Version 4.2.0. Requires Ruby >= 2.7.
+Version 4.3.0. Requires Ruby >= 2.7.
 
 ## Install and configure
 
@@ -138,11 +139,11 @@ Ruby code for every method.
 | [`test_authentication`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#test_authentication) | Test authentication |
 | [`update_signature_request`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_signature_request) | Update a signature request |
 | [`update_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_template) | Update a template |
-| [`update_template_document`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_template_document) | Replace a template's PDF |
+| [`update_template_document`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_template_document) | Replace a template's document |
 | [`update_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_template_fields) | Update a template's fields |
 | [`update_webhook`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_webhook) | Update a webhook |
-| [`upload_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#upload_template) | Create a PDF template from an uploaded PDF |
-| [`upload_template_document`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#upload_template_document) | Replace a template's PDF with an uploaded PDF |
+| [`upload_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#upload_template) | Create a template from an uploaded PDF or Word document |
+| [`upload_template_document`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#upload_template_document) | Replace a template's document with an uploaded file |
 | [`validate_submission`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#validate_submission) | Check a submission without creating it |
 
 ## Errors
@@ -160,7 +161,7 @@ existing code, such as removing or renaming a field, go in a new API version
 responses that are newer than it is:
 
 - The model leaves out a response field added to the API after this release.
-- Enum values in responses are strings, so a value added to the API after this release comes back as it is: handle values you don't recognize.
+- An enum value added to the API after this release comes back as the API sent it: handle values you don't recognize.
 
 Upgrade the SDK to read new fields and enum values. The [changelog](https://github.com/DocSpring/docspring-ruby/blob/main/CHANGELOG.md) lists
 what each release adds.

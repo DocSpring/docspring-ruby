@@ -1,7 +1,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to fill PDF forms, generate PDFs and Word documents from HTML or Word templates, merge PDFs, and request legally binding e-signatures.
 
 The version of the OpenAPI document: v2
 
@@ -19,7 +19,7 @@ module DocSpring
     # The group's name: `address` for the field `address/city`. A list's item numbers are written as `~`, so the fields `items/0/price` and `items/1/price` are in the groups `items` and `items/~`, the list's items.
     attr_accessor :name
 
-    # `array` for a list, whose fields' names number its items after the group's name (`items/0/price`, or `items/~/price` in an HTML template), and `object` for the other groups.
+    # `array` for a list, whose fields' names number its items after the group's name (`items/0/price`, or `items/~/price` in an HTML or Word template), and `object` for the other groups.
     attr_accessor :type
 
     # The group's title in the template's data schema and on forms. When it's empty, a title is made from the group's name.
@@ -34,7 +34,7 @@ module DocSpring
     # Lists only (`type` `array`): the fewest items submission data must have. Null for no minimum.
     attr_accessor :min_items
 
-    # HTML templates' lists only: the most items submission data can have. Null for no limit. A PDF template's list takes as many items as its fields are numbered for, or more with `allow_additional_items`.
+    # HTML and Word templates' lists only: the most items submission data can have. Null for no limit. A PDF template's list takes as many items as its fields are numbered for, or more with `allow_additional_items`.
     attr_accessor :max_items
 
     # PDF templates' lists only: submission data can have more items than the list's fields are numbered for. Default false.

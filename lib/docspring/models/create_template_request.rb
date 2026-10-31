@@ -1,7 +1,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to fill PDF forms, generate PDFs and Word documents from HTML or Word templates, merge PDFs, and request legally binding e-signatures.
 
 The version of the OpenAPI document: v2
 
@@ -22,8 +22,11 @@ module DocSpring
     # Shown under the template's name at the top of its hosted forms, and used as their meta description. Not shown on embedded forms or signature requests.
     attr_accessor :description
 
-    # `pdf`: fields placed on an uploaded PDF. `html`: a PDF rendered from HTML and SCSS. It can't be changed after the template is created.
+    # `pdf`: fields placed on an uploaded PDF. `html`: a PDF rendered from HTML and SCSS. `docx`: a Word document with tags where the data goes, which makes Word documents or PDFs. It can't be changed after the template is created.
     attr_accessor :template_type
+
+    # What each submission makes unless its request sets `output_formats`: `docx` (a Word document), `odt` (an OpenDocument file, converted from the Word document) or `pdf`. A Word template's is chosen when it's created; PDF and HTML templates always make PDFs. A Word template that encrypts its PDFs makes PDFs, because Word documents and OpenDocument files can't be password-protected.
+    attr_accessor :output_format
 
     # The ID of the folder the template is in. Null for a template at the root. Setting it moves the template and all of its published versions.
     attr_accessor :parent_folder_id
@@ -43,7 +46,7 @@ module DocSpring
     # Visual forms and signature request forms show the Continue button as soon as the required fields are filled in, without visiting each optional field. The `allowSkippingOptionalFields` embed option overrides it.
     attr_accessor :allow_skipping_optional_fields
 
-    # The hosted form that /templates/{template_id}/form shows when its URL has no `mode` parameter: `web` (the web form), `visual` (the visual form, where fields are filled in on the PDF) or `dual` (both, in tabs). HTML templates have no visual form, so `web` is the only value they accept.
+    # The hosted form that /templates/{template_id}/form shows when its URL has no `mode` parameter: `web` (the web form), `visual` (the visual form, where fields are filled in on the PDF) or `dual` (both, in tabs). Only PDF templates have a visual form, so other templates accept only `web`.
     attr_accessor :default_form_mode
 
     # Generate PDFs whose text and check fields stay fillable ("Generate Editable PDFs"). A submission's `editable` overrides it.
@@ -61,7 +64,7 @@ module DocSpring
     # Allow the embedded template editor to replace the template's PDF.
     attr_accessor :embed_edit_allow_document_replacement
 
-    # Encrypt generated PDFs with `encrypt_pdfs_password`.
+    # Encrypt generated PDFs with `encrypt_pdfs_password`. A Word template can only encrypt its PDFs when its `output_format` is `pdf`, because Word documents and OpenDocument files can't be password-protected.
     attr_accessor :encrypt_pdfs
 
     # The password that opens encrypted PDFs. It's never returned; `has_encrypt_pdfs_password` says if it's set.
@@ -79,7 +82,7 @@ module DocSpring
     # Add the audit trail to the end of PDFs signed through signature requests.
     attr_accessor :merge_audit_trail_pdf
 
-    # Date fields also accept NN/NN/YYYY dates (with slashes, dashes or dots), read in the order of the template's default date format: month first for %m/%d/%Y, day first for %d/%m/%Y. When false, date fields only accept YYYY-MM-DD. Applies to PDF templates: an HTML template's date fields only accept YYYY-MM-DD. Date fields that include a time take RFC 3339 date-times either way.
+    # Date fields also accept NN/NN/YYYY dates (with slashes, dashes or dots), read in the order of the template's default date format: month first for %m/%d/%Y, day first for %d/%m/%Y. When false, date fields only accept YYYY-MM-DD. Applies to PDF templates: an HTML or Word template's date fields only accept YYYY-MM-DD. Date fields that include a time take RFC 3339 date-times either way.
     attr_accessor :parse_dates_using_template_date_format
 
     # Allow anyone with a submission's ID to download its PDF.
@@ -106,7 +109,7 @@ module DocSpring
     # Sample submission data that sets `predefined_fields`: each value becomes a predefined field, with a type that fits it (`string`, `number`, `boolean`, `date`, `email` or `url`) and `required_in_template` true. Nested objects and arrays become names with `/`, such as `customer/email`. Without `predefined_fields` in the same request, it replaces them; with them, it adds to them and sets the types of the ones it has values for.
     attr_accessor :predefined_fields_sample_data
 
-    # The HTML of an HTML template, as a Liquid template. Null for PDF templates.
+    # The HTML of an HTML template, as a Liquid template. Null for PDF and Word templates.
     attr_accessor :html
 
     # The SCSS of an HTML template.
@@ -124,16 +127,16 @@ module DocSpring
     # Whether an HTML template HTML-escapes the values it prints. When true, `{{ value }}` prints a value as text, so a `<` or `&` in it is printed as that character, and `{{ value | raw }}` prints a value as HTML. New HTML templates default to true. Templates created before October 2026, or with API v1, default to false, which prints every value as HTML. Null for PDF templates.
     attr_accessor :html_escape_data
 
-    # A PDF template's document: the `fields.key` of a file you uploaded with the presigned upload (GET /uploads/presign). A PDF template needs one of `cache_id`, `document_url` and `document_base64`. To upload the PDF with the request, use POST /templates/upload.
+    # The template's document, a PDF or a Word document (.docx or .odt): the `fields.key` of a file you uploaded with the presigned upload (GET /uploads/presign). PDF and Word templates need one of `cache_id`, `document_url` and `document_base64`. To upload the file with the request, use POST /templates/upload.
     attr_accessor :cache_id
 
-    # An https:// link to the template's PDF (up to 100 MB), instead of `cache_id`. DocSpring downloads it after responding, following redirects to other https:// links: the template's `document.state` is `downloading` until then (sync.api hosts wait for it). If it can't be downloaded, the state is `download_failed` and `document.error_message` says why.
+    # An https:// link to the template's document, instead of `cache_id`: a PDF template's PDF (up to 100 MB) or a Word template's Word document (.docx or .odt, up to 50 MB). DocSpring downloads it after responding, following redirects to other https:// links: the template's `document.state` is `downloading` until then, and `converting` while an .odt is converted (sync.api hosts wait for both). If it can't be downloaded, the state is `download_failed` and `document.error_message` says why.
     attr_accessor :document_url
 
-    # The template's PDF, encoded as base64 (a `data:` URI works too), instead of `cache_id`. Up to 7 MB before it's encoded: send a larger file with `cache_id` or `document_url`.
+    # The template's document (a PDF, or a Word template's Word document), encoded as base64 (a `data:` URI works too), instead of `cache_id`. Up to 7 MB before it's encoded: send a larger file with `cache_id` or `document_url`.
     attr_accessor :document_base64
 
-    # The PDF's file name, for a `cache_id` (presigned uploads don't send one) or `document_base64`. A `document_url`'s is the last part of its path unless you set it.
+    # The file's name, for a `cache_id` (presigned uploads don't send one) or `document_base64`. A `document_url`'s is the last part of its path unless you set it.
     attr_accessor :filename
 
     # Set up the PDF's fields as DocSpring's "Automatically detect fields" upload option does: import or detect the fields, name them with AI, and set up conditional logic. `field_source`, `field_naming` and `field_logic` choose how. Default false. `document.page_processing_statuses` and `document.field_logic_status` show how it's going, and `document.state` becomes `processed` once every page's fields are set up.
@@ -176,6 +179,7 @@ module DocSpring
         :'name' => :'name',
         :'description' => :'description',
         :'template_type' => :'template_type',
+        :'output_format' => :'output_format',
         :'parent_folder_id' => :'parent_folder_id',
         :'locked' => :'locked',
         :'add_signature_request_submission_id_footers' => :'add_signature_request_submission_id_footers',
@@ -236,6 +240,7 @@ module DocSpring
         :'name' => :'String',
         :'description' => :'String',
         :'template_type' => :'TemplateType',
+        :'output_format' => :'OutputFormat',
         :'parent_folder_id' => :'String',
         :'locked' => :'Boolean',
         :'add_signature_request_submission_id_footers' => :'Boolean',
@@ -335,6 +340,10 @@ module DocSpring
         self.template_type = attributes[:'template_type']
       else
         self.template_type = nil
+      end
+
+      if attributes.key?(:'output_format')
+        self.output_format = attributes[:'output_format']
       end
 
       if attributes.key?(:'parent_folder_id')
@@ -548,6 +557,7 @@ module DocSpring
           name == o.name &&
           description == o.description &&
           template_type == o.template_type &&
+          output_format == o.output_format &&
           parent_folder_id == o.parent_folder_id &&
           locked == o.locked &&
           add_signature_request_submission_id_footers == o.add_signature_request_submission_id_footers &&
@@ -600,7 +610,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [name, description, template_type, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, slack_webhook_url, defaults, field_dependencies, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, html_escape_data, cache_id, document_url, document_base64, filename, detect_fields, field_source, field_naming, field_logic].hash
+      [name, description, template_type, output_format, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, slack_webhook_url, defaults, field_dependencies, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, html_escape_data, cache_id, document_url, document_base64, filename, detect_fields, field_source, field_naming, field_logic].hash
     end
 
     # Builds the object from hash

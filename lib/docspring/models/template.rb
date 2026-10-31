@@ -1,7 +1,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to fill PDF forms, generate PDFs and Word documents from HTML or Word templates, merge PDFs, and request legally binding e-signatures.
 
 The version of the OpenAPI document: v2
 
@@ -25,13 +25,16 @@ module DocSpring
     # Shown under the template's name at the top of its hosted forms, and used as their meta description. Not shown on embedded forms or signature requests.
     attr_accessor :description
 
-    # `pdf`: fields placed on an uploaded PDF. `html`: a PDF rendered from HTML and SCSS. It can't be changed after the template is created.
+    # `pdf`: fields placed on an uploaded PDF. `html`: a PDF rendered from HTML and SCSS. `docx`: a Word document with tags where the data goes, which makes Word documents or PDFs. It can't be changed after the template is created.
     attr_accessor :template_type
 
-    # Whether the template can generate PDFs. HTML templates are always ready. A PDF template is ready once DocSpring has stored its PDF, made an image of each page and finished looking for fields on each page, which can be after `document.state` becomes `processed`. A PDF template with no PDF (`document` is null) isn't ready.
+    # What each submission makes unless its request sets `output_formats`: `docx` (a Word document), `odt` (an OpenDocument file, converted from the Word document) or `pdf`. A Word template's is chosen when it's created; PDF and HTML templates always make PDFs. A Word template that encrypts its PDFs makes PDFs, because Word documents and OpenDocument files can't be password-protected.
+    attr_accessor :output_format
+
+    # Whether the template can make documents. HTML templates are always ready. A PDF template is ready once DocSpring has stored its PDF, made an image of each page and finished looking for fields on each page, which can be after `document.state` becomes `processed`. A PDF template with no PDF (`document` is null) isn't ready. A Word template is ready once it has a Word document (a `document_url`'s has been downloaded).
     attr_accessor :ready
 
-    # The PDF of a PDF template. Null for HTML templates, and for a PDF template that has no PDF yet.
+    # The PDF of a PDF template, or the Word document of a Word template. Null for HTML templates, and for a PDF template that has no PDF yet. A template created from a `document_url` has one, with no file, while it's downloaded.
     attr_accessor :document
 
     # The ID of the folder the template is in. Null for a template at the root. Setting it moves the template and all of its published versions.
@@ -73,7 +76,7 @@ module DocSpring
     # Visual forms and signature request forms show the Continue button as soon as the required fields are filled in, without visiting each optional field. The `allowSkippingOptionalFields` embed option overrides it.
     attr_accessor :allow_skipping_optional_fields
 
-    # The hosted form that /templates/{template_id}/form shows when its URL has no `mode` parameter: `web` (the web form), `visual` (the visual form, where fields are filled in on the PDF) or `dual` (both, in tabs). HTML templates have no visual form, so `web` is the only value they accept.
+    # The hosted form that /templates/{template_id}/form shows when its URL has no `mode` parameter: `web` (the web form), `visual` (the visual form, where fields are filled in on the PDF) or `dual` (both, in tabs). Only PDF templates have a visual form, so other templates accept only `web`.
     attr_accessor :default_form_mode
 
     # Generate PDFs whose text and check fields stay fillable ("Generate Editable PDFs"). A submission's `editable` overrides it.
@@ -91,7 +94,7 @@ module DocSpring
     # Allow the embedded template editor to replace the template's PDF.
     attr_accessor :embed_edit_allow_document_replacement
 
-    # Encrypt generated PDFs with `encrypt_pdfs_password`.
+    # Encrypt generated PDFs with `encrypt_pdfs_password`. A Word template can only encrypt its PDFs when its `output_format` is `pdf`, because Word documents and OpenDocument files can't be password-protected.
     attr_accessor :encrypt_pdfs
 
     # Whether `encrypt_pdfs_password` is set.
@@ -109,7 +112,7 @@ module DocSpring
     # Add the audit trail to the end of PDFs signed through signature requests.
     attr_accessor :merge_audit_trail_pdf
 
-    # Date fields also accept NN/NN/YYYY dates (with slashes, dashes or dots), read in the order of the template's default date format: month first for %m/%d/%Y, day first for %d/%m/%Y. When false, date fields only accept YYYY-MM-DD. Applies to PDF templates: an HTML template's date fields only accept YYYY-MM-DD. Date fields that include a time take RFC 3339 date-times either way.
+    # Date fields also accept NN/NN/YYYY dates (with slashes, dashes or dots), read in the order of the template's default date format: month first for %m/%d/%Y, day first for %d/%m/%Y. When false, date fields only accept YYYY-MM-DD. Applies to PDF templates: an HTML or Word template's date fields only accept YYYY-MM-DD. Date fields that include a time take RFC 3339 date-times either way.
     attr_accessor :parse_dates_using_template_date_format
 
     # Allow anyone with a submission's ID to download its PDF.
@@ -141,7 +144,7 @@ module DocSpring
     # Sample submission data that sets `predefined_fields`: each value becomes a predefined field, with a type that fits it (`string`, `number`, `boolean`, `date`, `email` or `url`) and `required_in_template` true. Nested objects and arrays become names with `/`, such as `customer/email`. Without `predefined_fields` in the same request, it replaces them; with them, it adds to them and sets the types of the ones it has values for.
     attr_accessor :predefined_fields_sample_data
 
-    # The HTML of an HTML template, as a Liquid template. Null for PDF templates.
+    # The HTML of an HTML template, as a Liquid template. Null for PDF and Word templates.
     attr_accessor :html
 
     # The SCSS of an HTML template.
@@ -153,7 +156,7 @@ module DocSpring
     # The HTML printed at the bottom of each page of an HTML template.
     attr_accessor :footer_html
 
-    # How an HTML template's PDFs are printed. Null for PDF templates. Setting it replaces the whole object: options left out use their defaults.
+    # How an HTML template's PDFs are printed. Null for PDF and Word templates. Setting it replaces the whole object: options left out use their defaults.
     attr_accessor :html_engine_options
 
     # Whether an HTML template HTML-escapes the values it prints. When true, `{{ value }}` prints a value as text, so a `<` or `&` in it is printed as that character, and `{{ value | raw }}` prints a value as HTML. New HTML templates default to true. Templates created before October 2026, or with API v1, default to false, which prints every value as HTML. Null for PDF templates.
@@ -194,6 +197,7 @@ module DocSpring
         :'name' => :'name',
         :'description' => :'description',
         :'template_type' => :'template_type',
+        :'output_format' => :'output_format',
         :'ready' => :'ready',
         :'document' => :'document',
         :'parent_folder_id' => :'parent_folder_id',
@@ -260,6 +264,7 @@ module DocSpring
         :'name' => :'String',
         :'description' => :'String',
         :'template_type' => :'TemplateType',
+        :'output_format' => :'OutputFormat',
         :'ready' => :'Boolean',
         :'document' => :'TemplateDocument',
         :'parent_folder_id' => :'String',
@@ -382,6 +387,12 @@ module DocSpring
         self.template_type = attributes[:'template_type']
       else
         self.template_type = nil
+      end
+
+      if attributes.key?(:'output_format')
+        self.output_format = attributes[:'output_format']
+      else
+        self.output_format = nil
       end
 
       if attributes.key?(:'ready')
@@ -686,6 +697,10 @@ module DocSpring
         invalid_properties.push('invalid value for "template_type", template_type cannot be nil.')
       end
 
+      if @output_format.nil?
+        invalid_properties.push('invalid value for "output_format", output_format cannot be nil.')
+      end
+
       if @ready.nil?
         invalid_properties.push('invalid value for "ready", ready cannot be nil.')
       end
@@ -811,6 +826,7 @@ module DocSpring
       warn '[DEPRECATED] the `valid?` method is obsolete'
       return false if @id.nil?
       return false if @template_type.nil?
+      return false if @output_format.nil?
       return false if @ready.nil?
       return false if @path.nil?
       return false if @locked.nil?
@@ -861,6 +877,16 @@ module DocSpring
       end
 
       @template_type = template_type
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] output_format Value to be assigned
+    def output_format=(output_format)
+      if output_format.nil?
+        fail ArgumentError, 'output_format cannot be nil'
+      end
+
+      @output_format = output_format
     end
 
     # Custom attribute writer method with validation
@@ -1162,6 +1188,7 @@ module DocSpring
           name == o.name &&
           description == o.description &&
           template_type == o.template_type &&
+          output_format == o.output_format &&
           ready == o.ready &&
           document == o.document &&
           parent_folder_id == o.parent_folder_id &&
@@ -1219,7 +1246,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, name, description, template_type, ready, document, parent_folder_id, path, latest_version, version_published_at, locked, last_changed_at, created_at, updated_at, version, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, has_encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, has_slack_webhook_url, last_changed_by, defaults, field_dependencies, field_groups, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, html_escape_data, embed_edit_token, versions].hash
+      [id, name, description, template_type, output_format, ready, document, parent_folder_id, path, latest_version, version_published_at, locked, last_changed_at, created_at, updated_at, version, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, has_encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, has_slack_webhook_url, last_changed_by, defaults, field_dependencies, field_groups, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, html_escape_data, embed_edit_token, versions].hash
     end
 
     # Builds the object from hash

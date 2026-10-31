@@ -3,7 +3,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to fill PDF forms, generate PDFs and Word documents from HTML or Word templates, merge PDFs, and request legally binding e-signatures.
 
 The version of the OpenAPI document: v2
 
@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.email       = ["support@docspring.com"]
   s.homepage    = "https://github.com/DocSpring/docspring-ruby"
   s.summary     = "DocSpring API Client"
-  s.description = "Client library for the DocSpring PDF generation and e-signature service"
+  s.description = "Client library for the DocSpring API: fill PDF forms, generate PDFs and Word documents, and collect e-signatures"
   s.license     = "MIT"
   s.required_ruby_version = ">= 2.7"
   s.metadata    = {}

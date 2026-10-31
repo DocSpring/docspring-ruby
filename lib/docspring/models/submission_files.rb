@@ -1,7 +1,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to fill PDF forms, generate PDFs and Word documents from HTML or Word templates, merge PDFs, and request legally binding e-signatures.
 
 The version of the OpenAPI document: v2
 
@@ -25,6 +25,12 @@ module DocSpring
     # The preview PDF from POST /submissions/{submission_id}/generate_preview, such as for a submission still waiting for its signature requests.
     attr_accessor :preview
 
+    # The Word document of a Word template's submission, when the submission makes one (`output_formats`).
+    attr_accessor :docx
+
+    # The OpenDocument file (.odt, the format LibreOffice uses) of a Word template's submission, converted from its Word document, when the submission makes one (`output_formats`).
+    attr_accessor :odt
+
     attr_accessor :png
 
     # Attribute mapping from ruby-style variable name to JSON key.
@@ -33,6 +39,8 @@ module DocSpring
         :'pdf' => :'pdf',
         :'audit_trail' => :'audit_trail',
         :'preview' => :'preview',
+        :'docx' => :'docx',
+        :'odt' => :'odt',
         :'png' => :'png'
       }
     end
@@ -53,6 +61,8 @@ module DocSpring
         :'pdf' => :'GeneratedFile',
         :'audit_trail' => :'GeneratedFile',
         :'preview' => :'GeneratedFile',
+        :'docx' => :'GeneratedFile',
+        :'odt' => :'GeneratedFile',
         :'png' => :'PageImages'
       }
     end
@@ -101,6 +111,14 @@ module DocSpring
         self.preview = attributes[:'preview']
       end
 
+      if attributes.key?(:'docx')
+        self.docx = attributes[:'docx']
+      end
+
+      if attributes.key?(:'odt')
+        self.odt = attributes[:'odt']
+      end
+
       if attributes.key?(:'png')
         self.png = attributes[:'png']
       end
@@ -129,6 +147,8 @@ module DocSpring
           pdf == o.pdf &&
           audit_trail == o.audit_trail &&
           preview == o.preview &&
+          docx == o.docx &&
+          odt == o.odt &&
           png == o.png
     end
 
@@ -141,7 +161,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [pdf, audit_trail, preview, png].hash
+      [pdf, audit_trail, preview, docx, odt, png].hash
     end
 
     # Builds the object from hash

@@ -1,7 +1,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to fill PDF forms, generate PDFs and Word documents from HTML or Word templates, merge PDFs, and request legally binding e-signatures.
 
 The version of the OpenAPI document: v2
 
@@ -14,7 +14,7 @@ require 'date'
 require 'time'
 
 module DocSpring
-  # A file that DocSpring generated, such as a submission's PDF. A file made after its submission was processed is listed while it's being made: check its `state` before using its links.
+  # A file that DocSpring generated, such as a submission's PDF or Word document. A file made after its submission was processed is listed while it's being made: check its `state` before using its links.
   class GeneratedFile < ApiModelBase
     # `processed` once the file has been made. `pending` while it's being made, and `error` if it couldn't be made (see `error_message`).
     attr_accessor :state
@@ -28,10 +28,10 @@ module DocSpring
     # A link to download the file that doesn't expire: it redirects to a new temporary link. It needs your API token or a signed-in session, except for a submission of a template that makes its submissions public. Null until the file has been made.
     attr_accessor :permanent_url
 
-    # The file's name, such as `sub_123.pdf`.
+    # The file's name, such as `sub_123.pdf`, `sub_123.docx` or `sub_123.odt`.
     attr_accessor :filename
 
-    # The file's media type, such as `application/pdf`.
+    # The file's media type: `application/pdf`, `application/vnd.openxmlformats-officedocument.wordprocessingml.document` for a Word document, or `application/vnd.oasis.opendocument.text` for an OpenDocument file.
     attr_accessor :content_type
 
     # The file's size in bytes. Null until the file has been made.

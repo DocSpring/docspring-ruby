@@ -1,7 +1,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to fill PDF forms, generate PDFs and Word documents from HTML or Word templates, merge PDFs, and request legally binding e-signatures.
 
 The version of the OpenAPI document: v2
 
@@ -22,9 +22,11 @@ module DocSpring
     UNKNOWN_ERROR = "unknown_error".freeze
     DOWNLOADING = "downloading".freeze
     DOWNLOAD_FAILED = "download_failed".freeze
+    CONVERTING = "converting".freeze
+    CONVERSION_FAILED = "conversion_failed".freeze
 
     def self.all_vars
-      @all_vars ||= [PENDING, PROCESSED, PASSWORD_REQUIRED, MALFORMED_PDF, UNKNOWN_ERROR, DOWNLOADING, DOWNLOAD_FAILED].freeze
+      @all_vars ||= [PENDING, PROCESSED, PASSWORD_REQUIRED, MALFORMED_PDF, UNKNOWN_ERROR, DOWNLOADING, DOWNLOAD_FAILED, CONVERTING, CONVERSION_FAILED].freeze
     end
 
     # Builds the enum from string

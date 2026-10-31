@@ -1,7 +1,7 @@
 =begin
 #DocSpring API
 
-#Use DocSpring's API to programmatically fill out PDF forms, convert HTML to PDFs, merge PDFs, or request legally binding e-signatures.
+#Use DocSpring's API to fill PDF forms, generate PDFs and Word documents from HTML or Word templates, merge PDFs, and request legally binding e-signatures.
 
 The version of the OpenAPI document: v2
 
@@ -14,7 +14,7 @@ require 'date'
 require 'time'
 
 module DocSpring
-  # PNG images of a template's pages filled in with data you send (not a PDF), to check how an HTML or PDF template prints with your data before you publish a version or send live data. A preview makes no submission and uses no credits. Its pages are watermarked like a test submission's PDF, and it's deleted an hour after it's created.
+  # PNG images of a template's pages filled in with data you send (not a PDF), to check how an HTML, PDF or Word template prints with your data before you publish a version or send live data. A preview makes no submission and uses no credits. Its pages are watermarked like a test submission's PDF, and it's deleted an hour after it's created.
   class TemplatePreview < ApiModelBase
     # The preview's ID.
     attr_accessor :id
@@ -28,7 +28,7 @@ module DocSpring
     # `pending` while it renders (usually a few seconds), then `processed`, or `error` with an `error_message`.
     attr_accessor :state
 
-    # Why the preview couldn't be rendered, such as an error in an HTML template's Liquid, or a value in the data that a field can't print.
+    # Why the preview couldn't be rendered, such as an error in an HTML or Word template's Liquid, or a value in the data that a field can't print.
     attr_accessor :error_message
 
     # How many pages the template printed, once it's processed.
