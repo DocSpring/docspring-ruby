@@ -37,7 +37,7 @@ module DocSpring
     # `pending` until the files have been generated, then `processed`. `waiting_for_signature_requests` until every signature request is completed. `insufficient_credits`: waiting for credits; `error_message` says whether the files are generated once you add them. `account_suspended`: waiting for the account to be reactivated, for up to 30 days. Waiting ends in `error` if it's discarded or takes over 30 days. Every other state is final, with no files: `invalid_data` (the data doesn't match the template's fields: see `data_errors`), `declined` (a signature request was declined), and the states where generating the files failed, which have an `error_message`: `syntax_error` (a mistake in an HTML template's Liquid or SCSS, or in a Word template's tags), `image_download_failed` or `image_processing_failed` (an image in the data or the template couldn't be downloaded or read) and `error` (anything else). Older submissions can also be `license_revoked` or `accidental`.
     attr_accessor :state
 
-    # Test PDFs have a watermark and are free. Live PDFs use credits. Submissions made with a test API token are always test submissions.
+    # Test PDFs have a watermark and are free. Live PDFs use credits. Submissions made with a test API token are always test submissions, and the demo API token's are always live.
     attr_accessor :test
 
     # `true` keeps the PDF's text and check fields fillable, and `false` flattens every field. Left out, the template decides: its `editable_submissions` setting, or each field's own Editable option. A response shows the template's setting when the request left this out. Can't be `true` with `signature_requests`.
@@ -79,7 +79,10 @@ module DocSpring
     # The people asked to sign the submission (and fill in their fields), in order.
     attr_accessor :signature_requests
 
-    # The uploads of the submission's PDF to your storage (account integrations).
+    # `parallel`: everyone can sign at once. `sequential`: people sign one step at a time (each signature request's `signing_step`).
+    attr_accessor :signing_order
+
+    # The uploads of the submission's PDF to your storage (account integrations), and the emails its template's email actions sent.
     attr_accessor :actions
 
     # The text of each field that didn't fit in it, by field name. Left out (null) with `data`, and empty once the submission has expired.
@@ -137,6 +140,7 @@ module DocSpring
         :'updated_at' => :'updated_at',
         :'has_password' => :'has_password',
         :'signature_requests' => :'signature_requests',
+        :'signing_order' => :'signing_order',
         :'actions' => :'actions',
         :'truncated_text' => :'truncated_text',
         :'output_formats' => :'output_formats',
@@ -178,6 +182,7 @@ module DocSpring
         :'updated_at' => :'Time',
         :'has_password' => :'Boolean',
         :'signature_requests' => :'Array<SignatureRequest>',
+        :'signing_order' => :'SigningOrder',
         :'actions' => :'Array<SubmissionAction>',
         :'truncated_text' => :'Hash<String, Array<String>>',
         :'output_formats' => :'Array<OutputFormat>',
@@ -360,6 +365,12 @@ module DocSpring
         self.signature_requests = nil
       end
 
+      if attributes.key?(:'signing_order')
+        self.signing_order = attributes[:'signing_order']
+      else
+        self.signing_order = nil
+      end
+
       if attributes.key?(:'actions')
         if (value = attributes[:'actions']).is_a?(Array)
           self.actions = value
@@ -452,6 +463,10 @@ module DocSpring
         invalid_properties.push('invalid value for "signature_requests", signature_requests cannot be nil.')
       end
 
+      if @signing_order.nil?
+        invalid_properties.push('invalid value for "signing_order", signing_order cannot be nil.')
+      end
+
       if @actions.nil?
         invalid_properties.push('invalid value for "actions", actions cannot be nil.')
       end
@@ -481,6 +496,7 @@ module DocSpring
       return false if @updated_at.nil?
       return false if @has_password.nil?
       return false if @signature_requests.nil?
+      return false if @signing_order.nil?
       return false if @actions.nil?
       return false if @output_formats.nil?
       true
@@ -627,6 +643,16 @@ module DocSpring
     end
 
     # Custom attribute writer method with validation
+    # @param [Object] signing_order Value to be assigned
+    def signing_order=(signing_order)
+      if signing_order.nil?
+        fail ArgumentError, 'signing_order cannot be nil'
+      end
+
+      @signing_order = signing_order
+    end
+
+    # Custom attribute writer method with validation
     # @param [Object] actions Value to be assigned
     def actions=(actions)
       if actions.nil?
@@ -672,6 +698,7 @@ module DocSpring
           updated_at == o.updated_at &&
           has_password == o.has_password &&
           signature_requests == o.signature_requests &&
+          signing_order == o.signing_order &&
           actions == o.actions &&
           truncated_text == o.truncated_text &&
           output_formats == o.output_formats &&
@@ -687,7 +714,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, template_id, template_type, template_version, batch_id, source, state, test, editable, data, data_errors, error_message, metadata, files, expired, expires_at, processed_at, created_at, updated_at, has_password, signature_requests, actions, truncated_text, output_formats, preview_generated_at].hash
+      [id, template_id, template_type, template_version, batch_id, source, state, test, editable, data, data_errors, error_message, metadata, files, expired, expires_at, processed_at, created_at, updated_at, has_password, signature_requests, signing_order, actions, truncated_text, output_formats, preview_generated_at].hash
     end
 
     # Builds the object from hash

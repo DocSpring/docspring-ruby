@@ -16,13 +16,20 @@ require 'time'
 module DocSpring
   class StringConditionType
     EQUALS = "equals".freeze
+    NOT_EQUALS = "not_equals".freeze
     CONTAINS = "contains".freeze
+    NOT_CONTAINS = "not_contains".freeze
     STARTS_WITH = "starts_with".freeze
+    NOT_STARTS_WITH = "not_starts_with".freeze
     ENDS_WITH = "ends_with".freeze
+    NOT_ENDS_WITH = "not_ends_with".freeze
     REGEX = "regex".freeze
+    NOT_REGEX = "not_regex".freeze
+    BLANK = "blank".freeze
+    NOT_BLANK = "not_blank".freeze
 
     def self.all_vars
-      @all_vars ||= [EQUALS, CONTAINS, STARTS_WITH, ENDS_WITH, REGEX].freeze
+      @all_vars ||= [EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, NOT_STARTS_WITH, ENDS_WITH, NOT_ENDS_WITH, REGEX, NOT_REGEX, BLANK, NOT_BLANK].freeze
     end
 
     # Builds the enum from string

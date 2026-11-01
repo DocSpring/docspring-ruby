@@ -16,13 +16,13 @@ require 'time'
 module DocSpring
   # The submission's data and settings.
   class CreateSubmissionRequest < ApiModelBase
-    # Test PDFs have a watermark and are free. Live PDFs use credits. Submissions made with a test API token are always test submissions.
+    # Test PDFs have a watermark and are free. Live PDFs use credits. Submissions made with a test API token are always test submissions, and the demo API token's are always live.
     attr_accessor :test
 
     # `true` keeps the PDF's text and check fields fillable, and `false` flattens every field. Left out, the template decides: its `editable_submissions` setting, or each field's own Editable option. A response shows the template's setting when the request left this out. Can't be `true` with `signature_requests`.
     attr_accessor :editable
 
-    # The values of the template's fields, by field name. Required for PDF and Word templates, unless `signature_requests` collects them (PDF templates only).
+    # The values of the template's fields, by field name. Required for PDF templates, Word templates and page designs, unless `signature_requests` collects them (PDF templates only).
     attr_accessor :data
 
     # Your own data about the submission, such as an ID from your app. It isn't printed on the PDF. Two keys also change the PDF: `pdf_filename` names its file (`files.pdf.filename`, and its download), and `pdf_title` is its title in the PDF's document properties (and an HTML template's `<title>`, unless its HTML has one). Without `pdf_title`, the title is the template's name. In `pdf_filename`, a `.pdf` ending is removed, each run of characters other than letters, digits, `-`, `_` and `.` becomes one `_`, and the first 128 characters are kept, then `.pdf` is added. Without it, the file is named after the submission's ID (`sub_1234567890abcdef01.pdf`).
@@ -34,7 +34,7 @@ module DocSpring
     # What the submission makes: `pdf`, `docx` (a Word document, from a Word template), `odt` (an OpenDocument file, the format LibreOffice uses, converted from a Word template's Word document), and `png` (an image of each page of the PDF, up to 100 pages, which adds `pdf`) when you ask for it. Default `["pdf"]`, or a Word template's `output_format`. POST /submissions/{submission_id}/generate_files adds `png`, and a Word template's submission's `pdf`, `docx` or `odt`, to a processed submission.
     attr_accessor :output_formats
 
-    # Seconds after the PDF is generated until the submission expires, up to 10 years (315360000). Default the template's expiration setting. A submission that isn't processed, such as one with invalid data, is kept for at least 48 hours.
+    # Seconds after the PDF is generated until the submission expires, up to 10 years (315360000). Default the template's expiration setting. A submission that isn't processed, such as one with invalid data, is kept for at least 48 hours. The demo API token's submissions expire within an hour: up to 3600, and that's their default.
     attr_accessor :expires_in
 
     # Changes to field settings for this submission only, by field name, such as `{"name": {"required": false, "font_size": 9}}`. A setting that identifies the field (`id`, `name`, `type`), that only the template sets (such as `description`), or that doesn't apply to the field's type and display type (such as `check_character` on a field displayed as text) is a 422. With `signature_requests`, `editable: true` is a 422, and a `default` for a signature or initials field makes the submission `invalid_data`.
@@ -49,6 +49,55 @@ module DocSpring
     # The people who sign the PDF, and fill in their fields first. The PDF is generated once every signature request is completed. PDF templates only. Without `role`s, the first signature request is `Signer 1`, the second `Signer 2`, and so on. To leave a signer out, give every signature request its `role` and leave that one's out. Only the signers sign: a value for a signature or initials field in `data` makes the submission `invalid_data`.
     attr_accessor :signature_requests
 
+    # Whether DocSpring emails the signers their signing links, and sends the reminders and the completed document. Default true. Each signature request's own `send_email` overrides it. A test submission only emails your DocSpring team: every other address is a 422. `true` needs `signature_requests`. DocSpring doesn't email the signers of a form library template: leave `send_email` out, and send them their links yourself.
+    attr_accessor :send_email
+
+    # `parallel` (the default): everyone can sign at once. `sequential`: people sign one step at a time (`signing_step`), and DocSpring emails each step when the one before it is done. Needs `signature_requests`.
+    attr_accessor :signing_order
+
+    # The subject of the emails that ask people to sign. You can use `{{ signer.name }}`, `{{ signer.email }}`, `{{ document.name }}`, `{{ sender.name }}` and `{{ account.name }}`. Default "<sender> sent you <document> to sign" when you leave it out (a blank subject is a 422). Links and web addresses are shown as plain text (`example[.]com`).
+    attr_accessor :email_subject
+
+    # A message for the people who sign, shown above the signing button. It takes the same variables as `email_subject`. Links and web addresses are shown as plain text. Leave it out for none: a blank message is a 422.
+    attr_accessor :email_message
+
+    # People who get a copy of the completed document. They don't sign.
+    attr_accessor :cc
+
+    # Where replies to the emails go: a member of your DocSpring team, or an address at one of your verified email domains. Leave it out for the template's reply-to address (the account owner when it has none).
+    attr_accessor :reply_to
+
+    # Who DocSpring tells when the document is completed or declined, or an email bounces or can't be sent: members of your DocSpring team or addresses at your verified email domains. Leave it out for the template's notification addresses (the account owner when it has none); an empty list means the account owner.
+    attr_accessor :notification_emails
+
+    # Also email `notification_emails` each time someone signs. Default false.
+    attr_accessor :notify_when_signed
+
+    # Remind people who haven't signed: every `interval_days` days, up to `max_count` times. Each reminder has a new signing link. Without it, DocSpring sends no reminders.
+    attr_accessor :reminders
+
+    class EnumAttributeValidator
+      attr_reader :datatype
+      attr_reader :allowable_values
+
+      def initialize(datatype, allowable_values)
+        @allowable_values = allowable_values.map do |value|
+          case datatype.to_s
+          when /Integer/i
+            value.to_i
+          when /Float/i
+            value.to_f
+          else
+            value
+          end
+        end
+      end
+
+      def valid?(value)
+        !value || allowable_values.include?(value)
+      end
+    end
+
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
@@ -62,7 +111,16 @@ module DocSpring
         :'field_overrides' => :'field_overrides',
         :'html' => :'html',
         :'css' => :'css',
-        :'signature_requests' => :'signature_requests'
+        :'signature_requests' => :'signature_requests',
+        :'send_email' => :'send_email',
+        :'signing_order' => :'signing_order',
+        :'email_subject' => :'email_subject',
+        :'email_message' => :'email_message',
+        :'cc' => :'cc',
+        :'reply_to' => :'reply_to',
+        :'notification_emails' => :'notification_emails',
+        :'notify_when_signed' => :'notify_when_signed',
+        :'reminders' => :'reminders'
       }
     end
 
@@ -89,7 +147,16 @@ module DocSpring
         :'field_overrides' => :'Hash<String, FieldOverride>',
         :'html' => :'String',
         :'css' => :'String',
-        :'signature_requests' => :'Array<SignatureRequestInput>'
+        :'signature_requests' => :'Array<SignatureRequestInput>',
+        :'send_email' => :'Boolean',
+        :'signing_order' => :'SigningOrder',
+        :'email_subject' => :'String',
+        :'email_message' => :'String',
+        :'cc' => :'Array<String>',
+        :'reply_to' => :'String',
+        :'notification_emails' => :'Array<String>',
+        :'notify_when_signed' => :'Boolean',
+        :'reminders' => :'SignatureRequestReminders'
       }
     end
 
@@ -178,6 +245,46 @@ module DocSpring
           self.signature_requests = value
         end
       end
+
+      if attributes.key?(:'send_email')
+        self.send_email = attributes[:'send_email']
+      end
+
+      if attributes.key?(:'signing_order')
+        self.signing_order = attributes[:'signing_order']
+      end
+
+      if attributes.key?(:'email_subject')
+        self.email_subject = attributes[:'email_subject']
+      end
+
+      if attributes.key?(:'email_message')
+        self.email_message = attributes[:'email_message']
+      end
+
+      if attributes.key?(:'cc')
+        if (value = attributes[:'cc']).is_a?(Array)
+          self.cc = value
+        end
+      end
+
+      if attributes.key?(:'reply_to')
+        self.reply_to = attributes[:'reply_to']
+      end
+
+      if attributes.key?(:'notification_emails')
+        if (value = attributes[:'notification_emails']).is_a?(Array)
+          self.notification_emails = value
+        end
+      end
+
+      if attributes.key?(:'notify_when_signed')
+        self.notify_when_signed = attributes[:'notify_when_signed']
+      end
+
+      if attributes.key?(:'reminders')
+        self.reminders = attributes[:'reminders']
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -205,6 +312,26 @@ module DocSpring
       @output_formats = output_formats
     end
 
+    # Custom attribute writer method with validation
+    # @param [Object] cc Value to be assigned
+    def cc=(cc)
+      if cc.nil?
+        fail ArgumentError, 'cc cannot be nil'
+      end
+
+      @cc = cc
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] notification_emails Value to be assigned
+    def notification_emails=(notification_emails)
+      if notification_emails.nil?
+        fail ArgumentError, 'notification_emails cannot be nil'
+      end
+
+      @notification_emails = notification_emails
+    end
+
     # Checks equality by comparing each attribute.
     # @param [Object] Object to be compared
     def ==(o)
@@ -220,7 +347,16 @@ module DocSpring
           field_overrides == o.field_overrides &&
           html == o.html &&
           css == o.css &&
-          signature_requests == o.signature_requests
+          signature_requests == o.signature_requests &&
+          send_email == o.send_email &&
+          signing_order == o.signing_order &&
+          email_subject == o.email_subject &&
+          email_message == o.email_message &&
+          cc == o.cc &&
+          reply_to == o.reply_to &&
+          notification_emails == o.notification_emails &&
+          notify_when_signed == o.notify_when_signed &&
+          reminders == o.reminders
     end
 
     # @see the `==` method
@@ -232,7 +368,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [test, editable, data, metadata, password, output_formats, expires_in, field_overrides, html, css, signature_requests].hash
+      [test, editable, data, metadata, password, output_formats, expires_in, field_overrides, html, css, signature_requests, send_email, signing_order, email_subject, email_message, cc, reply_to, notification_emails, notify_when_signed, reminders].hash
     end
 
     # Builds the object from hash

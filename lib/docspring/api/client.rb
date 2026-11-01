@@ -67,10 +67,11 @@ module DocSpring
 end
 
     # Add fields to a template
-    # Adds fields to a template's draft and returns all of its fields. Publish a version for submissions of published versions to have them. 
+    # Adds fields to a template's draft and returns all of its fields. Publish a version for submissions of published versions to have them. A field with the name of one of the template's fields shares its settings (`type`, `required`, `default`, ...), so a field that sets one to another value is refused: PUT /templates/{template_id}/fields changes them for every field with the name. 
     # @param template_id [String] The template's ID.
     # @param body [AddTemplateFieldsRequest] The fields to add to the template's draft.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [TemplateFields]
     def add_template_fields(template_id, body, opts = {})
       data, _status_code, _headers = add_template_fields_with_http_info(template_id, body, opts)
@@ -78,10 +79,11 @@ end
     end
 
     # Add fields to a template
-    # Adds fields to a template's draft and returns all of its fields. Publish a version for submissions of published versions to have them. 
+    # Adds fields to a template's draft and returns all of its fields. Publish a version for submissions of published versions to have them. A field with the name of one of the template's fields shares its settings (`type`, `required`, `default`, ...), so a field that sets one to another value is refused: PUT /templates/{template_id}/fields changes them for every field with the name. 
     # @param template_id [String] The template's ID.
     # @param body [AddTemplateFieldsRequest] The fields to add to the template's draft.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(TemplateFields, Integer, Hash)>] TemplateFields data, response status code and response headers
     def add_template_fields_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -110,6 +112,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -145,6 +148,7 @@ end
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
     # @option opts [CopyTemplateRequest] :body Settings for the copy.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Template]
     def copy_template(template_id, opts = {})
       data, _status_code, _headers = copy_template_with_http_info(template_id, opts)
@@ -156,6 +160,7 @@ end
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
     # @option opts [CopyTemplateRequest] :body Settings for the copy.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def copy_template_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
@@ -180,6 +185,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -210,12 +216,83 @@ end
       return data, status_code, headers
     end
 
+    # Create an account email action
+    # Adds an email action to your account. It sends for every template, or only for the templates in `template_ids` and the templates in the folders in `folder_ids` (and the folders inside them). Each template can turn it off or change its settings for that template only (`PUT /templates/{template_id}/email_actions/{email_action_id}/customization`). Without a paid plan (Starter or higher), email actions only email your team: test submissions' emails go to your account's users, and live submissions' emails aren't sent. 
+    # @param body [CreateAccountEmailActionRequest] The account email action to create. Properties left out get their defaults, and it sends for every template unless it lists `template_ids` or `folder_ids`.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailAction]
+    def create_account_email_action(body, opts = {})
+      data, _status_code, _headers = create_account_email_action_with_http_info(body, opts)
+      data
+    end
+
+    # Create an account email action
+    # Adds an email action to your account. It sends for every template, or only for the templates in `template_ids` and the templates in the folders in `folder_ids` (and the folders inside them). Each template can turn it off or change its settings for that template only (`PUT /templates/{template_id}/email_actions/{email_action_id}/customization`). Without a paid plan (Starter or higher), email actions only email your team: test submissions' emails go to your account's users, and live submissions' emails aren't sent. 
+    # @param body [CreateAccountEmailActionRequest] The account email action to create. Properties left out get their defaults, and it sends for every template unless it lists `template_ids` or `folder_ids`.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailAction, Integer, Hash)>] EmailAction data, response status code and response headers
+    def create_account_email_action_with_http_info(body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.create_account_email_action ...'
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.create_account_email_action"
+      end
+      # resource path
+      local_var_path = '/email_actions'
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailAction'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.create_account_email_action",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#create_account_email_action\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Combine PDFs
     # Merges PDFs into one: submissions, other combined PDFs, templates, custom files (POST /custom_files) and PDFs from URLs, in the order of `source_pdfs`. The PDF is generated in the background: on sync.api hosts the request waits for it (unless you pass `wait=false`), otherwise poll GET /combined_pdfs/{combined_pdf_id} until `state` isn't `pending`.  A template source merges the template's processed PDF by default: the PDF submissions are filled in on, decrypted and with its form fields removed. Pass `processed: false` to merge the PDF as it was uploaded. 
     # @param body [CreateCombinedPdfRequest] The PDFs to merge, and the combined PDF's settings.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the PDF has been generated before responding. Default true on sync.api hosts.
-    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another combined PDF. Send a new key with each new combined PDF, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [CombinedPdf]
     def create_combined_pdf(body, opts = {})
       data, _status_code, _headers = create_combined_pdf_with_http_info(body, opts)
@@ -227,7 +304,7 @@ end
     # @param body [CreateCombinedPdfRequest] The PDFs to merge, and the combined PDF's settings.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the PDF has been generated before responding. Default true on sync.api hosts.
-    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another combined PDF. Send a new key with each new combined PDF, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(CombinedPdf, Integer, Hash)>] CombinedPdf data, response status code and response headers
     def create_combined_pdf_with_http_info(body, opts = {})
       if @api_client.config.debugging
@@ -288,6 +365,7 @@ end
     # Creates a custom file from a PDF you uploaded, so you can merge it with other PDFs. Upload the file with the presigned upload (GET /uploads/presign) first, then pass its `fields.key` as `cache_id`. 
     # @param body [CreateCustomFileFromUploadRequest] The uploaded file to create the custom file from.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [CustomFile]
     def create_custom_file_from_upload(body, opts = {})
       data, _status_code, _headers = create_custom_file_from_upload_with_http_info(body, opts)
@@ -298,6 +376,7 @@ end
     # Creates a custom file from a PDF you uploaded, so you can merge it with other PDFs. Upload the file with the presigned upload (GET /uploads/presign) first, then pass its `fields.key` as `cache_id`. 
     # @param body [CreateCustomFileFromUploadRequest] The uploaded file to create the custom file from.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(CustomFile, Integer, Hash)>] CustomFile data, response status code and response headers
     def create_custom_file_from_upload_with_http_info(body, opts = {})
       if @api_client.config.debugging
@@ -322,6 +401,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -352,10 +432,159 @@ end
       return data, status_code, headers
     end
 
+    # Create an email action
+    # Adds an email action to a template's draft. From then on, each processed submission emails its PDF to the recipients in `to`, `cc` and `bcc`: addresses, and tags for the address in one of the submission's fields (`{{ data.tenant_email }}`) or in its metadata (`{{ metadata.agent_email }}`). With `send_when`, only the submissions whose values meet its conditions send one. Without a paid plan (Starter or higher), email actions only email your team: test submissions' emails go to your account's users, and live submissions' emails aren't sent. 
+    # @param template_id [String] The template's ID.
+    # @param body [CreateEmailActionRequest] The email action to create. Properties left out get their defaults.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailAction]
+    def create_email_action(template_id, body, opts = {})
+      data, _status_code, _headers = create_email_action_with_http_info(template_id, body, opts)
+      data
+    end
+
+    # Create an email action
+    # Adds an email action to a template's draft. From then on, each processed submission emails its PDF to the recipients in `to`, `cc` and `bcc`: addresses, and tags for the address in one of the submission's fields (`{{ data.tenant_email }}`) or in its metadata (`{{ metadata.agent_email }}`). With `send_when`, only the submissions whose values meet its conditions send one. Without a paid plan (Starter or higher), email actions only email your team: test submissions' emails go to your account's users, and live submissions' emails aren't sent. 
+    # @param template_id [String] The template's ID.
+    # @param body [CreateEmailActionRequest] The email action to create. Properties left out get their defaults.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailAction, Integer, Hash)>] EmailAction data, response status code and response headers
+    def create_email_action_with_http_info(template_id, body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.create_email_action ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.create_email_action"
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.create_email_action"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/email_actions'.sub('{template_id}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailAction'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.create_email_action",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#create_email_action\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Add an email domain
+    # Adds a domain for email actions to send from, and returns the DNS records to add to it. DocSpring checks for them every few minutes, and the domain is verified once its DKIM and DMARC records are found. Needs a paid monthly plan. 
+    # @param body [CreateEmailDomainRequest] The domain to add.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailDomain]
+    def create_email_domain(body, opts = {})
+      data, _status_code, _headers = create_email_domain_with_http_info(body, opts)
+      data
+    end
+
+    # Add an email domain
+    # Adds a domain for email actions to send from, and returns the DNS records to add to it. DocSpring checks for them every few minutes, and the domain is verified once its DKIM and DMARC records are found. Needs a paid monthly plan. 
+    # @param body [CreateEmailDomainRequest] The domain to add.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailDomain, Integer, Hash)>] EmailDomain data, response status code and response headers
+    def create_email_domain_with_http_info(body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.create_email_domain ...'
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.create_email_domain"
+      end
+      # resource path
+      local_var_path = '/email_domains'
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailDomain'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.create_email_domain",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#create_email_domain\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Create a folder
     # Creates a folder for organizing templates. Pass `parent_folder_id` to create it inside another folder. Folder names are unique within their parent folder. 
     # @param body [CreateFolderRequest] The folder to create.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Folder]
     def create_folder(body, opts = {})
       data, _status_code, _headers = create_folder_with_http_info(body, opts)
@@ -366,6 +595,7 @@ end
     # Creates a folder for organizing templates. Pass `parent_folder_id` to create it inside another folder. Folder names are unique within their parent folder. 
     # @param body [CreateFolderRequest] The folder to create.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Folder, Integer, Hash)>] Folder data, response status code and response headers
     def create_folder_with_http_info(body, opts = {})
       if @api_client.config.debugging
@@ -390,6 +620,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -425,6 +656,7 @@ end
     # @param signature_request_id [String] The signature request's ID.
     # @param body [CreateSignatureRequestEventRequest] The event to record.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [SignatureRequestEvent]
     def create_signature_request_event(signature_request_id, body, opts = {})
       data, _status_code, _headers = create_signature_request_event_with_http_info(signature_request_id, body, opts)
@@ -436,6 +668,7 @@ end
     # @param signature_request_id [String] The signature request's ID.
     # @param body [CreateSignatureRequestEventRequest] The event to record.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(SignatureRequestEvent, Integer, Hash)>] SignatureRequestEvent data, response status code and response headers
     def create_signature_request_event_with_http_info(signature_request_id, body, opts = {})
       if @api_client.config.debugging
@@ -464,6 +697,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -499,6 +733,7 @@ end
     # @param signature_request_id [String] The signature request's ID.
     # @param [Hash] opts the optional parameters
     # @option opts [CreateSignatureRequestTokenRequest] :body The kind of link to make. Send no body for an `api` token.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [SignatureRequestToken]
     def create_signature_request_token(signature_request_id, opts = {})
       data, _status_code, _headers = create_signature_request_token_with_http_info(signature_request_id, opts)
@@ -510,6 +745,7 @@ end
     # @param signature_request_id [String] The signature request's ID.
     # @param [Hash] opts the optional parameters
     # @option opts [CreateSignatureRequestTokenRequest] :body The kind of link to make. Send no body for an `api` token.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(SignatureRequestToken, Integer, Hash)>] SignatureRequestToken data, response status code and response headers
     def create_signature_request_token_with_http_info(signature_request_id, opts = {})
       if @api_client.config.debugging
@@ -534,6 +770,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -565,13 +802,13 @@ end
     end
 
     # Generate a PDF
-    # Creates a submission: fills in a template with your data and generates a PDF. The PDF is generated in the background: on sync.api hosts the request waits for it (unless you pass `wait=false`), otherwise poll GET /submissions/{submission_id} until `state` isn't `pending`.  Data that doesn't match the template's fields returns a 422 with an `invalid_data` error. The submission is still saved, with its errors, so you can find it in DocSpring: the error's `submission_id` is its ID. 
+    # Creates a submission: fills in a template with your data and generates a PDF. The PDF is generated in the background: on sync.api hosts the request waits for it (unless you pass `wait=false`), otherwise poll GET /submissions/{submission_id} until `state` isn't `pending`.  Data that doesn't match the template's fields returns a 422 with an `invalid_data` error. The submission is still saved, with its errors, so you can find it in DocSpring: the error's `submission_id` is its ID.  With `signature_requests`, the PDF is generated once everyone has signed. DocSpring emails each signer a link to sign, unless `send_email` is false, and can send reminders and the completed document. 
     # @param template_id [String] The template's ID.
     # @param body [CreateSubmissionRequest] The submission's data and settings.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
+    # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `latest`.
     # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
-    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another submission. Send a new key with each new submission, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Submission]
     def create_submission(template_id, body, opts = {})
       data, _status_code, _headers = create_submission_with_http_info(template_id, body, opts)
@@ -579,13 +816,13 @@ end
     end
 
     # Generate a PDF
-    # Creates a submission: fills in a template with your data and generates a PDF. The PDF is generated in the background: on sync.api hosts the request waits for it (unless you pass `wait=false`), otherwise poll GET /submissions/{submission_id} until `state` isn't `pending`.  Data that doesn't match the template's fields returns a 422 with an `invalid_data` error. The submission is still saved, with its errors, so you can find it in DocSpring: the error's `submission_id` is its ID. 
+    # Creates a submission: fills in a template with your data and generates a PDF. The PDF is generated in the background: on sync.api hosts the request waits for it (unless you pass `wait=false`), otherwise poll GET /submissions/{submission_id} until `state` isn't `pending`.  Data that doesn't match the template's fields returns a 422 with an `invalid_data` error. The submission is still saved, with its errors, so you can find it in DocSpring: the error's `submission_id` is its ID.  With `signature_requests`, the PDF is generated once everyone has signed. DocSpring emails each signer a link to sign, unless `send_email` is false, and can send reminders and the completed document. 
     # @param template_id [String] The template's ID.
     # @param body [CreateSubmissionRequest] The submission's data and settings.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
+    # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `latest`.
     # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
-    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another submission. Send a new key with each new submission, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Submission, Integer, Hash)>] Submission data, response status code and response headers
     def create_submission_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -652,7 +889,7 @@ end
     # @param body [CreateSubmissionBatchRequest] The submissions to create, and the settings they share.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until every file in the batch has been generated before responding. Default true on sync.api hosts.
-    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another batch. Send a new key with each new batch, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [SubmissionBatch]
     def create_submission_batch(body, opts = {})
       data, _status_code, _headers = create_submission_batch_with_http_info(body, opts)
@@ -664,7 +901,7 @@ end
     # @param body [CreateSubmissionBatchRequest] The submissions to create, and the settings they share.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until every file in the batch has been generated before responding. Default true on sync.api hosts.
-    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another batch. Send a new key with each new batch, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(SubmissionBatch, Integer, Hash)>] SubmissionBatch data, response status code and response headers
     def create_submission_batch_with_http_info(body, opts = {})
       if @api_client.config.debugging
@@ -722,10 +959,11 @@ end
     end
 
     # Create a template
-    # Creates an HTML template, or a PDF or Word template from a file you uploaded with the presigned upload (GET /uploads/presign): pass its `fields.key` as `cache_id`. You can send a link to the file (`document_url`) or the file in base64 (`document_base64`) instead, or send the file with the request with POST /templates/upload. A Word template is made from a Word document (.docx) or an OpenDocument text file (.odt), which DocSpring converts to a Word document. It needs its `output_format`: what each submission makes, a Word document (`docx`), an OpenDocument file (`odt`) or a PDF.  A PDF template is ready to generate PDFs once DocSpring has processed its PDF, a template created from a `document_url` once its document has been downloaded, and one created from an .odt once it has been converted (`ready` is true). On sync.api hosts the request waits for that unless you pass `wait=false`. 
+    # Creates an HTML template, or a PDF or Word template from a file you uploaded with the presigned upload (GET /uploads/presign): pass its `fields.key` as `cache_id`. You can send a link to the file (`document_url`) or the file in base64 (`document_base64`) instead, or send the file with the request with POST /templates/upload. A Word template is made from a Word document (.docx) or an OpenDocument text file (.odt), which DocSpring converts to a Word document. It needs its `output_format`: what each submission makes, a Word document (`docx`), an OpenDocument file (`odt`) or a PDF. A page design (`page_designer`) takes its `layout` in the Page Designer layout format, or starts with an empty page without one.  A PDF template is ready to generate PDFs once DocSpring has processed its PDF, a template created from a `document_url` once its document has been downloaded, and one created from an .odt once it has been converted (`ready` is true). On sync.api hosts the request waits for that unless you pass `wait=false`. 
     # @param body [CreateTemplateRequest] The template to create.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Template]
     def create_template(body, opts = {})
       data, _status_code, _headers = create_template_with_http_info(body, opts)
@@ -733,10 +971,11 @@ end
     end
 
     # Create a template
-    # Creates an HTML template, or a PDF or Word template from a file you uploaded with the presigned upload (GET /uploads/presign): pass its `fields.key` as `cache_id`. You can send a link to the file (`document_url`) or the file in base64 (`document_base64`) instead, or send the file with the request with POST /templates/upload. A Word template is made from a Word document (.docx) or an OpenDocument text file (.odt), which DocSpring converts to a Word document. It needs its `output_format`: what each submission makes, a Word document (`docx`), an OpenDocument file (`odt`) or a PDF.  A PDF template is ready to generate PDFs once DocSpring has processed its PDF, a template created from a `document_url` once its document has been downloaded, and one created from an .odt once it has been converted (`ready` is true). On sync.api hosts the request waits for that unless you pass `wait=false`. 
+    # Creates an HTML template, or a PDF or Word template from a file you uploaded with the presigned upload (GET /uploads/presign): pass its `fields.key` as `cache_id`. You can send a link to the file (`document_url`) or the file in base64 (`document_base64`) instead, or send the file with the request with POST /templates/upload. A Word template is made from a Word document (.docx) or an OpenDocument text file (.odt), which DocSpring converts to a Word document. It needs its `output_format`: what each submission makes, a Word document (`docx`), an OpenDocument file (`odt`) or a PDF. A page design (`page_designer`) takes its `layout` in the Page Designer layout format, or starts with an empty page without one.  A PDF template is ready to generate PDFs once DocSpring has processed its PDF, a template created from a `document_url` once its document has been downloaded, and one created from an .odt once it has been converted (`ready` is true). On sync.api hosts the request waits for that unless you pass `wait=false`. 
     # @param body [CreateTemplateRequest] The template to create.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def create_template_with_http_info(body, opts = {})
       if @api_client.config.debugging
@@ -762,6 +1001,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -793,11 +1033,12 @@ end
     end
 
     # Preview a template with data
-    # Makes PNG images of a template's pages filled in with the data you send (not a PDF), so you can check how an HTML, PDF or Word template prints with your data before you publish a version or send live data. A Word template's pages are its PDF's, whatever its `output_format`. It renders the template's draft, or the published `version` you ask for. A preview makes no submission and uses no credits, and its pages are watermarked like a test submission's PDF. It's `pending` while it renders: get it with GET /templates/{template_id}/previews/{preview_id} until it's `processed`, with an image of each page, or `error`. 
+    # Makes PNG images of a template's pages filled in with the data you send (not a PDF), so you can check how an HTML, PDF or Word template or a page design prints with your data before you publish a version or send live data. A Word template's pages are its PDF's, whatever its `output_format`. It renders the template's draft, or the published `version` you ask for. A preview makes no submission and uses no credits, and its pages are watermarked like a test submission's PDF. It's `pending` while it renders: get it with GET /templates/{template_id}/previews/{preview_id} until it's `processed`, with an image of each page, or `error`. 
     # @param template_id [String] The template's ID.
     # @param body [CreateTemplatePreviewRequest] The data to render the template with.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [TemplatePreview]
     def create_template_preview(template_id, body, opts = {})
       data, _status_code, _headers = create_template_preview_with_http_info(template_id, body, opts)
@@ -805,11 +1046,12 @@ end
     end
 
     # Preview a template with data
-    # Makes PNG images of a template's pages filled in with the data you send (not a PDF), so you can check how an HTML, PDF or Word template prints with your data before you publish a version or send live data. A Word template's pages are its PDF's, whatever its `output_format`. It renders the template's draft, or the published `version` you ask for. A preview makes no submission and uses no credits, and its pages are watermarked like a test submission's PDF. It's `pending` while it renders: get it with GET /templates/{template_id}/previews/{preview_id} until it's `processed`, with an image of each page, or `error`. 
+    # Makes PNG images of a template's pages filled in with the data you send (not a PDF), so you can check how an HTML, PDF or Word template or a page design prints with your data before you publish a version or send live data. A Word template's pages are its PDF's, whatever its `output_format`. It renders the template's draft, or the published `version` you ask for. A preview makes no submission and uses no credits, and its pages are watermarked like a test submission's PDF. It's `pending` while it renders: get it with GET /templates/{template_id}/previews/{preview_id} until it's `processed`, with an image of each page, or `error`. 
     # @param template_id [String] The template's ID.
     # @param body [CreateTemplatePreviewRequest] The data to render the template with.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(TemplatePreview, Integer, Hash)>] TemplatePreview data, response status code and response headers
     def create_template_preview_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -839,6 +1081,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -873,6 +1116,7 @@ end
     # Creates a webhook that sends a POST request to your endpoint whenever a subscribed event happens. Scope it to API tokens, templates or folders to receive only their events. 
     # @param body [CreateWebhookRequest] The webhook to create.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Webhook]
     def create_webhook(body, opts = {})
       data, _status_code, _headers = create_webhook_with_http_info(body, opts)
@@ -883,6 +1127,7 @@ end
     # Creates a webhook that sends a POST request to your endpoint whenever a subscribed event happens. Scope it to API tokens, templates or folders to receive only their events. 
     # @param body [CreateWebhookRequest] The webhook to create.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Webhook, Integer, Hash)>] Webhook data, response status code and response headers
     def create_webhook_with_http_info(body, opts = {})
       if @api_client.config.debugging
@@ -907,6 +1152,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -937,10 +1183,77 @@ end
       return data, status_code, headers
     end
 
+    # Delete an account email action
+    # Deletes one of your account's email actions, with every template's customization of it. Emails it has already queued for submissions aren't sent. Submissions keep the record of the emails it sent. 
+    # @param email_action_id [String] The account email action's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailAction]
+    def delete_account_email_action(email_action_id, opts = {})
+      data, _status_code, _headers = delete_account_email_action_with_http_info(email_action_id, opts)
+      data
+    end
+
+    # Delete an account email action
+    # Deletes one of your account's email actions, with every template's customization of it. Emails it has already queued for submissions aren't sent. Submissions keep the record of the emails it sent. 
+    # @param email_action_id [String] The account email action's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailAction, Integer, Hash)>] EmailAction data, response status code and response headers
+    def delete_account_email_action_with_http_info(email_action_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.delete_account_email_action ...'
+      end
+      # verify the required parameter 'email_action_id' is set
+      if @api_client.config.client_side_validation && email_action_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_action_id' when calling Client.delete_account_email_action"
+      end
+      # resource path
+      local_var_path = '/email_actions/{email_action_id}'.sub('{email_action_id}', CGI.escape(email_action_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailAction'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.delete_account_email_action",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:DELETE, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#delete_account_email_action\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Delete a custom file
     # Deletes a custom file and returns it. Use a live API token: test tokens can't delete custom files. 
     # @param custom_file_id [String] The custom file's ID.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [CustomFile]
     def delete_custom_file(custom_file_id, opts = {})
       data, _status_code, _headers = delete_custom_file_with_http_info(custom_file_id, opts)
@@ -951,6 +1264,7 @@ end
     # Deletes a custom file and returns it. Use a live API token: test tokens can't delete custom files. 
     # @param custom_file_id [String] The custom file's ID.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(CustomFile, Integer, Hash)>] CustomFile data, response status code and response headers
     def delete_custom_file_with_http_info(custom_file_id, opts = {})
       if @api_client.config.debugging
@@ -970,6 +1284,7 @@ end
       header_params = opts[:header_params] || {}
       # HTTP header 'Accept' (if needed)
       header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -1000,10 +1315,221 @@ end
       return data, status_code, headers
     end
 
+    # Delete an email action
+    # Deletes an email action. Emails it has already queued for submissions aren't sent. Submissions keep the record of the emails it sent. 
+    # @param template_id [String] The template's ID.
+    # @param email_action_id [String] The email action's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailAction]
+    def delete_email_action(template_id, email_action_id, opts = {})
+      data, _status_code, _headers = delete_email_action_with_http_info(template_id, email_action_id, opts)
+      data
+    end
+
+    # Delete an email action
+    # Deletes an email action. Emails it has already queued for submissions aren't sent. Submissions keep the record of the emails it sent. 
+    # @param template_id [String] The template's ID.
+    # @param email_action_id [String] The email action's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailAction, Integer, Hash)>] EmailAction data, response status code and response headers
+    def delete_email_action_with_http_info(template_id, email_action_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.delete_email_action ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.delete_email_action"
+      end
+      # verify the required parameter 'email_action_id' is set
+      if @api_client.config.client_side_validation && email_action_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_action_id' when calling Client.delete_email_action"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/email_actions/{email_action_id}'.sub('{template_id}', CGI.escape(template_id.to_s)).sub('{email_action_id}', CGI.escape(email_action_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailAction'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.delete_email_action",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:DELETE, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#delete_email_action\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Reset an account email action's customization
+    # Removes the template's changes to one of your account's email actions: it sends for this template as it is, and again if the template had turned it off. 
+    # @param template_id [String] The template's ID.
+    # @param email_action_id [String] The ID of one of your account's email actions that sends for the template.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailAction]
+    def delete_email_action_customization(template_id, email_action_id, opts = {})
+      data, _status_code, _headers = delete_email_action_customization_with_http_info(template_id, email_action_id, opts)
+      data
+    end
+
+    # Reset an account email action's customization
+    # Removes the template's changes to one of your account's email actions: it sends for this template as it is, and again if the template had turned it off. 
+    # @param template_id [String] The template's ID.
+    # @param email_action_id [String] The ID of one of your account's email actions that sends for the template.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailAction, Integer, Hash)>] EmailAction data, response status code and response headers
+    def delete_email_action_customization_with_http_info(template_id, email_action_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.delete_email_action_customization ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.delete_email_action_customization"
+      end
+      # verify the required parameter 'email_action_id' is set
+      if @api_client.config.client_side_validation && email_action_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_action_id' when calling Client.delete_email_action_customization"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/email_actions/{email_action_id}/customization'.sub('{template_id}', CGI.escape(template_id.to_s)).sub('{email_action_id}', CGI.escape(email_action_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailAction'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.delete_email_action_customization",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:DELETE, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#delete_email_action_customization\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Remove an email domain
+    # Removes an email domain. Email actions that send from an address at it fail until you add and verify it again, or change their `from_address`. You can then remove its DNS records. 
+    # @param email_domain_id [String] The email domain's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailDomain]
+    def delete_email_domain(email_domain_id, opts = {})
+      data, _status_code, _headers = delete_email_domain_with_http_info(email_domain_id, opts)
+      data
+    end
+
+    # Remove an email domain
+    # Removes an email domain. Email actions that send from an address at it fail until you add and verify it again, or change their `from_address`. You can then remove its DNS records. 
+    # @param email_domain_id [String] The email domain's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailDomain, Integer, Hash)>] EmailDomain data, response status code and response headers
+    def delete_email_domain_with_http_info(email_domain_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.delete_email_domain ...'
+      end
+      # verify the required parameter 'email_domain_id' is set
+      if @api_client.config.client_side_validation && email_domain_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_domain_id' when calling Client.delete_email_domain"
+      end
+      # resource path
+      local_var_path = '/email_domains/{email_domain_id}'.sub('{email_domain_id}', CGI.escape(email_domain_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailDomain'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.delete_email_domain",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:DELETE, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#delete_email_domain\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Delete a folder
     # Deletes an empty folder and returns it. A folder that still has templates or folders in it can't be deleted. 
     # @param folder_id [String] The folder's ID.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Folder]
     def delete_folder(folder_id, opts = {})
       data, _status_code, _headers = delete_folder_with_http_info(folder_id, opts)
@@ -1014,6 +1540,7 @@ end
     # Deletes an empty folder and returns it. A folder that still has templates or folders in it can't be deleted. 
     # @param folder_id [String] The folder's ID.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Folder, Integer, Hash)>] Folder data, response status code and response headers
     def delete_folder_with_http_info(folder_id, opts = {})
       if @api_client.config.debugging
@@ -1033,6 +1560,7 @@ end
       header_params = opts[:header_params] || {}
       # HTTP header 'Accept' (if needed)
       header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -1068,6 +1596,7 @@ end
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
     # @option opts [String] :version Delete only this published version (`1.2.0`) or the draft (`draft`, when no version has been published). Without it, the draft and every published version are deleted.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Template]
     def delete_template(template_id, opts = {})
       data, _status_code, _headers = delete_template_with_http_info(template_id, opts)
@@ -1079,6 +1608,7 @@ end
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
     # @option opts [String] :version Delete only this published version (`1.2.0`) or the draft (`draft`, when no version has been published). Without it, the draft and every published version are deleted.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def delete_template_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
@@ -1099,6 +1629,7 @@ end
       header_params = opts[:header_params] || {}
       # HTTP header 'Accept' (if needed)
       header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -1133,6 +1664,7 @@ end
     # Deletes a webhook so it stops receiving events, and returns it.
     # @param webhook_id [String] The webhook's ID.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Webhook]
     def delete_webhook(webhook_id, opts = {})
       data, _status_code, _headers = delete_webhook_with_http_info(webhook_id, opts)
@@ -1143,6 +1675,7 @@ end
     # Deletes a webhook so it stops receiving events, and returns it.
     # @param webhook_id [String] The webhook's ID.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Webhook, Integer, Hash)>] Webhook data, response status code and response headers
     def delete_webhook_with_http_info(webhook_id, opts = {})
       if @api_client.config.debugging
@@ -1162,6 +1695,7 @@ end
       header_params = opts[:header_params] || {}
       # HTTP header 'Accept' (if needed)
       header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -1196,6 +1730,7 @@ end
     # Deletes a combined PDF's PDF and returns the expired combined PDF.
     # @param combined_pdf_id [String] The combined PDF's ID.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [CombinedPdf]
     def expire_combined_pdf(combined_pdf_id, opts = {})
       data, _status_code, _headers = expire_combined_pdf_with_http_info(combined_pdf_id, opts)
@@ -1206,6 +1741,7 @@ end
     # Deletes a combined PDF's PDF and returns the expired combined PDF.
     # @param combined_pdf_id [String] The combined PDF's ID.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(CombinedPdf, Integer, Hash)>] CombinedPdf data, response status code and response headers
     def expire_combined_pdf_with_http_info(combined_pdf_id, opts = {})
       if @api_client.config.debugging
@@ -1225,6 +1761,7 @@ end
       header_params = opts[:header_params] || {}
       # HTTP header 'Accept' (if needed)
       header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -1259,6 +1796,7 @@ end
     # Deletes a submission's data and PDF now, and returns the expired submission.
     # @param submission_id [String] The submission's ID.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Submission]
     def expire_submission(submission_id, opts = {})
       data, _status_code, _headers = expire_submission_with_http_info(submission_id, opts)
@@ -1269,6 +1807,7 @@ end
     # Deletes a submission's data and PDF now, and returns the expired submission.
     # @param submission_id [String] The submission's ID.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Submission, Integer, Hash)>] Submission data, response status code and response headers
     def expire_submission_with_http_info(submission_id, opts = {})
       if @api_client.config.debugging
@@ -1288,6 +1827,7 @@ end
       header_params = opts[:header_params] || {}
       # HTTP header 'Accept' (if needed)
       header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -1324,6 +1864,7 @@ end
     # @param body [GenerateSubmissionFilesRequest] The formats to make.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Submission]
     def generate_submission_files(submission_id, body, opts = {})
       data, _status_code, _headers = generate_submission_files_with_http_info(submission_id, body, opts)
@@ -1336,6 +1877,7 @@ end
     # @param body [GenerateSubmissionFilesRequest] The formats to make.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Submission, Integer, Hash)>] Submission data, response status code and response headers
     def generate_submission_files_with_http_info(submission_id, body, opts = {})
       if @api_client.config.debugging
@@ -1365,6 +1907,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -1399,6 +1942,7 @@ end
     # Generates a preview of a submission's PDF in the background, such as for a submission still waiting for its signature requests. It's in `files.preview` once `preview_generated_at` changes. 
     # @param submission_id [String] The submission's ID.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Submission]
     def generate_submission_preview(submission_id, opts = {})
       data, _status_code, _headers = generate_submission_preview_with_http_info(submission_id, opts)
@@ -1409,6 +1953,7 @@ end
     # Generates a preview of a submission's PDF in the background, such as for a submission still waiting for its signature requests. It's in `files.preview` once `preview_generated_at` changes. 
     # @param submission_id [String] The submission's ID.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Submission, Integer, Hash)>] Submission data, response status code and response headers
     def generate_submission_preview_with_http_info(submission_id, opts = {})
       if @api_client.config.debugging
@@ -1428,6 +1973,7 @@ end
       header_params = opts[:header_params] || {}
       # HTTP header 'Accept' (if needed)
       header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -1454,6 +2000,69 @@ end
       data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#generate_submission_preview\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Get an account email action
+    # Returns one of your account's email actions, with its settings and whether its emails are failing.
+    # @param email_action_id [String] The account email action's ID.
+    # @param [Hash] opts the optional parameters
+    # @return [EmailAction]
+    def get_account_email_action(email_action_id, opts = {})
+      data, _status_code, _headers = get_account_email_action_with_http_info(email_action_id, opts)
+      data
+    end
+
+    # Get an account email action
+    # Returns one of your account's email actions, with its settings and whether its emails are failing.
+    # @param email_action_id [String] The account email action's ID.
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(EmailAction, Integer, Hash)>] EmailAction data, response status code and response headers
+    def get_account_email_action_with_http_info(email_action_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.get_account_email_action ...'
+      end
+      # verify the required parameter 'email_action_id' is set
+      if @api_client.config.client_side_validation && email_action_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_action_id' when calling Client.get_account_email_action"
+      end
+      # resource path
+      local_var_path = '/email_actions/{email_action_id}'.sub('{email_action_id}', CGI.escape(email_action_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailAction'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.get_account_email_action",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#get_account_email_action\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -1580,6 +2189,138 @@ end
       data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#get_custom_file\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Get an email action
+    # Returns one of a template's email actions, with its settings and whether its emails are failing.
+    # @param template_id [String] The template's ID.
+    # @param email_action_id [String] The email action's ID.
+    # @param [Hash] opts the optional parameters
+    # @return [EmailAction]
+    def get_email_action(template_id, email_action_id, opts = {})
+      data, _status_code, _headers = get_email_action_with_http_info(template_id, email_action_id, opts)
+      data
+    end
+
+    # Get an email action
+    # Returns one of a template's email actions, with its settings and whether its emails are failing.
+    # @param template_id [String] The template's ID.
+    # @param email_action_id [String] The email action's ID.
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(EmailAction, Integer, Hash)>] EmailAction data, response status code and response headers
+    def get_email_action_with_http_info(template_id, email_action_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.get_email_action ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.get_email_action"
+      end
+      # verify the required parameter 'email_action_id' is set
+      if @api_client.config.client_side_validation && email_action_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_action_id' when calling Client.get_email_action"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/email_actions/{email_action_id}'.sub('{template_id}', CGI.escape(template_id.to_s)).sub('{email_action_id}', CGI.escape(email_action_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailAction'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.get_email_action",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#get_email_action\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Get an email domain
+    # Returns an email domain, whether it's verified, and the DNS records to add to it.
+    # @param email_domain_id [String] The email domain's ID.
+    # @param [Hash] opts the optional parameters
+    # @return [EmailDomain]
+    def get_email_domain(email_domain_id, opts = {})
+      data, _status_code, _headers = get_email_domain_with_http_info(email_domain_id, opts)
+      data
+    end
+
+    # Get an email domain
+    # Returns an email domain, whether it's verified, and the DNS records to add to it.
+    # @param email_domain_id [String] The email domain's ID.
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(EmailDomain, Integer, Hash)>] EmailDomain data, response status code and response headers
+    def get_email_domain_with_http_info(email_domain_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.get_email_domain ...'
+      end
+      # verify the required parameter 'email_domain_id' is set
+      if @api_client.config.client_side_validation && email_domain_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_domain_id' when calling Client.get_email_domain"
+      end
+      # resource path
+      local_var_path = '/email_domains/{email_domain_id}'.sub('{email_domain_id}', CGI.escape(email_domain_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailDomain'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.get_email_domain",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#get_email_domain\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -1900,7 +2641,7 @@ end
     # Returns a template: its draft, or one of its published versions.
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
     # @return [Template]
     def get_template(template_id, opts = {})
       data, _status_code, _headers = get_template_with_http_info(template_id, opts)
@@ -1911,7 +2652,7 @@ end
     # Returns a template: its draft, or one of its published versions.
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def get_template_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
@@ -1966,7 +2707,7 @@ end
     # Returns what changed in the template's draft since its latest published version (or in a published version since the one before it): fields added, removed, changed and moved, the settings that changed, and whether the document was replaced. Check it before you publish a version. 
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
     # @return [TemplateDiff]
     def get_template_diff(template_id, opts = {})
       data, _status_code, _headers = get_template_diff_with_http_info(template_id, opts)
@@ -1977,7 +2718,7 @@ end
     # Returns what changed in the template's draft since its latest published version (or in a published version since the one before it): fields added, removed, changed and moved, the settings that changed, and whether the document was replaced. Check it before you publish a version. 
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
     # @return [Array<(TemplateDiff, Integer, Hash)>] TemplateDiff data, response status code and response headers
     def get_template_diff_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
@@ -2033,7 +2774,7 @@ end
     # @param template_id [String] The template's ID.
     # @param lang [ModelCodeLanguage] The language to generate the code in.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published), the version a submission uses by default.
+    # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `latest`, the version a submission uses by default.
     # @option opts [Boolean] :just_types Return only the types (interfaces, classes or structs), without the code that converts JSON to and from them. Default false. JavaScript has no types, PHP has no types-only code, and Rust's code is only types (serde converts the JSON), so theirs is the same either way.
     # @return [TemplateModelCode]
     def get_template_model_code(template_id, lang, opts = {})
@@ -2046,7 +2787,7 @@ end
     # @param template_id [String] The template's ID.
     # @param lang [ModelCodeLanguage] The language to generate the code in.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published), the version a submission uses by default.
+    # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `latest`, the version a submission uses by default.
     # @option opts [Boolean] :just_types Return only the types (interfaces, classes or structs), without the code that converts JSON to and from them. Default false. JavaScript has no types, PHP has no types-only code, and Rust's code is only types (serde converts the JSON), so theirs is the same either way.
     # @return [Array<(TemplateModelCode, Integer, Hash)>] TemplateModelCode data, response status code and response headers
     def get_template_model_code_with_http_info(template_id, lang, opts = {})
@@ -2108,7 +2849,7 @@ end
     # Returns a JPEG image of each page of a PDF template's PDF, with temporary links to download them: the draft's PDF, or a published version's. Use them to see the pages that fields are placed on. 
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
     # @return [TemplatePageImages]
     def get_template_page_images(template_id, opts = {})
       data, _status_code, _headers = get_template_page_images_with_http_info(template_id, opts)
@@ -2119,7 +2860,7 @@ end
     # Returns a JPEG image of each page of a PDF template's PDF, with temporary links to download them: the draft's PDF, or a published version's. Use them to see the pages that fields are placed on. 
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
     # @return [Array<(TemplatePageImages, Integer, Hash)>] TemplatePageImages data, response status code and response headers
     def get_template_page_images_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
@@ -2243,7 +2984,7 @@ end
     # Returns the JSON Schema that a submission's `data` must match. Use it to check data before you create submissions, or to build a form for the template's fields. 
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published), the version a submission uses by default.
+    # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `latest`, the version a submission uses by default.
     # @return [Hash<String, Object>]
     def get_template_schema(template_id, opts = {})
       data, _status_code, _headers = get_template_schema_with_http_info(template_id, opts)
@@ -2254,7 +2995,7 @@ end
     # Returns the JSON Schema that a submission's `data` must match. Use it to check data before you create submissions, or to build a form for the template's fields. 
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published), the version a submission uses by default.
+    # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `latest`, the version a submission uses by default.
     # @return [Array<(Hash<String, Object>, Integer, Hash)>] Hash<String, Object> data, response status code and response headers
     def get_template_schema_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
@@ -2364,6 +3105,69 @@ end
       data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#get_webhook\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # List account email actions
+    # Returns your account's email actions, newest first, one page at a time. Each one emails the files of every template's processed submissions, or of the templates and folders it lists. A template's own email actions are listed with the template (`GET /templates/{template_id}/email_actions`). 
+    # @param [Hash] opts the optional parameters
+    # @option opts [Integer] :limit How many items to return (1-100, default 50). (default to 50)
+    # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+    # @return [EmailActionList]
+    def list_account_email_actions(opts = {})
+      data, _status_code, _headers = list_account_email_actions_with_http_info(opts)
+      data
+    end
+
+    # List account email actions
+    # Returns your account's email actions, newest first, one page at a time. Each one emails the files of every template's processed submissions, or of the templates and folders it lists. A template's own email actions are listed with the template (`GET /templates/{template_id}/email_actions`). 
+    # @param [Hash] opts the optional parameters
+    # @option opts [Integer] :limit How many items to return (1-100, default 50). (default to 50)
+    # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+    # @return [Array<(EmailActionList, Integer, Hash)>] EmailActionList data, response status code and response headers
+    def list_account_email_actions_with_http_info(opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.list_account_email_actions ...'
+      end
+      # resource path
+      local_var_path = '/email_actions'
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'limit'] = opts[:'limit'] if !opts[:'limit'].nil?
+      query_params[:'cursor'] = opts[:'cursor'] if !opts[:'cursor'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailActionList'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.list_account_email_actions",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#list_account_email_actions\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -2490,6 +3294,138 @@ end
       data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#list_custom_files\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # List email actions
+    # Returns the email actions of a template's draft, and your account's email actions that send for it, newest first, one page at a time. Each one emails every processed submission's files to the people it lists. An account email action (`template_id` null) shows the settings it sends for this template, with the template's changes in `customization`. 
+    # @param template_id [String] The template's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [Integer] :limit How many items to return (1-100, default 50). (default to 50)
+    # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+    # @return [EmailActionList]
+    def list_email_actions(template_id, opts = {})
+      data, _status_code, _headers = list_email_actions_with_http_info(template_id, opts)
+      data
+    end
+
+    # List email actions
+    # Returns the email actions of a template's draft, and your account's email actions that send for it, newest first, one page at a time. Each one emails every processed submission's files to the people it lists. An account email action (`template_id` null) shows the settings it sends for this template, with the template's changes in `customization`. 
+    # @param template_id [String] The template's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [Integer] :limit How many items to return (1-100, default 50). (default to 50)
+    # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+    # @return [Array<(EmailActionList, Integer, Hash)>] EmailActionList data, response status code and response headers
+    def list_email_actions_with_http_info(template_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.list_email_actions ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.list_email_actions"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/email_actions'.sub('{template_id}', CGI.escape(template_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'limit'] = opts[:'limit'] if !opts[:'limit'].nil?
+      query_params[:'cursor'] = opts[:'cursor'] if !opts[:'cursor'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailActionList'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.list_email_actions",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#list_email_actions\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # List email domains
+    # Returns the domains in your account that email actions can send from once they're verified, newest first, one page at a time. 
+    # @param [Hash] opts the optional parameters
+    # @option opts [Integer] :limit How many items to return (1-100, default 50). (default to 50)
+    # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+    # @return [EmailDomainList]
+    def list_email_domains(opts = {})
+      data, _status_code, _headers = list_email_domains_with_http_info(opts)
+      data
+    end
+
+    # List email domains
+    # Returns the domains in your account that email actions can send from once they're verified, newest first, one page at a time. 
+    # @param [Hash] opts the optional parameters
+    # @option opts [Integer] :limit How many items to return (1-100, default 50). (default to 50)
+    # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+    # @return [Array<(EmailDomainList, Integer, Hash)>] EmailDomainList data, response status code and response headers
+    def list_email_domains_with_http_info(opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.list_email_domains ...'
+      end
+      # resource path
+      local_var_path = '/email_domains'
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'limit'] = opts[:'limit'] if !opts[:'limit'].nil?
+      query_params[:'cursor'] = opts[:'cursor'] if !opts[:'cursor'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailDomainList'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.list_email_domains",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#list_email_domains\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -2648,7 +3584,7 @@ end
     # Returns a template's fields with all of their settings, page by page: the draft's fields, or a published version's. A PDF template's fields are placed on its pages: GET /templates/{template_id}/page_images has images of the pages. 
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
     # @return [TemplateFields]
     def list_template_fields(template_id, opts = {})
       data, _status_code, _headers = list_template_fields_with_http_info(template_id, opts)
@@ -2659,7 +3595,7 @@ end
     # Returns a template's fields with all of their settings, page by page: the draft's fields, or a published version's. A PDF template's fields are placed on its pages: GET /templates/{template_id}/page_images has images of the pages. 
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+    # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
     # @return [Array<(TemplateFields, Integer, Hash)>] TemplateFields data, response status code and response headers
     def list_template_fields_with_http_info(template_id, opts = {})
       if @api_client.config.debugging
@@ -2800,7 +3736,7 @@ end
     # List templates
     # Returns the templates in your account (their drafts), newest first, one page at a time. Each one is a summary: get a template by its ID for its settings, its PDF in full, its HTML, defaults and published versions. 
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :query Only list templates whose name contains this text (ignoring case).
+    # @option opts [String] :query Only list templates whose name contains this text (ignoring case). `%` and `_` match themselves.
     # @option opts [String] :parent_folder_id Only list the templates in this folder (not in its subfolders).
     # @option opts [Integer] :limit How many items to return (1-100, default 50). (default to 50)
     # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
@@ -2813,7 +3749,7 @@ end
     # List templates
     # Returns the templates in your account (their drafts), newest first, one page at a time. Each one is a summary: get a template by its ID for its settings, its PDF in full, its HTML, defaults and published versions. 
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :query Only list templates whose name contains this text (ignoring case).
+    # @option opts [String] :query Only list templates whose name contains this text (ignoring case). `%` and `_` match themselves.
     # @option opts [String] :parent_folder_id Only list the templates in this folder (not in its subfolders).
     # @option opts [Integer] :limit How many items to return (1-100, default 50). (default to 50)
     # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
@@ -2949,6 +3885,7 @@ end
     # @param folder_id [String] The folder's ID.
     # @param body [MoveFolderRequest] Where to move the folder.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Folder]
     def move_folder(folder_id, body, opts = {})
       data, _status_code, _headers = move_folder_with_http_info(folder_id, body, opts)
@@ -2960,6 +3897,7 @@ end
     # @param folder_id [String] The folder's ID.
     # @param body [MoveFolderRequest] Where to move the folder.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Folder, Integer, Hash)>] Folder data, response status code and response headers
     def move_folder_with_http_info(folder_id, body, opts = {})
       if @api_client.config.debugging
@@ -2988,6 +3926,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3023,6 +3962,7 @@ end
     # @param template_id [String] The template's ID.
     # @param body [MoveTemplateRequest] Where to move the template.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Template]
     def move_template(template_id, body, opts = {})
       data, _status_code, _headers = move_template_with_http_info(template_id, body, opts)
@@ -3034,6 +3974,7 @@ end
     # @param template_id [String] The template's ID.
     # @param body [MoveTemplateRequest] Where to move the template.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def move_template_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -3062,6 +4003,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3097,6 +4039,7 @@ end
     # @param template_id [String] The template's ID.
     # @param body [PublishTemplateVersionRequest] The version to publish.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [TemplateVersion]
     def publish_template_version(template_id, body, opts = {})
       data, _status_code, _headers = publish_template_version_with_http_info(template_id, body, opts)
@@ -3108,6 +4051,7 @@ end
     # @param template_id [String] The template's ID.
     # @param body [PublishTemplateVersionRequest] The version to publish.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(TemplateVersion, Integer, Hash)>] TemplateVersion data, response status code and response headers
     def publish_template_version_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -3136,6 +4080,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3171,6 +4116,7 @@ end
     # @param template_id [String] The template's ID.
     # @param body [RemoveTemplateFieldsRequest] The fields to remove from the template's draft.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [TemplateFields]
     def remove_template_fields(template_id, body, opts = {})
       data, _status_code, _headers = remove_template_fields_with_http_info(template_id, body, opts)
@@ -3182,6 +4128,7 @@ end
     # @param template_id [String] The template's ID.
     # @param body [RemoveTemplateFieldsRequest] The fields to remove from the template's draft.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(TemplateFields, Integer, Hash)>] TemplateFields data, response status code and response headers
     def remove_template_fields_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -3210,6 +4157,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3245,6 +4193,7 @@ end
     # @param folder_id [String] The folder's ID.
     # @param body [RenameFolderRequest] The folder's new name.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Folder]
     def rename_folder(folder_id, body, opts = {})
       data, _status_code, _headers = rename_folder_with_http_info(folder_id, body, opts)
@@ -3256,6 +4205,7 @@ end
     # @param folder_id [String] The folder's ID.
     # @param body [RenameFolderRequest] The folder's new name.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Folder, Integer, Hash)>] Folder data, response status code and response headers
     def rename_folder_with_http_info(folder_id, body, opts = {})
       if @api_client.config.debugging
@@ -3284,6 +4234,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3319,6 +4270,7 @@ end
     # @param template_id [String] The template's ID.
     # @param body [ReorderTemplateFieldsRequest] The new order of the fields in the template's draft.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [TemplateFields]
     def reorder_template_fields(template_id, body, opts = {})
       data, _status_code, _headers = reorder_template_fields_with_http_info(template_id, body, opts)
@@ -3330,6 +4282,7 @@ end
     # @param template_id [String] The template's ID.
     # @param body [ReorderTemplateFieldsRequest] The new order of the fields in the template's draft.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(TemplateFields, Integer, Hash)>] TemplateFields data, response status code and response headers
     def reorder_template_fields_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -3358,6 +4311,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3393,6 +4347,7 @@ end
     # @param template_id [String] The template's ID.
     # @param body [RestoreTemplateVersionRequest] The version to restore.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Template]
     def restore_template_version(template_id, body, opts = {})
       data, _status_code, _headers = restore_template_version_with_http_info(template_id, body, opts)
@@ -3404,6 +4359,7 @@ end
     # @param template_id [String] The template's ID.
     # @param body [RestoreTemplateVersionRequest] The version to restore.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def restore_template_version_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -3432,6 +4388,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3458,6 +4415,151 @@ end
       data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#restore_template_version\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Send a test email for an account email action
+    # Sends the account email action's email to the API token's user only, as it would go for one template it sends for, with each field shown as its name in brackets, so you can check how it looks. When the email action attaches its files and that template is a PDF template, the test attaches the template's blank PDF. It isn't recorded on any submission. 
+    # @param email_action_id [String] The account email action's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [SendAccountEmailActionTestEmailRequest] :body Which template the test email is for.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailActionTestEmail]
+    def send_account_email_action_test_email(email_action_id, opts = {})
+      data, _status_code, _headers = send_account_email_action_test_email_with_http_info(email_action_id, opts)
+      data
+    end
+
+    # Send a test email for an account email action
+    # Sends the account email action's email to the API token's user only, as it would go for one template it sends for, with each field shown as its name in brackets, so you can check how it looks. When the email action attaches its files and that template is a PDF template, the test attaches the template's blank PDF. It isn't recorded on any submission. 
+    # @param email_action_id [String] The account email action's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [SendAccountEmailActionTestEmailRequest] :body Which template the test email is for.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailActionTestEmail, Integer, Hash)>] EmailActionTestEmail data, response status code and response headers
+    def send_account_email_action_test_email_with_http_info(email_action_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.send_account_email_action_test_email ...'
+      end
+      # verify the required parameter 'email_action_id' is set
+      if @api_client.config.client_side_validation && email_action_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_action_id' when calling Client.send_account_email_action_test_email"
+      end
+      # resource path
+      local_var_path = '/email_actions/{email_action_id}/test_email'.sub('{email_action_id}', CGI.escape(email_action_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(opts[:'body'])
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailActionTestEmail'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.send_account_email_action_test_email",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#send_account_email_action_test_email\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Send a test email
+    # Sends the email action's email to the API token's user only, with each field and metadata value shown as its name in brackets, so you can check how it looks. When the email action attaches its files and the template is a PDF template, the test attaches the template's blank PDF. It isn't recorded on any submission. Without a paid plan, the user needs a confirmed email address. 
+    # @param template_id [String] The template's ID.
+    # @param email_action_id [String] The email action's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailActionTestEmail]
+    def send_email_action_test_email(template_id, email_action_id, opts = {})
+      data, _status_code, _headers = send_email_action_test_email_with_http_info(template_id, email_action_id, opts)
+      data
+    end
+
+    # Send a test email
+    # Sends the email action's email to the API token's user only, with each field and metadata value shown as its name in brackets, so you can check how it looks. When the email action attaches its files and the template is a PDF template, the test attaches the template's blank PDF. It isn't recorded on any submission. Without a paid plan, the user needs a confirmed email address. 
+    # @param template_id [String] The template's ID.
+    # @param email_action_id [String] The email action's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailActionTestEmail, Integer, Hash)>] EmailActionTestEmail data, response status code and response headers
+    def send_email_action_test_email_with_http_info(template_id, email_action_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.send_email_action_test_email ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.send_email_action_test_email"
+      end
+      # verify the required parameter 'email_action_id' is set
+      if @api_client.config.client_side_validation && email_action_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_action_id' when calling Client.send_email_action_test_email"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/email_actions/{email_action_id}/test_email'.sub('{template_id}', CGI.escape(template_id.to_s)).sub('{email_action_id}', CGI.escape(email_action_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailActionTestEmail'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.send_email_action_test_email",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#send_email_action_test_email\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -3519,11 +4621,255 @@ end
       return data, status_code, headers
     end
 
+    # Update an account email action
+    # Changes one of your account's email actions. Properties left out keep their values. Its templates' customizations keep their own changes, and follow the rest. Set `enabled` to false to stop its emails for every template. 
+    # @param email_action_id [String] The account email action's ID.
+    # @param body [UpdateAccountEmailActionRequest] The settings to change. Properties left out keep their values.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailAction]
+    def update_account_email_action(email_action_id, body, opts = {})
+      data, _status_code, _headers = update_account_email_action_with_http_info(email_action_id, body, opts)
+      data
+    end
+
+    # Update an account email action
+    # Changes one of your account's email actions. Properties left out keep their values. Its templates' customizations keep their own changes, and follow the rest. Set `enabled` to false to stop its emails for every template. 
+    # @param email_action_id [String] The account email action's ID.
+    # @param body [UpdateAccountEmailActionRequest] The settings to change. Properties left out keep their values.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailAction, Integer, Hash)>] EmailAction data, response status code and response headers
+    def update_account_email_action_with_http_info(email_action_id, body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.update_account_email_action ...'
+      end
+      # verify the required parameter 'email_action_id' is set
+      if @api_client.config.client_side_validation && email_action_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_action_id' when calling Client.update_account_email_action"
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.update_account_email_action"
+      end
+      # resource path
+      local_var_path = '/email_actions/{email_action_id}'.sub('{email_action_id}', CGI.escape(email_action_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailAction'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.update_account_email_action",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:PUT, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#update_account_email_action\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Update an email action
+    # Changes an email action's settings. Properties left out keep their values. Set `enabled` to false to stop its emails, or to true to turn it back on after DocSpring turned it off. 
+    # @param template_id [String] The template's ID.
+    # @param email_action_id [String] The email action's ID.
+    # @param body [UpdateEmailActionRequest] The settings to change. Properties left out keep their values.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailAction]
+    def update_email_action(template_id, email_action_id, body, opts = {})
+      data, _status_code, _headers = update_email_action_with_http_info(template_id, email_action_id, body, opts)
+      data
+    end
+
+    # Update an email action
+    # Changes an email action's settings. Properties left out keep their values. Set `enabled` to false to stop its emails, or to true to turn it back on after DocSpring turned it off. 
+    # @param template_id [String] The template's ID.
+    # @param email_action_id [String] The email action's ID.
+    # @param body [UpdateEmailActionRequest] The settings to change. Properties left out keep their values.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailAction, Integer, Hash)>] EmailAction data, response status code and response headers
+    def update_email_action_with_http_info(template_id, email_action_id, body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.update_email_action ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.update_email_action"
+      end
+      # verify the required parameter 'email_action_id' is set
+      if @api_client.config.client_side_validation && email_action_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_action_id' when calling Client.update_email_action"
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.update_email_action"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/email_actions/{email_action_id}'.sub('{template_id}', CGI.escape(template_id.to_s)).sub('{email_action_id}', CGI.escape(email_action_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailAction'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.update_email_action",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:PUT, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#update_email_action\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Customize an account email action for a template
+    # Changes one of your account's email actions for this template only, replacing any changes the template had. Each setting you send is changed for this template, and the ones you leave out follow the account email action, including later changes to it. Set `enabled` to false to stop it sending for this template. 
+    # @param template_id [String] The template's ID.
+    # @param email_action_id [String] The ID of one of your account's email actions that sends for the template.
+    # @param body [UpdateEmailActionCustomizationRequest] The template's changes to the account email action, replacing any it had. Each setting you send is changed for this template, and the ones you leave out follow the account email action. `enabled: false` stops it sending for this template; left out, it sends.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailAction]
+    def update_email_action_customization(template_id, email_action_id, body, opts = {})
+      data, _status_code, _headers = update_email_action_customization_with_http_info(template_id, email_action_id, body, opts)
+      data
+    end
+
+    # Customize an account email action for a template
+    # Changes one of your account's email actions for this template only, replacing any changes the template had. Each setting you send is changed for this template, and the ones you leave out follow the account email action, including later changes to it. Set `enabled` to false to stop it sending for this template. 
+    # @param template_id [String] The template's ID.
+    # @param email_action_id [String] The ID of one of your account's email actions that sends for the template.
+    # @param body [UpdateEmailActionCustomizationRequest] The template's changes to the account email action, replacing any it had. Each setting you send is changed for this template, and the ones you leave out follow the account email action. `enabled: false` stops it sending for this template; left out, it sends.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailAction, Integer, Hash)>] EmailAction data, response status code and response headers
+    def update_email_action_customization_with_http_info(template_id, email_action_id, body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.update_email_action_customization ...'
+      end
+      # verify the required parameter 'template_id' is set
+      if @api_client.config.client_side_validation && template_id.nil?
+        fail ArgumentError, "Missing the required parameter 'template_id' when calling Client.update_email_action_customization"
+      end
+      # verify the required parameter 'email_action_id' is set
+      if @api_client.config.client_side_validation && email_action_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_action_id' when calling Client.update_email_action_customization"
+      end
+      # verify the required parameter 'body' is set
+      if @api_client.config.client_side_validation && body.nil?
+        fail ArgumentError, "Missing the required parameter 'body' when calling Client.update_email_action_customization"
+      end
+      # resource path
+      local_var_path = '/templates/{template_id}/email_actions/{email_action_id}/customization'.sub('{template_id}', CGI.escape(template_id.to_s)).sub('{email_action_id}', CGI.escape(email_action_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailAction'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.update_email_action_customization",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:PUT, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#update_email_action_customization\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Update a signature request
     # Changes a pending signature request's metadata, or how your app authenticated the person (for the audit trail). Once the person has opened it, only its metadata can be changed, and a completed or declined signature request can't be changed. 
     # @param signature_request_id [String] The signature request's ID.
     # @param body [UpdateSignatureRequestRequest] The settings to change. Properties left out keep their values.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [SignatureRequest]
     def update_signature_request(signature_request_id, body, opts = {})
       data, _status_code, _headers = update_signature_request_with_http_info(signature_request_id, body, opts)
@@ -3535,6 +4881,7 @@ end
     # @param signature_request_id [String] The signature request's ID.
     # @param body [UpdateSignatureRequestRequest] The settings to change. Properties left out keep their values.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(SignatureRequest, Integer, Hash)>] SignatureRequest data, response status code and response headers
     def update_signature_request_with_http_info(signature_request_id, body, opts = {})
       if @api_client.config.debugging
@@ -3563,6 +4910,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3594,10 +4942,11 @@ end
     end
 
     # Update a template
-    # Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object, and `field_groups` changes only the groups it lists. Settings such as `webhook_url`, `public_submissions` and `expire_after` apply to every published version too, and setting `parent_folder_id` moves the template and all of its published versions. 
+    # Changes a template's draft. Properties left out keep their values. `defaults`, `html_engine_options` and a page design's `layout` replace the whole object, and `field_groups` changes only the groups it lists. A new layout adds a field for each new value it reads. Settings such as `webhook_url`, `public_submissions` and `expire_after` apply to every published version too, and setting `parent_folder_id` moves the template and all of its published versions. 
     # @param template_id [String] The template's ID.
     # @param body [UpdateTemplateRequest] The settings to change. Properties left out keep their values.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Template]
     def update_template(template_id, body, opts = {})
       data, _status_code, _headers = update_template_with_http_info(template_id, body, opts)
@@ -3605,10 +4954,11 @@ end
     end
 
     # Update a template
-    # Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object, and `field_groups` changes only the groups it lists. Settings such as `webhook_url`, `public_submissions` and `expire_after` apply to every published version too, and setting `parent_folder_id` moves the template and all of its published versions. 
+    # Changes a template's draft. Properties left out keep their values. `defaults`, `html_engine_options` and a page design's `layout` replace the whole object, and `field_groups` changes only the groups it lists. A new layout adds a field for each new value it reads. Settings such as `webhook_url`, `public_submissions` and `expire_after` apply to every published version too, and setting `parent_folder_id` moves the template and all of its published versions. 
     # @param template_id [String] The template's ID.
     # @param body [UpdateTemplateRequest] The settings to change. Properties left out keep their values.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def update_template_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -3637,6 +4987,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3673,6 +5024,7 @@ end
     # @param body [UpdateTemplateDocumentRequest] The new PDF, or a Word template's new Word document, as one of `cache_id`, `document_url` and `document_base64`.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Template]
     def update_template_document(template_id, body, opts = {})
       data, _status_code, _headers = update_template_document_with_http_info(template_id, body, opts)
@@ -3685,6 +5037,7 @@ end
     # @param body [UpdateTemplateDocumentRequest] The new PDF, or a Word template's new Word document, as one of `cache_id`, `document_url` and `document_base64`.
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def update_template_document_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -3714,6 +5067,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3749,6 +5103,7 @@ end
     # @param template_id [String] The template's ID.
     # @param body [UpdateTemplateFieldsRequest] The fields to change in the template's draft.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [TemplateFields]
     def update_template_fields(template_id, body, opts = {})
       data, _status_code, _headers = update_template_fields_with_http_info(template_id, body, opts)
@@ -3760,6 +5115,7 @@ end
     # @param template_id [String] The template's ID.
     # @param body [UpdateTemplateFieldsRequest] The fields to change in the template's draft.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(TemplateFields, Integer, Hash)>] TemplateFields data, response status code and response headers
     def update_template_fields_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -3788,6 +5144,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3823,6 +5180,7 @@ end
     # @param webhook_id [String] The webhook's ID.
     # @param body [UpdateWebhookRequest] The settings to change. Properties left out keep their values.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Webhook]
     def update_webhook(webhook_id, body, opts = {})
       data, _status_code, _headers = update_webhook_with_http_info(webhook_id, body, opts)
@@ -3834,6 +5192,7 @@ end
     # @param webhook_id [String] The webhook's ID.
     # @param body [UpdateWebhookRequest] The settings to change. Properties left out keep their values.
     # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Webhook, Integer, Hash)>] Webhook data, response status code and response headers
     def update_webhook_with_http_info(webhook_id, body, opts = {})
       if @api_client.config.debugging
@@ -3862,6 +5221,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3906,6 +5266,7 @@ end
     # @option opts [FieldSetupNaming] :field_naming With `detect_fields`, how the fields are named. `ai` (the default) names them and sets their types and settings with AI; `preserve` keeps the names of the PDF's form fields, and AI only names the fields it detected. `preserve` needs `field_source` `auto` or `pdf_form_fields`.
     # @option opts [FieldSetupLogic] :field_logic With `detect_fields`, whether AI reads the whole form once the fields are named and sets up conditional logic and required fields (`ai`) or not (`none`). Default: your account's template settings.
     # @option opts [OutputFormat] :output_format What each submission of a Word template makes unless its request sets `output_formats`: `docx` (a Word document), `odt` (an OpenDocument file, converted from the Word document) or `pdf`. Required when `document` is a Word document.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Template]
     def upload_template(document, opts = {})
       data, _status_code, _headers = upload_template_with_http_info(document, opts)
@@ -3926,6 +5287,7 @@ end
     # @option opts [FieldSetupNaming] :field_naming With `detect_fields`, how the fields are named. `ai` (the default) names them and sets their types and settings with AI; `preserve` keeps the names of the PDF's form fields, and AI only names the fields it detected. `preserve` needs `field_source` `auto` or `pdf_form_fields`.
     # @option opts [FieldSetupLogic] :field_logic With `detect_fields`, whether AI reads the whole form once the fields are named and sets up conditional logic and required fields (`ai`) or not (`none`). Default: your account's template settings.
     # @option opts [OutputFormat] :output_format What each submission of a Word template makes unless its request sets `output_formats`: `docx` (a Word document), `odt` (an OpenDocument file, converted from the Word document) or `pdf`. Required when `document` is a Word document.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def upload_template_with_http_info(document, opts = {})
       if @api_client.config.debugging
@@ -3951,6 +5313,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -3998,6 +5361,7 @@ end
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
     # @option opts [Boolean] :reimport_fields Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields. Only for PDF templates: a Word template adds a field for each new tag.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Template]
     def upload_template_document(template_id, document, opts = {})
       data, _status_code, _headers = upload_template_document_with_http_info(template_id, document, opts)
@@ -4011,6 +5375,7 @@ end
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
     # @option opts [Boolean] :reimport_fields Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields. Only for PDF templates: a Word template adds a field for each new tag.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def upload_template_document_with_http_info(template_id, document, opts = {})
       if @api_client.config.debugging
@@ -4040,6 +5405,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -4077,7 +5443,8 @@ end
     # @param template_id [String] The template's ID.
     # @param body [ValidateSubmissionRequest] The submission's data and settings.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
+    # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `latest`.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [SubmissionValidation]
     def validate_submission(template_id, body, opts = {})
       data, _status_code, _headers = validate_submission_with_http_info(template_id, body, opts)
@@ -4089,7 +5456,8 @@ end
     # @param template_id [String] The template's ID.
     # @param body [ValidateSubmissionRequest] The submission's data and settings.
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
+    # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `latest`.
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
     # @return [Array<(SubmissionValidation, Integer, Hash)>] SubmissionValidation data, response status code and response headers
     def validate_submission_with_http_info(template_id, body, opts = {})
       if @api_client.config.debugging
@@ -4119,6 +5487,7 @@ end
       if !content_type.nil?
           header_params['Content-Type'] = content_type
       end
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
 
       # form parameters
       form_params = opts[:form_params] || {}
@@ -4145,6 +5514,72 @@ end
       data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: Client#validate_submission\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Verify an email domain
+    # Checks the email domain's DNS records now, instead of waiting for the next check. If DocSpring has stopped looking for its DKIM records (3 days after they were created), it starts again with new ones: replace the CNAME records with them. 
+    # @param email_domain_id [String] The email domain's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [EmailDomain]
+    def verify_email_domain(email_domain_id, opts = {})
+      data, _status_code, _headers = verify_email_domain_with_http_info(email_domain_id, opts)
+      data
+    end
+
+    # Verify an email domain
+    # Checks the email domain's DNS records now, instead of waiting for the next check. If DocSpring has stopped looking for its DKIM records (3 days after they were created), it starts again with new ones: replace the CNAME records with them. 
+    # @param email_domain_id [String] The email domain's ID.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+    # @return [Array<(EmailDomain, Integer, Hash)>] EmailDomain data, response status code and response headers
+    def verify_email_domain_with_http_info(email_domain_id, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: Client.verify_email_domain ...'
+      end
+      # verify the required parameter 'email_domain_id' is set
+      if @api_client.config.client_side_validation && email_domain_id.nil?
+        fail ArgumentError, "Missing the required parameter 'email_domain_id' when calling Client.verify_email_domain"
+      end
+      # resource path
+      local_var_path = '/email_domains/{email_domain_id}/verify'.sub('{email_domain_id}', CGI.escape(email_domain_id.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      header_params[:'Idempotency-Key'] = opts[:'idempotency_key'] if !opts[:'idempotency_key'].nil?
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body]
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'EmailDomain'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['api_token_basic']
+
+      new_options = opts.merge(
+        :operation => :"Client.verify_email_domain",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: Client#verify_email_domain\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end

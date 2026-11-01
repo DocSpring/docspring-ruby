@@ -22,7 +22,7 @@ module DocSpring
     # Shown under the template's name at the top of its hosted forms, and used as their meta description. Not shown on embedded forms or signature requests.
     attr_accessor :description
 
-    # What each submission makes unless its request sets `output_formats`: `docx` (a Word document), `odt` (an OpenDocument file, converted from the Word document) or `pdf`. A Word template's is chosen when it's created; PDF and HTML templates always make PDFs. A Word template that encrypts its PDFs makes PDFs, because Word documents and OpenDocument files can't be password-protected.
+    # What each submission makes unless its request sets `output_formats`: `docx` (a Word document), `odt` (an OpenDocument file, converted from the Word document) or `pdf`. A Word template's is chosen when it's created; other templates always make PDFs. A Word template that encrypts its PDFs makes PDFs, because Word documents and OpenDocument files can't be password-protected.
     attr_accessor :output_format
 
     # The ID of the folder the template is in. Null for a template at the root. Setting it moves the template and all of its published versions.
@@ -49,7 +49,7 @@ module DocSpring
     # Generate PDFs whose text and check fields stay fillable ("Generate Editable PDFs"). A submission's `editable` overrides it.
     attr_accessor :editable_submissions
 
-    # The sites that can embed the template's live signature requests and its embedded template editor: a host such as `app.example.com`, with an optional leading wildcard (`*.example.com`), port (`localhost:3000`) or scheme (`https://app.example.com`; without one, `http` and `https` both work). Browsers open a live signature request in a frame only on these sites (and DocSpring's), so with an empty list it can't be embedded anywhere; a test signature request can be embedded on any site. The embedded template editor loads only for a page on one of these sites (by its Referer or Origin header), and on any site when the list is empty. Forms embedded on a page (Visual Forms JS and the simple form) aren't restricted.
+    # The sites that can embed the template's live signature requests and its embedded template editor: a host such as `app.example.com`, with an optional leading wildcard (`*.example.com`), port (`localhost:3000`) or scheme (`https://app.example.com`; without one, `http` and `https` both work), without a path. Browsers open a live signature request in a frame only on these sites (and DocSpring's), so with an empty list it can't be embedded anywhere; a test signature request can be embedded on any site. The embedded template editor loads only for a page on one of these sites (by its Referer or Origin header), and on any site when the list is empty. Forms embedded on a page (Visual Forms JS and the simple form) aren't restricted.
     attr_accessor :embed_domains
 
     # Allow the embedded template editor to change sensitive template settings (webhooks, redirect URL, encryption, public access, expiration and so on).
@@ -91,6 +91,27 @@ module DocSpring
     # Where the web form sends people after they submit it.
     attr_accessor :redirect_url
 
+    # How DocSpring's completed emails send the signed PDF to your signers and CCs: `attachment` (attached, or a download link when it's too big to attach) or `link` (a download link). Null uses your account's rule: a link if your account has signed a BAA, otherwise attached. PDF templates only. A signature request uses the value it had when the request was created.
+    attr_accessor :signature_request_email_attachments
+
+    # The address DocSpring's emails to your signers come from: an address at one of your verified email domains, on the Growth plan or higher. Null sends them from DocSpring's shared address, with "via DocSpring" after the sender name. PDF templates only.
+    attr_accessor :signature_request_from_address
+
+    # Puts a signing token in `signature_request_signing_url`, as `{{ token_id }}` and `{{ token_secret }}`, so your page can open the signing form without creating a token itself. The email then carries a credential: anyone who has it can open the form and sign. PDF templates only.
+    attr_accessor :signature_request_include_signing_token
+
+    # The sender name on the emails DocSpring sends your signers, as in "Acme via DocSpring". It can't contain an email address, a website or quotes. Null uses your account's name. PDF templates only.
+    attr_accessor :signature_request_from_name
+
+    # Who DocSpring tells when a signature request's document is completed or declined, or an email bounces or can't be sent: members of your DocSpring team or addresses at your verified email domains. Empty means your account's owner. A submission's `notification_emails` replaces them. PDF templates only.
+    attr_accessor :signature_request_notification_emails
+
+    # Where your signers' replies to DocSpring's emails go: a member of your DocSpring team or an address at one of your verified email domains. Null means your account's owner. A submission's `reply_to` replaces it. PDF templates only.
+    attr_accessor :signature_request_reply_to
+
+    # A page on your own site that the button in DocSpring's email to a signer opens, instead of DocSpring's signing page: an https URL on one of your verified email domains or a subdomain of one, on the Growth plan or higher. It must include `{{ signature_request_id }}`. Your page authenticates the signer, creates a token for the signature request, and opens the signing form with it. Null links to DocSpring's signing page. PDF templates only.
+    attr_accessor :signature_request_signing_url
+
     # A Slack incoming webhook URL that is notified about the template's submissions. It's never returned; `has_slack_webhook_url` says if it's set.
     attr_accessor :slack_webhook_url
 
@@ -109,7 +130,7 @@ module DocSpring
     # Sample submission data that sets `predefined_fields`: each value becomes a predefined field, with a type that fits it (`string`, `number`, `boolean`, `date`, `email` or `url`) and `required_in_template` true. Nested objects and arrays become names with `/`, such as `customer/email`. Without `predefined_fields` in the same request, it replaces them; with them, it adds to them and sets the types of the ones it has values for.
     attr_accessor :predefined_fields_sample_data
 
-    # The HTML of an HTML template, as a Liquid template. Null for PDF and Word templates.
+    # The HTML of an HTML template, as a Liquid template. Null for other templates.
     attr_accessor :html
 
     # The SCSS of an HTML template.
@@ -124,8 +145,11 @@ module DocSpring
     # Null resets the options to their defaults.
     attr_accessor :html_engine_options
 
-    # Whether an HTML template HTML-escapes the values it prints. When true, `{{ value }}` prints a value as text, so a `<` or `&` in it is printed as that character, and `{{ value | raw }}` prints a value as HTML. New HTML templates default to true. Templates created before October 2026, or with API v1, default to false, which prints every value as HTML. Null for PDF templates.
+    # Whether an HTML template HTML-escapes the values it prints. When true, `{{ value }}` prints a value as text, so a `<` or `&` in it is printed as that character, and `{{ value | raw }}` prints a value as HTML. New HTML templates default to true. Templates created before October 2026, or with API v1, default to false, which prints every value as HTML. Null for other templates.
     attr_accessor :html_escape_data
+
+    # A page design's layout: its page setup, its sections and the elements placed in them, in the Page Designer layout format (https://docspring.com/docs/page-designer/layout-format/). Its JSON Schema is at https://docspring.com/schemas/page-designer/layout.v1.json. Null for other templates. Setting it replaces the whole layout, and DocSpring adds a field for each value it reads. Left out when a page design is created, it starts with an empty page.
+    attr_accessor :layout
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -177,6 +201,13 @@ module DocSpring
         :'public_submissions' => :'public_submissions',
         :'public_web_form' => :'public_web_form',
         :'redirect_url' => :'redirect_url',
+        :'signature_request_email_attachments' => :'signature_request_email_attachments',
+        :'signature_request_from_address' => :'signature_request_from_address',
+        :'signature_request_include_signing_token' => :'signature_request_include_signing_token',
+        :'signature_request_from_name' => :'signature_request_from_name',
+        :'signature_request_notification_emails' => :'signature_request_notification_emails',
+        :'signature_request_reply_to' => :'signature_request_reply_to',
+        :'signature_request_signing_url' => :'signature_request_signing_url',
         :'slack_webhook_url' => :'slack_webhook_url',
         :'defaults' => :'defaults',
         :'field_dependencies' => :'field_dependencies',
@@ -188,7 +219,8 @@ module DocSpring
         :'header_html' => :'header_html',
         :'footer_html' => :'footer_html',
         :'html_engine_options' => :'html_engine_options',
-        :'html_escape_data' => :'html_escape_data'
+        :'html_escape_data' => :'html_escape_data',
+        :'layout' => :'layout'
       }
     end
 
@@ -230,6 +262,13 @@ module DocSpring
         :'public_submissions' => :'Boolean',
         :'public_web_form' => :'Boolean',
         :'redirect_url' => :'String',
+        :'signature_request_email_attachments' => :'SignatureRequestEmailAttachments',
+        :'signature_request_from_address' => :'String',
+        :'signature_request_include_signing_token' => :'Boolean',
+        :'signature_request_from_name' => :'String',
+        :'signature_request_notification_emails' => :'Array<String>',
+        :'signature_request_reply_to' => :'String',
+        :'signature_request_signing_url' => :'String',
         :'slack_webhook_url' => :'String',
         :'defaults' => :'TemplateDefaultsInput',
         :'field_dependencies' => :'Array<TemplateFieldDependencyInput>',
@@ -241,7 +280,8 @@ module DocSpring
         :'header_html' => :'String',
         :'footer_html' => :'String',
         :'html_engine_options' => :'HtmlEngineOptionsInput',
-        :'html_escape_data' => :'Boolean'
+        :'html_escape_data' => :'Boolean',
+        :'layout' => :'Hash<String, Object>'
       }
     end
 
@@ -252,6 +292,11 @@ module DocSpring
         :'parent_folder_id',
         :'encrypt_pdfs_password',
         :'redirect_url',
+        :'signature_request_email_attachments',
+        :'signature_request_from_address',
+        :'signature_request_from_name',
+        :'signature_request_reply_to',
+        :'signature_request_signing_url',
         :'slack_webhook_url',
         :'predefined_fields_sample_data',
         :'html',
@@ -259,6 +304,7 @@ module DocSpring
         :'header_html',
         :'footer_html',
         :'html_engine_options',
+        :'layout'
       ])
     end
 
@@ -390,6 +436,36 @@ module DocSpring
         self.redirect_url = attributes[:'redirect_url']
       end
 
+      if attributes.key?(:'signature_request_email_attachments')
+        self.signature_request_email_attachments = attributes[:'signature_request_email_attachments']
+      end
+
+      if attributes.key?(:'signature_request_from_address')
+        self.signature_request_from_address = attributes[:'signature_request_from_address']
+      end
+
+      if attributes.key?(:'signature_request_include_signing_token')
+        self.signature_request_include_signing_token = attributes[:'signature_request_include_signing_token']
+      end
+
+      if attributes.key?(:'signature_request_from_name')
+        self.signature_request_from_name = attributes[:'signature_request_from_name']
+      end
+
+      if attributes.key?(:'signature_request_notification_emails')
+        if (value = attributes[:'signature_request_notification_emails']).is_a?(Array)
+          self.signature_request_notification_emails = value
+        end
+      end
+
+      if attributes.key?(:'signature_request_reply_to')
+        self.signature_request_reply_to = attributes[:'signature_request_reply_to']
+      end
+
+      if attributes.key?(:'signature_request_signing_url')
+        self.signature_request_signing_url = attributes[:'signature_request_signing_url']
+      end
+
       if attributes.key?(:'slack_webhook_url')
         self.slack_webhook_url = attributes[:'slack_webhook_url']
       end
@@ -445,6 +521,12 @@ module DocSpring
       if attributes.key?(:'html_escape_data')
         self.html_escape_data = attributes[:'html_escape_data']
       end
+
+      if attributes.key?(:'layout')
+        if (value = attributes[:'layout']).is_a?(Hash) || value.nil?
+          self.layout = value
+        end
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -460,6 +542,16 @@ module DocSpring
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
       true
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] signature_request_notification_emails Value to be assigned
+    def signature_request_notification_emails=(signature_request_notification_emails)
+      if signature_request_notification_emails.nil?
+        fail ArgumentError, 'signature_request_notification_emails cannot be nil'
+      end
+
+      @signature_request_notification_emails = signature_request_notification_emails
     end
 
     # Checks equality by comparing each attribute.
@@ -492,6 +584,13 @@ module DocSpring
           public_submissions == o.public_submissions &&
           public_web_form == o.public_web_form &&
           redirect_url == o.redirect_url &&
+          signature_request_email_attachments == o.signature_request_email_attachments &&
+          signature_request_from_address == o.signature_request_from_address &&
+          signature_request_include_signing_token == o.signature_request_include_signing_token &&
+          signature_request_from_name == o.signature_request_from_name &&
+          signature_request_notification_emails == o.signature_request_notification_emails &&
+          signature_request_reply_to == o.signature_request_reply_to &&
+          signature_request_signing_url == o.signature_request_signing_url &&
           slack_webhook_url == o.slack_webhook_url &&
           defaults == o.defaults &&
           field_dependencies == o.field_dependencies &&
@@ -503,7 +602,8 @@ module DocSpring
           header_html == o.header_html &&
           footer_html == o.footer_html &&
           html_engine_options == o.html_engine_options &&
-          html_escape_data == o.html_escape_data
+          html_escape_data == o.html_escape_data &&
+          layout == o.layout
     end
 
     # @see the `==` method
@@ -515,7 +615,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [name, description, output_format, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, slack_webhook_url, defaults, field_dependencies, field_groups, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, html_escape_data].hash
+      [name, description, output_format, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, signature_request_email_attachments, signature_request_from_address, signature_request_include_signing_token, signature_request_from_name, signature_request_notification_emails, signature_request_reply_to, signature_request_signing_url, slack_webhook_url, defaults, field_dependencies, field_groups, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, html_escape_data, layout].hash
     end
 
     # Builds the object from hash

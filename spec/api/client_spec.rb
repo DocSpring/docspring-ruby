@@ -34,10 +34,11 @@ describe 'Client' do
 
   # unit tests for add_template_fields
   # Add fields to a template
-  # Adds fields to a template's draft and returns all of its fields. Publish a version for submissions of published versions to have them. 
+  # Adds fields to a template's draft and returns all of its fields. Publish a version for submissions of published versions to have them. A field with the name of one of the template's fields shares its settings (`type`, `required`, `default`, ...), so a field that sets one to another value is refused: PUT /templates/{template_id}/fields changes them for every field with the name. 
   # @param template_id The template's ID.
   # @param body The fields to add to the template's draft.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [TemplateFields]
   describe 'add_template_fields test' do
     it 'should work' do
@@ -51,8 +52,22 @@ describe 'Client' do
   # @param template_id The template's ID.
   # @param [Hash] opts the optional parameters
   # @option opts [CopyTemplateRequest] :body Settings for the copy.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Template]
   describe 'copy_template test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for create_account_email_action
+  # Create an account email action
+  # Adds an email action to your account. It sends for every template, or only for the templates in `template_ids` and the templates in the folders in `folder_ids` (and the folders inside them). Each template can turn it off or change its settings for that template only (`PUT /templates/{template_id}/email_actions/{email_action_id}/customization`). Without a paid plan (Starter or higher), email actions only email your team: test submissions' emails go to your account's users, and live submissions' emails aren't sent. 
+  # @param body The account email action to create. Properties left out get their defaults, and it sends for every template unless it lists `template_ids` or `folder_ids`.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailAction]
+  describe 'create_account_email_action test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -64,7 +79,7 @@ describe 'Client' do
   # @param body The PDFs to merge, and the combined PDF's settings.
   # @param [Hash] opts the optional parameters
   # @option opts [Boolean] :wait Wait until the PDF has been generated before responding. Default true on sync.api hosts.
-  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another combined PDF. Send a new key with each new combined PDF, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [CombinedPdf]
   describe 'create_combined_pdf test' do
     it 'should work' do
@@ -77,8 +92,36 @@ describe 'Client' do
   # Creates a custom file from a PDF you uploaded, so you can merge it with other PDFs. Upload the file with the presigned upload (GET /uploads/presign) first, then pass its `fields.key` as `cache_id`. 
   # @param body The uploaded file to create the custom file from.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [CustomFile]
   describe 'create_custom_file_from_upload test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for create_email_action
+  # Create an email action
+  # Adds an email action to a template's draft. From then on, each processed submission emails its PDF to the recipients in `to`, `cc` and `bcc`: addresses, and tags for the address in one of the submission's fields (`{{ data.tenant_email }}`) or in its metadata (`{{ metadata.agent_email }}`). With `send_when`, only the submissions whose values meet its conditions send one. Without a paid plan (Starter or higher), email actions only email your team: test submissions' emails go to your account's users, and live submissions' emails aren't sent. 
+  # @param template_id The template's ID.
+  # @param body The email action to create. Properties left out get their defaults.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailAction]
+  describe 'create_email_action test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for create_email_domain
+  # Add an email domain
+  # Adds a domain for email actions to send from, and returns the DNS records to add to it. DocSpring checks for them every few minutes, and the domain is verified once its DKIM and DMARC records are found. Needs a paid monthly plan. 
+  # @param body The domain to add.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailDomain]
+  describe 'create_email_domain test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -89,6 +132,7 @@ describe 'Client' do
   # Creates a folder for organizing templates. Pass `parent_folder_id` to create it inside another folder. Folder names are unique within their parent folder. 
   # @param body The folder to create.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Folder]
   describe 'create_folder test' do
     it 'should work' do
@@ -102,6 +146,7 @@ describe 'Client' do
   # @param signature_request_id The signature request's ID.
   # @param body The event to record.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [SignatureRequestEvent]
   describe 'create_signature_request_event test' do
     it 'should work' do
@@ -115,6 +160,7 @@ describe 'Client' do
   # @param signature_request_id The signature request's ID.
   # @param [Hash] opts the optional parameters
   # @option opts [CreateSignatureRequestTokenRequest] :body The kind of link to make. Send no body for an `api` token.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [SignatureRequestToken]
   describe 'create_signature_request_token test' do
     it 'should work' do
@@ -124,13 +170,13 @@ describe 'Client' do
 
   # unit tests for create_submission
   # Generate a PDF
-  # Creates a submission: fills in a template with your data and generates a PDF. The PDF is generated in the background: on sync.api hosts the request waits for it (unless you pass `wait=false`), otherwise poll GET /submissions/{submission_id} until `state` isn't `pending`.  Data that doesn't match the template's fields returns a 422 with an `invalid_data` error. The submission is still saved, with its errors, so you can find it in DocSpring: the error's `submission_id` is its ID. 
+  # Creates a submission: fills in a template with your data and generates a PDF. The PDF is generated in the background: on sync.api hosts the request waits for it (unless you pass `wait=false`), otherwise poll GET /submissions/{submission_id} until `state` isn't `pending`.  Data that doesn't match the template's fields returns a 422 with an `invalid_data` error. The submission is still saved, with its errors, so you can find it in DocSpring: the error's `submission_id` is its ID.  With `signature_requests`, the PDF is generated once everyone has signed. DocSpring emails each signer a link to sign, unless `send_email` is false, and can send reminders and the completed document. 
   # @param template_id The template's ID.
   # @param body The submission's data and settings.
   # @param [Hash] opts the optional parameters
-  # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
+  # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `latest`.
   # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
-  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another submission. Send a new key with each new submission, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Submission]
   describe 'create_submission test' do
     it 'should work' do
@@ -144,7 +190,7 @@ describe 'Client' do
   # @param body The submissions to create, and the settings they share.
   # @param [Hash] opts the optional parameters
   # @option opts [Boolean] :wait Wait until every file in the batch has been generated before responding. Default true on sync.api hosts.
-  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of creating another batch. Send a new key with each new batch, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` means the first request is still being processed: send the request again in a few seconds.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [SubmissionBatch]
   describe 'create_submission_batch test' do
     it 'should work' do
@@ -154,10 +200,11 @@ describe 'Client' do
 
   # unit tests for create_template
   # Create a template
-  # Creates an HTML template, or a PDF or Word template from a file you uploaded with the presigned upload (GET /uploads/presign): pass its `fields.key` as `cache_id`. You can send a link to the file (`document_url`) or the file in base64 (`document_base64`) instead, or send the file with the request with POST /templates/upload. A Word template is made from a Word document (.docx) or an OpenDocument text file (.odt), which DocSpring converts to a Word document. It needs its `output_format`: what each submission makes, a Word document (`docx`), an OpenDocument file (`odt`) or a PDF.  A PDF template is ready to generate PDFs once DocSpring has processed its PDF, a template created from a `document_url` once its document has been downloaded, and one created from an .odt once it has been converted (`ready` is true). On sync.api hosts the request waits for that unless you pass `wait=false`. 
+  # Creates an HTML template, or a PDF or Word template from a file you uploaded with the presigned upload (GET /uploads/presign): pass its `fields.key` as `cache_id`. You can send a link to the file (`document_url`) or the file in base64 (`document_base64`) instead, or send the file with the request with POST /templates/upload. A Word template is made from a Word document (.docx) or an OpenDocument text file (.odt), which DocSpring converts to a Word document. It needs its `output_format`: what each submission makes, a Word document (`docx`), an OpenDocument file (`odt`) or a PDF. A page design (`page_designer`) takes its `layout` in the Page Designer layout format, or starts with an empty page without one.  A PDF template is ready to generate PDFs once DocSpring has processed its PDF, a template created from a `document_url` once its document has been downloaded, and one created from an .odt once it has been converted (`ready` is true). On sync.api hosts the request waits for that unless you pass `wait=false`. 
   # @param body The template to create.
   # @param [Hash] opts the optional parameters
   # @option opts [Boolean] :wait Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Template]
   describe 'create_template test' do
     it 'should work' do
@@ -167,11 +214,12 @@ describe 'Client' do
 
   # unit tests for create_template_preview
   # Preview a template with data
-  # Makes PNG images of a template's pages filled in with the data you send (not a PDF), so you can check how an HTML, PDF or Word template prints with your data before you publish a version or send live data. A Word template's pages are its PDF's, whatever its `output_format`. It renders the template's draft, or the published `version` you ask for. A preview makes no submission and uses no credits, and its pages are watermarked like a test submission's PDF. It's `pending` while it renders: get it with GET /templates/{template_id}/previews/{preview_id} until it's `processed`, with an image of each page, or `error`. 
+  # Makes PNG images of a template's pages filled in with the data you send (not a PDF), so you can check how an HTML, PDF or Word template or a page design prints with your data before you publish a version or send live data. A Word template's pages are its PDF's, whatever its `output_format`. It renders the template's draft, or the published `version` you ask for. A preview makes no submission and uses no credits, and its pages are watermarked like a test submission's PDF. It's `pending` while it renders: get it with GET /templates/{template_id}/previews/{preview_id} until it's `processed`, with an image of each page, or `error`. 
   # @param template_id The template's ID.
   # @param body The data to render the template with.
   # @param [Hash] opts the optional parameters
-  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [TemplatePreview]
   describe 'create_template_preview test' do
     it 'should work' do
@@ -184,8 +232,22 @@ describe 'Client' do
   # Creates a webhook that sends a POST request to your endpoint whenever a subscribed event happens. Scope it to API tokens, templates or folders to receive only their events. 
   # @param body The webhook to create.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Webhook]
   describe 'create_webhook test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for delete_account_email_action
+  # Delete an account email action
+  # Deletes one of your account's email actions, with every template's customization of it. Emails it has already queued for submissions aren't sent. Submissions keep the record of the emails it sent. 
+  # @param email_action_id The account email action's ID.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailAction]
+  describe 'delete_account_email_action test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -196,8 +258,50 @@ describe 'Client' do
   # Deletes a custom file and returns it. Use a live API token: test tokens can't delete custom files. 
   # @param custom_file_id The custom file's ID.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [CustomFile]
   describe 'delete_custom_file test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for delete_email_action
+  # Delete an email action
+  # Deletes an email action. Emails it has already queued for submissions aren't sent. Submissions keep the record of the emails it sent. 
+  # @param template_id The template's ID.
+  # @param email_action_id The email action's ID.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailAction]
+  describe 'delete_email_action test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for delete_email_action_customization
+  # Reset an account email action's customization
+  # Removes the template's changes to one of your account's email actions: it sends for this template as it is, and again if the template had turned it off. 
+  # @param template_id The template's ID.
+  # @param email_action_id The ID of one of your account's email actions that sends for the template.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailAction]
+  describe 'delete_email_action_customization test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for delete_email_domain
+  # Remove an email domain
+  # Removes an email domain. Email actions that send from an address at it fail until you add and verify it again, or change their `from_address`. You can then remove its DNS records. 
+  # @param email_domain_id The email domain's ID.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailDomain]
+  describe 'delete_email_domain test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -208,6 +312,7 @@ describe 'Client' do
   # Deletes an empty folder and returns it. A folder that still has templates or folders in it can't be deleted. 
   # @param folder_id The folder's ID.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Folder]
   describe 'delete_folder test' do
     it 'should work' do
@@ -221,6 +326,7 @@ describe 'Client' do
   # @param template_id The template's ID.
   # @param [Hash] opts the optional parameters
   # @option opts [String] :version Delete only this published version (`1.2.0`) or the draft (`draft`, when no version has been published). Without it, the draft and every published version are deleted.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Template]
   describe 'delete_template test' do
     it 'should work' do
@@ -233,6 +339,7 @@ describe 'Client' do
   # Deletes a webhook so it stops receiving events, and returns it.
   # @param webhook_id The webhook's ID.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Webhook]
   describe 'delete_webhook test' do
     it 'should work' do
@@ -245,6 +352,7 @@ describe 'Client' do
   # Deletes a combined PDF's PDF and returns the expired combined PDF.
   # @param combined_pdf_id The combined PDF's ID.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [CombinedPdf]
   describe 'expire_combined_pdf test' do
     it 'should work' do
@@ -257,6 +365,7 @@ describe 'Client' do
   # Deletes a submission's data and PDF now, and returns the expired submission.
   # @param submission_id The submission's ID.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Submission]
   describe 'expire_submission test' do
     it 'should work' do
@@ -271,6 +380,7 @@ describe 'Client' do
   # @param body The formats to make.
   # @param [Hash] opts the optional parameters
   # @option opts [Boolean] :wait Wait until the files have been generated before responding. Default true on sync.api hosts.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Submission]
   describe 'generate_submission_files test' do
     it 'should work' do
@@ -283,8 +393,21 @@ describe 'Client' do
   # Generates a preview of a submission's PDF in the background, such as for a submission still waiting for its signature requests. It's in `files.preview` once `preview_generated_at` changes. 
   # @param submission_id The submission's ID.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Submission]
   describe 'generate_submission_preview test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for get_account_email_action
+  # Get an account email action
+  # Returns one of your account's email actions, with its settings and whether its emails are failing.
+  # @param email_action_id The account email action's ID.
+  # @param [Hash] opts the optional parameters
+  # @return [EmailAction]
+  describe 'get_account_email_action test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -309,6 +432,31 @@ describe 'Client' do
   # @param [Hash] opts the optional parameters
   # @return [CustomFile]
   describe 'get_custom_file test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for get_email_action
+  # Get an email action
+  # Returns one of a template's email actions, with its settings and whether its emails are failing.
+  # @param template_id The template's ID.
+  # @param email_action_id The email action's ID.
+  # @param [Hash] opts the optional parameters
+  # @return [EmailAction]
+  describe 'get_email_action test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for get_email_domain
+  # Get an email domain
+  # Returns an email domain, whether it's verified, and the DNS records to add to it.
+  # @param email_domain_id The email domain's ID.
+  # @param [Hash] opts the optional parameters
+  # @return [EmailDomain]
+  describe 'get_email_domain test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -379,7 +527,7 @@ describe 'Client' do
   # Returns a template: its draft, or one of its published versions.
   # @param template_id The template's ID.
   # @param [Hash] opts the optional parameters
-  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
   # @return [Template]
   describe 'get_template test' do
     it 'should work' do
@@ -392,7 +540,7 @@ describe 'Client' do
   # Returns what changed in the template's draft since its latest published version (or in a published version since the one before it): fields added, removed, changed and moved, the settings that changed, and whether the document was replaced. Check it before you publish a version. 
   # @param template_id The template's ID.
   # @param [Hash] opts the optional parameters
-  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
   # @return [TemplateDiff]
   describe 'get_template_diff test' do
     it 'should work' do
@@ -406,7 +554,7 @@ describe 'Client' do
   # @param template_id The template's ID.
   # @param lang The language to generate the code in.
   # @param [Hash] opts the optional parameters
-  # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published), the version a submission uses by default.
+  # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `latest`, the version a submission uses by default.
   # @option opts [Boolean] :just_types Return only the types (interfaces, classes or structs), without the code that converts JSON to and from them. Default false. JavaScript has no types, PHP has no types-only code, and Rust's code is only types (serde converts the JSON), so theirs is the same either way.
   # @return [TemplateModelCode]
   describe 'get_template_model_code test' do
@@ -420,7 +568,7 @@ describe 'Client' do
   # Returns a JPEG image of each page of a PDF template's PDF, with temporary links to download them: the draft's PDF, or a published version's. Use them to see the pages that fields are placed on. 
   # @param template_id The template's ID.
   # @param [Hash] opts the optional parameters
-  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
   # @return [TemplatePageImages]
   describe 'get_template_page_images test' do
     it 'should work' do
@@ -446,7 +594,7 @@ describe 'Client' do
   # Returns the JSON Schema that a submission's `data` must match. Use it to check data before you create submissions, or to build a form for the template's fields. 
   # @param template_id The template's ID.
   # @param [Hash] opts the optional parameters
-  # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published), the version a submission uses by default.
+  # @option opts [String] :version The template version: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `latest`, the version a submission uses by default.
   # @return [Hash<String, Object>]
   describe 'get_template_schema test' do
     it 'should work' do
@@ -461,6 +609,19 @@ describe 'Client' do
   # @param [Hash] opts the optional parameters
   # @return [Webhook]
   describe 'get_webhook test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for list_account_email_actions
+  # List account email actions
+  # Returns your account's email actions, newest first, one page at a time. Each one emails the files of every template's processed submissions, or of the templates and folders it lists. A template's own email actions are listed with the template (`GET /templates/{template_id}/email_actions`). 
+  # @param [Hash] opts the optional parameters
+  # @option opts [Integer] :limit How many items to return (1-100, default 50).
+  # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+  # @return [EmailActionList]
+  describe 'list_account_email_actions test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -487,6 +648,33 @@ describe 'Client' do
   # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
   # @return [CustomFileList]
   describe 'list_custom_files test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for list_email_actions
+  # List email actions
+  # Returns the email actions of a template's draft, and your account's email actions that send for it, newest first, one page at a time. Each one emails every processed submission's files to the people it lists. An account email action (`template_id` null) shows the settings it sends for this template, with the template's changes in `customization`. 
+  # @param template_id The template's ID.
+  # @param [Hash] opts the optional parameters
+  # @option opts [Integer] :limit How many items to return (1-100, default 50).
+  # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+  # @return [EmailActionList]
+  describe 'list_email_actions test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for list_email_domains
+  # List email domains
+  # Returns the domains in your account that email actions can send from once they're verified, newest first, one page at a time. 
+  # @param [Hash] opts the optional parameters
+  # @option opts [Integer] :limit How many items to return (1-100, default 50).
+  # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
+  # @return [EmailDomainList]
+  describe 'list_email_domains test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -531,7 +719,7 @@ describe 'Client' do
   # Returns a template's fields with all of their settings, page by page: the draft's fields, or a published version's. A PDF template's fields are placed on its pages: GET /templates/{template_id}/page_images has images of the pages. 
   # @param template_id The template's ID.
   # @param [Hash] opts the optional parameters
-  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `draft`.
+  # @option opts [String] :version A published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `draft`.
   # @return [TemplateFields]
   describe 'list_template_fields test' do
     it 'should work' do
@@ -563,7 +751,7 @@ describe 'Client' do
   # List templates
   # Returns the templates in your account (their drafts), newest first, one page at a time. Each one is a summary: get a template by its ID for its settings, its PDF in full, its HTML, defaults and published versions. 
   # @param [Hash] opts the optional parameters
-  # @option opts [String] :query Only list templates whose name contains this text (ignoring case).
+  # @option opts [String] :query Only list templates whose name contains this text (ignoring case). `%` and `_` match themselves.
   # @option opts [String] :parent_folder_id Only list the templates in this folder (not in its subfolders).
   # @option opts [Integer] :limit How many items to return (1-100, default 50).
   # @option opts [String] :cursor The previous page's `next_cursor`, to get the next page. It's the ID of that page's last item, so get the next page before you delete or change the items on this one.
@@ -598,6 +786,7 @@ describe 'Client' do
   # @param folder_id The folder's ID.
   # @param body Where to move the folder.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Folder]
   describe 'move_folder test' do
     it 'should work' do
@@ -611,6 +800,7 @@ describe 'Client' do
   # @param template_id The template's ID.
   # @param body Where to move the template.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Template]
   describe 'move_template test' do
     it 'should work' do
@@ -624,6 +814,7 @@ describe 'Client' do
   # @param template_id The template's ID.
   # @param body The version to publish.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [TemplateVersion]
   describe 'publish_template_version test' do
     it 'should work' do
@@ -637,6 +828,7 @@ describe 'Client' do
   # @param template_id The template's ID.
   # @param body The fields to remove from the template's draft.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [TemplateFields]
   describe 'remove_template_fields test' do
     it 'should work' do
@@ -650,6 +842,7 @@ describe 'Client' do
   # @param folder_id The folder's ID.
   # @param body The folder's new name.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Folder]
   describe 'rename_folder test' do
     it 'should work' do
@@ -663,6 +856,7 @@ describe 'Client' do
   # @param template_id The template's ID.
   # @param body The new order of the fields in the template's draft.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [TemplateFields]
   describe 'reorder_template_fields test' do
     it 'should work' do
@@ -676,8 +870,37 @@ describe 'Client' do
   # @param template_id The template's ID.
   # @param body The version to restore.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Template]
   describe 'restore_template_version test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for send_account_email_action_test_email
+  # Send a test email for an account email action
+  # Sends the account email action's email to the API token's user only, as it would go for one template it sends for, with each field shown as its name in brackets, so you can check how it looks. When the email action attaches its files and that template is a PDF template, the test attaches the template's blank PDF. It isn't recorded on any submission. 
+  # @param email_action_id The account email action's ID.
+  # @param [Hash] opts the optional parameters
+  # @option opts [SendAccountEmailActionTestEmailRequest] :body Which template the test email is for.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailActionTestEmail]
+  describe 'send_account_email_action_test_email test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for send_email_action_test_email
+  # Send a test email
+  # Sends the email action's email to the API token's user only, with each field and metadata value shown as its name in brackets, so you can check how it looks. When the email action attaches its files and the template is a PDF template, the test attaches the template's blank PDF. It isn't recorded on any submission. Without a paid plan, the user needs a confirmed email address. 
+  # @param template_id The template's ID.
+  # @param email_action_id The email action's ID.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailActionTestEmail]
+  describe 'send_email_action_test_email test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end
@@ -694,12 +917,57 @@ describe 'Client' do
     end
   end
 
+  # unit tests for update_account_email_action
+  # Update an account email action
+  # Changes one of your account's email actions. Properties left out keep their values. Its templates' customizations keep their own changes, and follow the rest. Set `enabled` to false to stop its emails for every template. 
+  # @param email_action_id The account email action's ID.
+  # @param body The settings to change. Properties left out keep their values.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailAction]
+  describe 'update_account_email_action test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for update_email_action
+  # Update an email action
+  # Changes an email action's settings. Properties left out keep their values. Set `enabled` to false to stop its emails, or to true to turn it back on after DocSpring turned it off. 
+  # @param template_id The template's ID.
+  # @param email_action_id The email action's ID.
+  # @param body The settings to change. Properties left out keep their values.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailAction]
+  describe 'update_email_action test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for update_email_action_customization
+  # Customize an account email action for a template
+  # Changes one of your account's email actions for this template only, replacing any changes the template had. Each setting you send is changed for this template, and the ones you leave out follow the account email action, including later changes to it. Set `enabled` to false to stop it sending for this template. 
+  # @param template_id The template's ID.
+  # @param email_action_id The ID of one of your account's email actions that sends for the template.
+  # @param body The template's changes to the account email action, replacing any it had. Each setting you send is changed for this template, and the ones you leave out follow the account email action. `enabled: false` stops it sending for this template; left out, it sends.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailAction]
+  describe 'update_email_action_customization test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
   # unit tests for update_signature_request
   # Update a signature request
   # Changes a pending signature request's metadata, or how your app authenticated the person (for the audit trail). Once the person has opened it, only its metadata can be changed, and a completed or declined signature request can't be changed. 
   # @param signature_request_id The signature request's ID.
   # @param body The settings to change. Properties left out keep their values.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [SignatureRequest]
   describe 'update_signature_request test' do
     it 'should work' do
@@ -709,10 +977,11 @@ describe 'Client' do
 
   # unit tests for update_template
   # Update a template
-  # Changes a template's draft. Properties left out keep their values. `defaults` and `html_engine_options` replace the whole object, and `field_groups` changes only the groups it lists. Settings such as `webhook_url`, `public_submissions` and `expire_after` apply to every published version too, and setting `parent_folder_id` moves the template and all of its published versions. 
+  # Changes a template's draft. Properties left out keep their values. `defaults`, `html_engine_options` and a page design's `layout` replace the whole object, and `field_groups` changes only the groups it lists. A new layout adds a field for each new value it reads. Settings such as `webhook_url`, `public_submissions` and `expire_after` apply to every published version too, and setting `parent_folder_id` moves the template and all of its published versions. 
   # @param template_id The template's ID.
   # @param body The settings to change. Properties left out keep their values.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Template]
   describe 'update_template test' do
     it 'should work' do
@@ -727,6 +996,7 @@ describe 'Client' do
   # @param body The new PDF, or a Word template's new Word document, as one of `cache_id`, `document_url` and `document_base64`.
   # @param [Hash] opts the optional parameters
   # @option opts [Boolean] :wait Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Template]
   describe 'update_template_document test' do
     it 'should work' do
@@ -740,6 +1010,7 @@ describe 'Client' do
   # @param template_id The template's ID.
   # @param body The fields to change in the template's draft.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [TemplateFields]
   describe 'update_template_fields test' do
     it 'should work' do
@@ -753,6 +1024,7 @@ describe 'Client' do
   # @param webhook_id The webhook's ID.
   # @param body The settings to change. Properties left out keep their values.
   # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Webhook]
   describe 'update_webhook test' do
     it 'should work' do
@@ -775,6 +1047,7 @@ describe 'Client' do
   # @option opts [FieldSetupNaming] :field_naming With `detect_fields`, how the fields are named. `ai` (the default) names them and sets their types and settings with AI; `preserve` keeps the names of the PDF's form fields, and AI only names the fields it detected. `preserve` needs `field_source` `auto` or `pdf_form_fields`.
   # @option opts [FieldSetupLogic] :field_logic With `detect_fields`, whether AI reads the whole form once the fields are named and sets up conditional logic and required fields (`ai`) or not (`none`). Default: your account's template settings.
   # @option opts [OutputFormat] :output_format What each submission of a Word template makes unless its request sets `output_formats`: `docx` (a Word document), `odt` (an OpenDocument file, converted from the Word document) or `pdf`. Required when `document` is a Word document.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Template]
   describe 'upload_template test' do
     it 'should work' do
@@ -790,6 +1063,7 @@ describe 'Client' do
   # @param [Hash] opts the optional parameters
   # @option opts [Boolean] :wait Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
   # @option opts [Boolean] :reimport_fields Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields. Only for PDF templates: a Word template adds a field for each new tag.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [Template]
   describe 'upload_template_document test' do
     it 'should work' do
@@ -803,9 +1077,23 @@ describe 'Client' do
   # @param template_id The template's ID.
   # @param body The submission's data and settings.
   # @param [Hash] opts the optional parameters
-  # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` or `draft`. Default `latest` (the draft when no version has been published).
+  # @option opts [String] :version The template version to use: a published version (`1.2.0`, or `1` for the latest 1.x.x), `latest` (the newest published version, or the draft when none has been published) or `draft`. Default `latest`.
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
   # @return [SubmissionValidation]
   describe 'validate_submission test' do
+    it 'should work' do
+      # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
+    end
+  end
+
+  # unit tests for verify_email_domain
+  # Verify an email domain
+  # Checks the email domain's DNS records now, instead of waiting for the next check. If DocSpring has stopped looking for its DKIM records (3 days after they were created), it starts again with new ones: replace the CNAME records with them. 
+  # @param email_domain_id The email domain's ID.
+  # @param [Hash] opts the optional parameters
+  # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then.
+  # @return [EmailDomain]
+  describe 'verify_email_domain test' do
     it 'should work' do
       # assertion here. ref: https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/
     end

@@ -16,7 +16,7 @@ require 'time'
 module DocSpring
   # What went wrong.
   class ErrorInfo < ApiModelBase
-    # A machine-readable error code. Clients should handle codes they don't know: new codes can be added. `invalid_data`: a submission's data doesn't match its template's fields. The submission is still recorded. `insufficient_credits` (402): your credit balance can't cover a live PDF. The record was saved and waits for credits in the `insufficient_credits` state: its ID is in `submission_id`, `submission_batch_id` or `combined_pdf_id`. `upgrade_required` (403): your plan doesn't include this, such as more templates, another active integration (webhooks count) or the embedded template editor. `account_suspended` (403): the account is suspended, so it can't create submissions. `polling_timeout`: on a sync.api host, the files weren't ready in time. The record was created and is still being processed: its ID is in `submission_id`, `submission_batch_id`, `combined_pdf_id` or `template_id`. Without one of these IDs, the request itself got no answer in time, and the record may or may not have been created. `idempotency_key_in_use` (409): a request with the same Idempotency-Key is still being processed. Send the request again in a few seconds; when the first request has already created its record, its ID is in `submission_id`, `submission_batch_id` or `combined_pdf_id`. `idempotency_key_reused` (422): the Idempotency-Key was already used for a different request.
+    # A machine-readable error code. Clients should handle codes they don't know: new codes can be added. `invalid_data`: a submission's data doesn't match its template's fields. The submission is still recorded. `insufficient_credits` (402): your credit balance can't cover a live PDF. The record was saved and waits for credits in the `insufficient_credits` state: its ID is in `submission_id`, `submission_batch_id` or `combined_pdf_id`. `insufficient_credits_to_send` (402): your credit balance can't cover a live signature request that DocSpring would email, so nothing was saved. Add credits and send the request again. `upgrade_required` (403): your plan doesn't include this, such as more templates, another active integration (webhooks count), the embedded template editor, email actions, or live signature requests before your account's first payment. `account_suspended` (403): the account is suspended, so it can't create submissions. `polling_timeout`: on a sync.api host, the files weren't ready in time. The record was created and is still being processed: its ID is in `submission_id`, `submission_batch_id`, `combined_pdf_id` or `template_id`. Without one of these IDs, the request itself got no answer in time, and the record may or may not have been created. `idempotency_key_in_use` (409): the first request with the same Idempotency-Key is still being processed, and the response has a `Retry-After` header: send the request again then. Without the header, the first request was processed but its response is no longer kept. When the first request created a record, its ID is in `submission_id`, `submission_batch_id`, `combined_pdf_id`, `template_id`, `folder_id`, `custom_file_id` or `webhook_id`. `idempotency_key_reused` (422): the Idempotency-Key was already used for a different request. `rate_limited` (429): too many API requests. Wait for the `Retry-After` header's seconds. `daily_email_limit_reached` (429): a submission that DocSpring would email would take your account over its daily email limit, so nothing was saved. Send it again after the `Retry-After` header's seconds (midnight UTC), or send the signing links yourself (`send_email: false`).
     attr_accessor :code
 
     # A human-readable explanation, safe to show to developers.
@@ -28,17 +28,26 @@ module DocSpring
     # The ID of the request. Include it when you contact support.
     attr_accessor :request_id
 
-    # When a submission's data fails validation, the submission is still recorded (state `invalid_data`) so you can see it in the dashboard. This is its ID. With `insufficient_credits`, the submission that waits for credits. With `polling_timeout` or `idempotency_key_in_use`, the submission that's still being processed.
+    # When a submission's data fails validation, the submission is still recorded (state `invalid_data`) so you can see it in the dashboard. This is its ID. With `insufficient_credits`, the submission that waits for credits. With `polling_timeout`, the submission that's still being processed. With `idempotency_key_in_use`, the submission the first request with the key created.
     attr_accessor :submission_id
 
-    # The ID of the recorded batch, when items in a batch fail validation. With `insufficient_credits`, the batch whose submissions wait for credits. With `polling_timeout` or `idempotency_key_in_use`, the batch that's still being processed.
+    # The ID of the recorded batch, when items in a batch fail validation. With `insufficient_credits`, the batch whose submissions wait for credits. With `polling_timeout`, the batch that's still being processed. With `idempotency_key_in_use`, the batch the first request with the key created.
     attr_accessor :submission_batch_id
 
-    # With `insufficient_credits`, the combined PDF that waits for credits. With `polling_timeout` or `idempotency_key_in_use`, the combined PDF that's still being processed.
+    # With `insufficient_credits`, the combined PDF that waits for credits. With `polling_timeout`, the combined PDF that's still being processed. With `idempotency_key_in_use`, the combined PDF the first request with the key created.
     attr_accessor :combined_pdf_id
 
-    # With `polling_timeout`, the template whose PDF is still being processed.
+    # With `polling_timeout`, the template whose PDF is still being processed. With `idempotency_key_in_use`, the template the first request with the key created.
     attr_accessor :template_id
+
+    # With `idempotency_key_in_use`, the folder the first request with the key created.
+    attr_accessor :folder_id
+
+    # With `idempotency_key_in_use`, the custom file the first request with the key created.
+    attr_accessor :custom_file_id
+
+    # With `idempotency_key_in_use`, the webhook the first request with the key created.
+    attr_accessor :webhook_id
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -72,7 +81,10 @@ module DocSpring
         :'submission_id' => :'submission_id',
         :'submission_batch_id' => :'submission_batch_id',
         :'combined_pdf_id' => :'combined_pdf_id',
-        :'template_id' => :'template_id'
+        :'template_id' => :'template_id',
+        :'folder_id' => :'folder_id',
+        :'custom_file_id' => :'custom_file_id',
+        :'webhook_id' => :'webhook_id'
       }
     end
 
@@ -96,7 +108,10 @@ module DocSpring
         :'submission_id' => :'String',
         :'submission_batch_id' => :'String',
         :'combined_pdf_id' => :'String',
-        :'template_id' => :'String'
+        :'template_id' => :'String',
+        :'folder_id' => :'String',
+        :'custom_file_id' => :'String',
+        :'webhook_id' => :'String'
       }
     end
 
@@ -174,6 +189,18 @@ module DocSpring
       if attributes.key?(:'template_id')
         self.template_id = attributes[:'template_id']
       end
+
+      if attributes.key?(:'folder_id')
+        self.folder_id = attributes[:'folder_id']
+      end
+
+      if attributes.key?(:'custom_file_id')
+        self.custom_file_id = attributes[:'custom_file_id']
+      end
+
+      if attributes.key?(:'webhook_id')
+        self.webhook_id = attributes[:'webhook_id']
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -248,7 +275,10 @@ module DocSpring
           submission_id == o.submission_id &&
           submission_batch_id == o.submission_batch_id &&
           combined_pdf_id == o.combined_pdf_id &&
-          template_id == o.template_id
+          template_id == o.template_id &&
+          folder_id == o.folder_id &&
+          custom_file_id == o.custom_file_id &&
+          webhook_id == o.webhook_id
     end
 
     # @see the `==` method
@@ -260,7 +290,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [code, message, details, request_id, submission_id, submission_batch_id, combined_pdf_id, template_id].hash
+      [code, message, details, request_id, submission_id, submission_batch_id, combined_pdf_id, template_id, folder_id, custom_file_id, webhook_id].hash
     end
 
     # Builds the object from hash

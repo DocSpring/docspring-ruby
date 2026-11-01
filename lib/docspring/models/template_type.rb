@@ -18,9 +18,10 @@ module DocSpring
     PDF = "pdf".freeze
     HTML = "html".freeze
     DOCX = "docx".freeze
+    PAGE_DESIGNER = "page_designer".freeze
 
     def self.all_vars
-      @all_vars ||= [PDF, HTML, DOCX].freeze
+      @all_vars ||= [PDF, HTML, DOCX, PAGE_DESIGNER].freeze
     end
 
     # Builds the enum from string

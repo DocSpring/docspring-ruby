@@ -21,9 +21,11 @@ module DocSpring
     DECLINE_REQUEST = "decline_request".freeze
     SIGN_REQUEST = "sign_request".freeze
     ALL_COMPLETED = "all_completed".freeze
+    EMAIL_BOUNCED = "email_bounced".freeze
+    EMAIL_MARKED_AS_SPAM = "email_marked_as_spam".freeze
 
     def self.all_vars
-      @all_vars ||= [SEND_REQUEST, VIEW_REQUEST, ACCEPTED_TERMS, DECLINE_REQUEST, SIGN_REQUEST, ALL_COMPLETED].freeze
+      @all_vars ||= [SEND_REQUEST, VIEW_REQUEST, ACCEPTED_TERMS, DECLINE_REQUEST, SIGN_REQUEST, ALL_COMPLETED, EMAIL_BOUNCED, EMAIL_MARKED_AS_SPAM].freeze
     end
 
     # Builds the enum from string

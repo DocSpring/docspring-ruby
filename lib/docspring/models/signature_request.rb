@@ -25,7 +25,7 @@ module DocSpring
     # The name of the person the request is for.
     attr_accessor :name
 
-    # Their email address.
+    # Their email address. Null when they have none.
     attr_accessor :email
 
     # The fields this person fills in. Null for a signature request created with API v1 without a field list: it asks for every field the submission's data doesn't have.
@@ -39,6 +39,18 @@ module DocSpring
 
     # The signer's position, from 0: `Signer 1` is 0. The template's `@@signature_requests/<sort_order>` fields print this signature request's details.
     attr_accessor :sort_order
+
+    # Whether DocSpring emails this person their signing link.
+    attr_accessor :send_email
+
+    # When this person signs, when the submission's `signing_order` is `sequential`: everyone in step 1 first, then step 2, and so on. Null when everyone can sign at once.
+    attr_accessor :signing_step
+
+    # When DocSpring first emailed this person their signing link. Null until it has, and when it doesn't email them (`send_email` is false).
+    attr_accessor :sent_at
+
+    # What happened to the latest email DocSpring sent this person with their signing link: `sent` until the email service reports on it, then `delayed` (still trying), `delivered`, `undelivered` (it stopped trying, as with a full mailbox), `bounced` (the address doesn't exist) or `complained` (marked as spam). `failed` means DocSpring couldn't send the first email with their link, and `unknown` that it couldn't tell whether that email went: neither is sent again. Null until DocSpring has emailed them or tried to.
+    attr_accessor :email_status
 
     # `pending` until the person completes the signature request (`completed`) or declines it (`declined`).
     attr_accessor :state
@@ -124,6 +136,10 @@ module DocSpring
         :'metadata' => :'metadata',
         :'role' => :'role',
         :'sort_order' => :'sort_order',
+        :'send_email' => :'send_email',
+        :'signing_step' => :'signing_step',
+        :'sent_at' => :'sent_at',
+        :'email_status' => :'email_status',
         :'state' => :'state',
         :'data' => :'data',
         :'viewed_at' => :'viewed_at',
@@ -165,6 +181,10 @@ module DocSpring
         :'metadata' => :'Hash<String, Object>',
         :'role' => :'String',
         :'sort_order' => :'Integer',
+        :'send_email' => :'Boolean',
+        :'signing_step' => :'Integer',
+        :'sent_at' => :'Time',
+        :'email_status' => :'SignatureRequestEmailStatus',
         :'state' => :'SignatureRequestState',
         :'data' => :'Hash<String, Object>',
         :'viewed_at' => :'Time',
@@ -191,6 +211,9 @@ module DocSpring
         :'name',
         :'email',
         :'fields',
+        :'signing_step',
+        :'sent_at',
+        :'email_status',
         :'data',
         :'viewed_at',
         :'completed_at',
@@ -282,6 +305,30 @@ module DocSpring
         self.sort_order = attributes[:'sort_order']
       else
         self.sort_order = nil
+      end
+
+      if attributes.key?(:'send_email')
+        self.send_email = attributes[:'send_email']
+      else
+        self.send_email = nil
+      end
+
+      if attributes.key?(:'signing_step')
+        self.signing_step = attributes[:'signing_step']
+      else
+        self.signing_step = nil
+      end
+
+      if attributes.key?(:'sent_at')
+        self.sent_at = attributes[:'sent_at']
+      else
+        self.sent_at = nil
+      end
+
+      if attributes.key?(:'email_status')
+        self.email_status = attributes[:'email_status']
+      else
+        self.email_status = nil
       end
 
       if attributes.key?(:'state')
@@ -414,6 +461,10 @@ module DocSpring
         invalid_properties.push('invalid value for "sort_order", sort_order cannot be nil.')
       end
 
+      if @send_email.nil?
+        invalid_properties.push('invalid value for "send_email", send_email cannot be nil.')
+      end
+
       if @state.nil?
         invalid_properties.push('invalid value for "state", state cannot be nil.')
       end
@@ -446,6 +497,7 @@ module DocSpring
       return false if @metadata.nil?
       return false if @role.nil?
       return false if @sort_order.nil?
+      return false if @send_email.nil?
       return false if @state.nil?
       return false if @auth_type.nil?
       return false if @auth_second_factor_type.nil?
@@ -502,6 +554,16 @@ module DocSpring
       end
 
       @sort_order = sort_order
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] send_email Value to be assigned
+    def send_email=(send_email)
+      if send_email.nil?
+        fail ArgumentError, 'send_email cannot be nil'
+      end
+
+      @send_email = send_email
     end
 
     # Custom attribute writer method with validation
@@ -567,6 +629,10 @@ module DocSpring
           metadata == o.metadata &&
           role == o.role &&
           sort_order == o.sort_order &&
+          send_email == o.send_email &&
+          signing_step == o.signing_step &&
+          sent_at == o.sent_at &&
+          email_status == o.email_status &&
           state == o.state &&
           data == o.data &&
           viewed_at == o.viewed_at &&
@@ -595,7 +661,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, submission_id, name, email, fields, metadata, role, sort_order, state, data, viewed_at, completed_at, declined_at, auth_type, auth_second_factor_type, auth_provider, auth_session_started_at, auth_session_id_hash, auth_user_id_hash, auth_username_hash, auth_phone_number_hash, ip_address, user_agent, created_at, updated_at].hash
+      [id, submission_id, name, email, fields, metadata, role, sort_order, send_email, signing_step, sent_at, email_status, state, data, viewed_at, completed_at, declined_at, auth_type, auth_second_factor_type, auth_provider, auth_session_started_at, auth_session_id_hash, auth_user_id_hash, auth_username_hash, auth_phone_number_hash, ip_address, user_agent, created_at, updated_at].hash
     end
 
     # Builds the object from hash

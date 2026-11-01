@@ -246,6 +246,10 @@ module DocSpring
       def check_object(schema, data, pointer, location, details)
         missing = Array(schema['required']).reject { |name| data.key?(name) }
         missing.each { |name| details << detail(location, "#{pointer}/#{escape(name)}", 'required', 'is required') }
+        # Only an update's body has minProperties, and it's always 1 (api_clients/scripts/extract_request_schemas)
+        if schema['minProperties'] && data.size < schema['minProperties']
+          details << detail(location, pointer, 'minProperties', 'must have at least one property to change')
+        end
 
         properties = schema['properties'] || {}
         data.each do |name, value|

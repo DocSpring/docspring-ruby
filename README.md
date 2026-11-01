@@ -10,7 +10,7 @@ e-signatures.
 The code in this repository is generated from DocSpring's OpenAPI spec ([About this SDK](#about-this-sdk)). Issues and
 pull requests are welcome.
 
-Version 4.3.0. Requires Ruby >= 2.7.
+Version 4.4.0. Requires Ruby >= 2.7.
 
 ## Install and configure
 
@@ -89,8 +89,11 @@ Ruby code for every method.
 | ------ | ----------- |
 | [`add_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#add_template_fields) | Add fields to a template |
 | [`copy_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#copy_template) | Copy a template |
+| [`create_account_email_action`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_account_email_action) | Create an account email action |
 | [`create_combined_pdf`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_combined_pdf) | Combine PDFs |
 | [`create_custom_file_from_upload`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_custom_file_from_upload) | Create a custom file from an upload |
+| [`create_email_action`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_email_action) | Create an email action |
+| [`create_email_domain`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_email_domain) | Add an email domain |
 | [`create_folder`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_folder) | Create a folder |
 | [`create_signature_request_event`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_signature_request_event) | Record a signature request event |
 | [`create_signature_request_token`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_signature_request_token) | Create a signature request token |
@@ -99,7 +102,11 @@ Ruby code for every method.
 | [`create_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_template) | Create a template |
 | [`create_template_preview`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_template_preview) | Preview a template with data |
 | [`create_webhook`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_webhook) | Create a webhook |
+| [`delete_account_email_action`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#delete_account_email_action) | Delete an account email action |
 | [`delete_custom_file`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#delete_custom_file) | Delete a custom file |
+| [`delete_email_action`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#delete_email_action) | Delete an email action |
+| [`delete_email_action_customization`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#delete_email_action_customization) | Reset an account email action's customization |
+| [`delete_email_domain`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#delete_email_domain) | Remove an email domain |
 | [`delete_folder`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#delete_folder) | Delete a folder |
 | [`delete_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#delete_template) | Delete a template |
 | [`delete_webhook`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#delete_webhook) | Delete a webhook |
@@ -107,8 +114,11 @@ Ruby code for every method.
 | [`expire_submission`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#expire_submission) | Expire a submission |
 | [`generate_submission_files`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#generate_submission_files) | Generate more files |
 | [`generate_submission_preview`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#generate_submission_preview) | Generate a preview PDF |
+| [`get_account_email_action`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_account_email_action) | Get an account email action |
 | [`get_combined_pdf`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_combined_pdf) | Get a combined PDF |
 | [`get_custom_file`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_custom_file) | Get a custom file |
+| [`get_email_action`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_email_action) | Get an email action |
+| [`get_email_domain`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_email_domain) | Get an email domain |
 | [`get_folder`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_folder) | Get a folder |
 | [`get_presign_url`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_presign_url) | Get a presigned URL to upload a file |
 | [`get_signature_request`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_signature_request) | Get a signature request |
@@ -121,8 +131,11 @@ Ruby code for every method.
 | [`get_template_preview`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_preview) | Get a template preview |
 | [`get_template_schema`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_schema) | Get the JSON Schema of a template's submission data |
 | [`get_webhook`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_webhook) | Get a webhook |
+| [`list_account_email_actions`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_account_email_actions) | List account email actions |
 | [`list_combined_pdfs`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_combined_pdfs) | List combined PDFs |
 | [`list_custom_files`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_custom_files) | List custom files |
+| [`list_email_actions`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_email_actions) | List email actions |
+| [`list_email_domains`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_email_domains) | List email domains |
 | [`list_folders`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_folders) | List folders |
 | [`list_submissions`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_submissions) | List submissions |
 | [`list_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_template_fields) | List a template's fields |
@@ -136,7 +149,12 @@ Ruby code for every method.
 | [`rename_folder`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#rename_folder) | Rename a folder |
 | [`reorder_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#reorder_template_fields) | Reorder a template's fields |
 | [`restore_template_version`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#restore_template_version) | Restore a template version |
+| [`send_account_email_action_test_email`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#send_account_email_action_test_email) | Send a test email for an account email action |
+| [`send_email_action_test_email`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#send_email_action_test_email) | Send a test email |
 | [`test_authentication`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#test_authentication) | Test authentication |
+| [`update_account_email_action`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_account_email_action) | Update an account email action |
+| [`update_email_action`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_email_action) | Update an email action |
+| [`update_email_action_customization`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_email_action_customization) | Customize an account email action for a template |
 | [`update_signature_request`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_signature_request) | Update a signature request |
 | [`update_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_template) | Update a template |
 | [`update_template_document`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_template_document) | Replace a template's document |
@@ -145,6 +163,7 @@ Ruby code for every method.
 | [`upload_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#upload_template) | Create a template from an uploaded PDF or Word document |
 | [`upload_template_document`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#upload_template_document) | Replace a template's document with an uploaded file |
 | [`validate_submission`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#validate_submission) | Check a submission without creating it |
+| [`verify_email_domain`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#verify_email_domain) | Verify an email domain |
 
 ## Errors
 

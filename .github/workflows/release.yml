@@ -1,0 +1,80 @@
+# Written by DocSpring/docspring's api_clients/scripts/generate from api_clients/github_workflows/ruby/release.yml:
+# change it there.
+#
+# Builds the gem on every push and pull request. A v* tag (pushed by the monorepo's api_clients/scripts/release) also
+# pushes it to RubyGems.org with trusted publishing, in the release environment, and waits until RubyGems.org serves
+# it.
+name: Release
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # The gemspec lists the gem's files with git ls-files
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1.336.0
+        with:
+          ruby-version: '3.4'
+      - name: Check the tag matches the package version
+        if: github.ref_type == 'tag'
+        run: |
+          VERSION="$(ruby -e 'puts Gem::Specification.load("docspring.gemspec").version')"
+          if [ "v$VERSION" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::The tag is $GITHUB_REF_NAME, but the package version is $VERSION"
+            exit 1
+          fi
+      - run: gem build docspring.gemspec
+      - if: github.ref_type == 'tag'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: package
+          path: docspring-*.gem
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1.336.0
+        with:
+          ruby-version: '3.4'
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: package
+      - uses: rubygems/configure-rubygems-credentials@dc5a8d8553e6ee01fc26761a49e99e733d17954a # v2.1.0
+      - name: Push to RubyGems.org
+        run: gem push "docspring-${GITHUB_REF_NAME#v}.gem"
+
+  verify:
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Wait until RubyGems.org serves the version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          for _ in $(seq 60); do
+            if curl -fsS -o /dev/null "https://rubygems.org/api/v2/rubygems/docspring/versions/$VERSION.json"; then
+              echo "RubyGems.org serves docspring $VERSION"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::RubyGems.org doesn't serve docspring $VERSION after 10 minutes"
+          exit 1

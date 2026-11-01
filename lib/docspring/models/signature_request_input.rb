@@ -19,7 +19,7 @@ module DocSpring
     # The name of the person the request is for.
     attr_accessor :name
 
-    # Their email address.
+    # Their email address. Null when they have none.
     attr_accessor :email
 
     # The fields this person fills in. Each field can only be in one signature request, and a field that `data` fills in needs `prefilled_values_editable`.
@@ -61,6 +61,12 @@ module DocSpring
     # Let the person change the values that `data` already has for fields in `fields`. Without it, those fields are a 422.
     attr_accessor :prefilled_values_editable
 
+    # Whether DocSpring emails this person their signing link. Default: the submission's `send_email`. Set it to false for someone who signs in your app (embedded signing) or whose link you send yourself. When DocSpring emails them, `email` is required and `auth_type` is `email_link` (the default). Otherwise `auth_type` is required.
+    attr_accessor :send_email
+
+    # When this person signs, with `signing_order: sequential`: everyone in step 1 first, then step 2, and so on. People in the same step sign in any order. Only the order of the numbers matters. Either every signature request has a `signing_step` or none does; without them, each person is a step of their own, in the order of `signature_requests`.
+    attr_accessor :signing_step
+
     class EnumAttributeValidator
       attr_reader :datatype
       attr_reader :allowable_values
@@ -100,7 +106,9 @@ module DocSpring
         :'auth_username_hash' => :'auth_username_hash',
         :'auth_phone_number_hash' => :'auth_phone_number_hash',
         :'ignore_unknown_fields' => :'ignore_unknown_fields',
-        :'prefilled_values_editable' => :'prefilled_values_editable'
+        :'prefilled_values_editable' => :'prefilled_values_editable',
+        :'send_email' => :'send_email',
+        :'signing_step' => :'signing_step'
       }
     end
 
@@ -131,7 +139,9 @@ module DocSpring
         :'auth_username_hash' => :'String',
         :'auth_phone_number_hash' => :'String',
         :'ignore_unknown_fields' => :'Boolean',
-        :'prefilled_values_editable' => :'Boolean'
+        :'prefilled_values_editable' => :'Boolean',
+        :'send_email' => :'Boolean',
+        :'signing_step' => :'Integer'
       }
     end
 
@@ -203,8 +213,6 @@ module DocSpring
 
       if attributes.key?(:'auth_type')
         self.auth_type = attributes[:'auth_type']
-      else
-        self.auth_type = nil
       end
 
       if attributes.key?(:'auth_second_factor_type')
@@ -242,6 +250,14 @@ module DocSpring
       if attributes.key?(:'prefilled_values_editable')
         self.prefilled_values_editable = attributes[:'prefilled_values_editable']
       end
+
+      if attributes.key?(:'send_email')
+        self.send_email = attributes[:'send_email']
+      end
+
+      if attributes.key?(:'signing_step')
+        self.signing_step = attributes[:'signing_step']
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -253,10 +269,6 @@ module DocSpring
         invalid_properties.push('invalid value for "fields", fields cannot be nil.')
       end
 
-      if @auth_type.nil?
-        invalid_properties.push('invalid value for "auth_type", auth_type cannot be nil.')
-      end
-
       invalid_properties
     end
 
@@ -265,7 +277,6 @@ module DocSpring
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
       return false if @fields.nil?
-      return false if @auth_type.nil?
       true
     end
 
@@ -277,16 +288,6 @@ module DocSpring
       end
 
       @fields = fields
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] auth_type Value to be assigned
-    def auth_type=(auth_type)
-      if auth_type.nil?
-        fail ArgumentError, 'auth_type cannot be nil'
-      end
-
-      @auth_type = auth_type
     end
 
     # Checks equality by comparing each attribute.
@@ -308,7 +309,9 @@ module DocSpring
           auth_username_hash == o.auth_username_hash &&
           auth_phone_number_hash == o.auth_phone_number_hash &&
           ignore_unknown_fields == o.ignore_unknown_fields &&
-          prefilled_values_editable == o.prefilled_values_editable
+          prefilled_values_editable == o.prefilled_values_editable &&
+          send_email == o.send_email &&
+          signing_step == o.signing_step
     end
 
     # @see the `==` method
@@ -320,7 +323,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [name, email, fields, metadata, role, auth_type, auth_second_factor_type, auth_provider, auth_session_started_at, auth_session_id_hash, auth_user_id_hash, auth_username_hash, auth_phone_number_hash, ignore_unknown_fields, prefilled_values_editable].hash
+      [name, email, fields, metadata, role, auth_type, auth_second_factor_type, auth_provider, auth_session_started_at, auth_session_id_hash, auth_user_id_hash, auth_username_hash, auth_phone_number_hash, ignore_unknown_fields, prefilled_values_editable, send_email, signing_step].hash
     end
 
     # Builds the object from hash

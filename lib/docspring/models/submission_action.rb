@@ -14,7 +14,7 @@ require 'date'
 require 'time'
 
 module DocSpring
-  # An upload of a PDF to your storage, such as an S3 bucket.
+  # An upload of a PDF to your storage, such as an S3 bucket, or an email action's email.
   class SubmissionAction < ApiModelBase
     # The upload's ID.
     attr_accessor :id
@@ -22,13 +22,16 @@ module DocSpring
     # The ID of the account integration it used.
     attr_accessor :integration_id
 
-    # `pending` until the upload has run, then `processed`. `failed`: your storage rejected it. `error`: it failed in DocSpring.
+    # The ID of the email action that sent the email. Null for an upload, or once the email action is deleted.
+    attr_accessor :email_action_id
+
+    # `pending` until the upload or email has run, then `processed`. `failed`: your storage or the email service rejected it. `error`: it failed in DocSpring.
     attr_accessor :state
 
-    # The kind of storage, such as `aws_s3_upload` for an S3 bucket.
+    # The kind of storage, such as `aws_s3_upload` for an S3 bucket, or `email` for an email action's email.
     attr_accessor :action_type
 
-    # Where the PDF was uploaded, such as the S3 bucket and key.
+    # Where the PDF was uploaded, such as the S3 bucket and key. For an email: its `subject`, `recipients`, each with its `address`, `kind` (`to`, `cc` or `bcc`), `source`, `field` or `metadata` when the address came from one, and `status` (`sent`, `delivered`, `bounced`, `complained`, `skipped` and others), `sent_at`, `delivery`, and `files` (the files it sent: `pdf`, `docx`, `odt`). An email whose submission didn't meet the email action's `send_when` conditions has only `skipped`, `conditions_not_met`, and its state is `processed`. An email whose submission made none of the files the email action sends has `skipped`, `no_files` and the action's `file_formats`, and its state is `processed` too. When the submission's data is left out (a batch, or a webhook without submission data), the subject and the addresses that came from fields or metadata are null.
     attr_accessor :result_data
 
     # Why the upload failed, when `state` is `failed` or `error`.
@@ -61,6 +64,7 @@ module DocSpring
       {
         :'id' => :'id',
         :'integration_id' => :'integration_id',
+        :'email_action_id' => :'email_action_id',
         :'state' => :'state',
         :'action_type' => :'action_type',
         :'result_data' => :'result_data',
@@ -83,6 +87,7 @@ module DocSpring
       {
         :'id' => :'String',
         :'integration_id' => :'String',
+        :'email_action_id' => :'String',
         :'state' => :'SubmissionActionState',
         :'action_type' => :'SubmissionActionType',
         :'result_data' => :'Hash<String, Object>',
@@ -94,6 +99,7 @@ module DocSpring
     def self.openapi_nullable
       Set.new([
         :'integration_id',
+        :'email_action_id',
         :'error_message'
       ])
     end
@@ -134,6 +140,12 @@ module DocSpring
         self.integration_id = attributes[:'integration_id']
       else
         self.integration_id = nil
+      end
+
+      if attributes.key?(:'email_action_id')
+        self.email_action_id = attributes[:'email_action_id']
+      else
+        self.email_action_id = nil
       end
 
       if attributes.key?(:'state')
@@ -245,6 +257,7 @@ module DocSpring
       self.class == o.class &&
           id == o.id &&
           integration_id == o.integration_id &&
+          email_action_id == o.email_action_id &&
           state == o.state &&
           action_type == o.action_type &&
           result_data == o.result_data &&
@@ -260,7 +273,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, integration_id, state, action_type, result_data, error_message].hash
+      [id, integration_id, email_action_id, state, action_type, result_data, error_message].hash
     end
 
     # Builds the object from hash
