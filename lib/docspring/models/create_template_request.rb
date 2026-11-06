@@ -52,7 +52,7 @@ module DocSpring
     # Generate PDFs whose text and check fields stay fillable ("Generate Editable PDFs"). A submission's `editable` overrides it.
     attr_accessor :editable_submissions
 
-    # The sites that can embed the template's live signature requests and its embedded template editor: a host such as `app.example.com`, with an optional leading wildcard (`*.example.com`), port (`localhost:3000`) or scheme (`https://app.example.com`; without one, `http` and `https` both work), without a path. Browsers open a live signature request in a frame only on these sites (and DocSpring's), so with an empty list it can't be embedded anywhere; a test signature request can be embedded on any site. The embedded template editor loads only for a page on one of these sites (by its Referer or Origin header), and on any site when the list is empty. Forms embedded on a page (Visual Forms JS and the simple form) aren't restricted.
+    # The sites that can embed the template's live signature requests and its embedded template editor: a host such as `app.example.com`, with an optional leading wildcard (`*.example.com`), port (`localhost:3000`) or scheme (`https://app.example.com`; without one, `http` and `https` both work), without a path. Each one is stored in lowercase, without a trailing slash. Browsers open a live signature request in a frame only on these sites (and DocSpring's), so with an empty list it can't be embedded anywhere; a test signature request can be embedded on any site. The embedded template editor loads only for a page on one of these sites (by its Referer or Origin header), and on any site when the list is empty. Forms embedded on a page (Visual Forms JS and Web Forms JS) aren't restricted.
     attr_accessor :embed_domains
 
     # Allow the embedded template editor to change sensitive template settings (webhooks, redirect URL, encryption, public access, expiration and so on).
@@ -91,7 +91,7 @@ module DocSpring
     # Allow anyone to fill in the template's web form.
     attr_accessor :public_web_form
 
-    # Where the web form sends people after they submit it.
+    # Where the web form sends people after they submit it, instead of showing its success screen. After its `?` or `#`, it can have variables such as `{{ data.first_name }}`, which the form fills in with what they submitted.
     attr_accessor :redirect_url
 
     # How DocSpring's completed emails send the signed PDF to your signers and CCs: `attachment` (attached, or a download link when it's too big to attach) or `link` (a download link). Null uses your account's rule: a link if your account has signed a BAA, otherwise attached. PDF templates only. A signature request uses the value it had when the request was created.
@@ -114,6 +114,15 @@ module DocSpring
 
     # A page on your own site that the button in DocSpring's email to a signer opens, instead of DocSpring's signing page: an https URL on one of your verified email domains or a subdomain of one, on the Growth plan or higher. It must include `{{ signature_request_id }}`. Your page authenticates the signer, creates a token for the signature request, and opens the signing form with it. Null links to DocSpring's signing page. PDF templates only.
     attr_accessor :signature_request_signing_url
+
+    # The title of the web form's success screen. When it's null or empty, the screen says "Thanks for filling out" and the template's name. It can have variables such as `{{ data.first_name }}`.
+    attr_accessor :success_title
+
+    # A message under the title of the web form's success screen, as plain text. Line breaks show, and web addresses become links. It can have variables such as `{{ data.first_name }}`.
+    attr_accessor :success_message
+
+    # Whether the web form's success screen has a "Fill out again" button, which clears the form so someone can fill it in again.
+    attr_accessor :show_fill_again_button
 
     # A Slack incoming webhook URL that is notified about the template's submissions. It's never returned; `has_slack_webhook_url` says if it's set.
     attr_accessor :slack_webhook_url
@@ -175,6 +184,9 @@ module DocSpring
     # With `detect_fields`, whether AI reads the whole form once the fields are named and sets up conditional logic and required fields (`ai`) or not (`none`). Default: your account's template settings.
     attr_accessor :field_logic
 
+    # With `detect_fields`, whether AI field setup keeps the fields that only the office receiving the form fills in, such as a "For office use only" box (`true`), or leaves them out (`false`). Default: your account's template settings.
+    attr_accessor :include_office_use_fields
+
     class EnumAttributeValidator
       attr_reader :datatype
       attr_reader :allowable_values
@@ -233,6 +245,9 @@ module DocSpring
         :'signature_request_notification_emails' => :'signature_request_notification_emails',
         :'signature_request_reply_to' => :'signature_request_reply_to',
         :'signature_request_signing_url' => :'signature_request_signing_url',
+        :'success_title' => :'success_title',
+        :'success_message' => :'success_message',
+        :'show_fill_again_button' => :'show_fill_again_button',
         :'slack_webhook_url' => :'slack_webhook_url',
         :'defaults' => :'defaults',
         :'field_dependencies' => :'field_dependencies',
@@ -252,7 +267,8 @@ module DocSpring
         :'detect_fields' => :'detect_fields',
         :'field_source' => :'field_source',
         :'field_naming' => :'field_naming',
-        :'field_logic' => :'field_logic'
+        :'field_logic' => :'field_logic',
+        :'include_office_use_fields' => :'include_office_use_fields'
       }
     end
 
@@ -302,6 +318,9 @@ module DocSpring
         :'signature_request_notification_emails' => :'Array<String>',
         :'signature_request_reply_to' => :'String',
         :'signature_request_signing_url' => :'String',
+        :'success_title' => :'String',
+        :'success_message' => :'String',
+        :'show_fill_again_button' => :'Boolean',
         :'slack_webhook_url' => :'String',
         :'defaults' => :'TemplateDefaultsInput',
         :'field_dependencies' => :'Array<TemplateFieldDependencyInput>',
@@ -321,7 +340,8 @@ module DocSpring
         :'detect_fields' => :'Boolean',
         :'field_source' => :'FieldSetupSource',
         :'field_naming' => :'FieldSetupNaming',
-        :'field_logic' => :'FieldSetupLogic'
+        :'field_logic' => :'FieldSetupLogic',
+        :'include_office_use_fields' => :'Boolean'
       }
     end
 
@@ -337,6 +357,8 @@ module DocSpring
         :'signature_request_from_name',
         :'signature_request_reply_to',
         :'signature_request_signing_url',
+        :'success_title',
+        :'success_message',
         :'slack_webhook_url',
         :'predefined_fields_sample_data',
         :'html',
@@ -512,6 +534,18 @@ module DocSpring
         self.signature_request_signing_url = attributes[:'signature_request_signing_url']
       end
 
+      if attributes.key?(:'success_title')
+        self.success_title = attributes[:'success_title']
+      end
+
+      if attributes.key?(:'success_message')
+        self.success_message = attributes[:'success_message']
+      end
+
+      if attributes.key?(:'show_fill_again_button')
+        self.show_fill_again_button = attributes[:'show_fill_again_button']
+      end
+
       if attributes.key?(:'slack_webhook_url')
         self.slack_webhook_url = attributes[:'slack_webhook_url']
       end
@@ -599,6 +633,10 @@ module DocSpring
       if attributes.key?(:'field_logic')
         self.field_logic = attributes[:'field_logic']
       end
+
+      if attributes.key?(:'include_office_use_fields')
+        self.include_office_use_fields = attributes[:'include_office_use_fields']
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -679,6 +717,9 @@ module DocSpring
           signature_request_notification_emails == o.signature_request_notification_emails &&
           signature_request_reply_to == o.signature_request_reply_to &&
           signature_request_signing_url == o.signature_request_signing_url &&
+          success_title == o.success_title &&
+          success_message == o.success_message &&
+          show_fill_again_button == o.show_fill_again_button &&
           slack_webhook_url == o.slack_webhook_url &&
           defaults == o.defaults &&
           field_dependencies == o.field_dependencies &&
@@ -698,7 +739,8 @@ module DocSpring
           detect_fields == o.detect_fields &&
           field_source == o.field_source &&
           field_naming == o.field_naming &&
-          field_logic == o.field_logic
+          field_logic == o.field_logic &&
+          include_office_use_fields == o.include_office_use_fields
     end
 
     # @see the `==` method
@@ -710,7 +752,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [name, description, template_type, output_format, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, signature_request_email_attachments, signature_request_from_address, signature_request_include_signing_token, signature_request_from_name, signature_request_notification_emails, signature_request_reply_to, signature_request_signing_url, slack_webhook_url, defaults, field_dependencies, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, html_escape_data, layout, cache_id, document_url, document_base64, filename, detect_fields, field_source, field_naming, field_logic].hash
+      [name, description, template_type, output_format, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, signature_request_email_attachments, signature_request_from_address, signature_request_include_signing_token, signature_request_from_name, signature_request_notification_emails, signature_request_reply_to, signature_request_signing_url, success_title, success_message, show_fill_again_button, slack_webhook_url, defaults, field_dependencies, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, html_escape_data, layout, cache_id, document_url, document_base64, filename, detect_fields, field_source, field_naming, field_logic, include_office_use_fields].hash
     end
 
     # Builds the object from hash

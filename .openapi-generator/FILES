@@ -161,6 +161,8 @@ docs/TemplateFieldLogicStatus.md
 docs/TemplateFieldMove.md
 docs/TemplateFields.md
 docs/TemplateFormMode.md
+docs/TemplateFormSection.md
+docs/TemplateFormSectionInput.md
 docs/TemplateModelCode.md
 docs/TemplatePageAiError.md
 docs/TemplatePageAiNamingStatus.md
@@ -358,6 +360,8 @@ lib/docspring/models/template_field_logic_status.rb
 lib/docspring/models/template_field_move.rb
 lib/docspring/models/template_fields.rb
 lib/docspring/models/template_form_mode.rb
+lib/docspring/models/template_form_section.rb
+lib/docspring/models/template_form_section_input.rb
 lib/docspring/models/template_model_code.rb
 lib/docspring/models/template_page_ai_error.rb
 lib/docspring/models/template_page_ai_naming_status.rb
@@ -548,6 +552,8 @@ spec/models/template_field_logic_status_spec.rb
 spec/models/template_field_move_spec.rb
 spec/models/template_fields_spec.rb
 spec/models/template_form_mode_spec.rb
+spec/models/template_form_section_input_spec.rb
+spec/models/template_form_section_spec.rb
 spec/models/template_model_code_spec.rb
 spec/models/template_page_ai_error_spec.rb
 spec/models/template_page_ai_naming_status_spec.rb
