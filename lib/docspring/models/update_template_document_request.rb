@@ -31,6 +31,9 @@ module DocSpring
     # Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields. Only for PDF templates: a Word template adds a field for each new tag.
     attr_accessor :reimport_fields
 
+    # Add a field for each value the template's code, Word document or layout reads for the first time, with a type worked out from how it's used. Existing fields keep their settings, and a field you deleted while the code still read the value stays deleted. Default true. Set it to false to manage the fields yourself with the fields endpoints: a form field whose field isn't on the template then fails its submissions and previews. Only for HTML templates, Word templates and page designs.
+    attr_accessor :sync_fields
+
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
@@ -38,7 +41,8 @@ module DocSpring
         :'document_url' => :'document_url',
         :'document_base64' => :'document_base64',
         :'filename' => :'filename',
-        :'reimport_fields' => :'reimport_fields'
+        :'reimport_fields' => :'reimport_fields',
+        :'sync_fields' => :'sync_fields'
       }
     end
 
@@ -59,7 +63,8 @@ module DocSpring
         :'document_url' => :'String',
         :'document_base64' => :'String',
         :'filename' => :'String',
-        :'reimport_fields' => :'Boolean'
+        :'reimport_fields' => :'Boolean',
+        :'sync_fields' => :'Boolean'
       }
     end
 
@@ -114,6 +119,10 @@ module DocSpring
       if attributes.key?(:'reimport_fields')
         self.reimport_fields = attributes[:'reimport_fields']
       end
+
+      if attributes.key?(:'sync_fields')
+        self.sync_fields = attributes[:'sync_fields']
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -140,7 +149,8 @@ module DocSpring
           document_url == o.document_url &&
           document_base64 == o.document_base64 &&
           filename == o.filename &&
-          reimport_fields == o.reimport_fields
+          reimport_fields == o.reimport_fields &&
+          sync_fields == o.sync_fields
     end
 
     # @see the `==` method
@@ -152,7 +162,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [cache_id, document_url, document_base64, filename, reimport_fields].hash
+      [cache_id, document_url, document_base64, filename, reimport_fields, sync_fields].hash
     end
 
     # Builds the object from hash

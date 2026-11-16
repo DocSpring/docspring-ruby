@@ -33,8 +33,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rspec', '~> 3.6', '>= 3.6.0'
 
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- spec`.split("\n")
+  s.files         = Dir['lib/**/*', 'AGENTS.md', 'CHANGELOG.md', 'LICENSE', 'README.md'].select { |f| File.file?(f) }.sort
   s.executables   = []
   s.require_paths = ["lib"]
 end

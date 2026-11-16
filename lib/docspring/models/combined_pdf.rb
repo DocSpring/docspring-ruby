@@ -46,7 +46,7 @@ module DocSpring
     # An expired combined PDF's PDF, metadata, password and source URLs have been deleted.
     attr_accessor :expired
 
-    # When the combined PDF expires (`expires_in` after it's generated). Null if it's kept until you delete it.
+    # When the combined PDF expires (`expires_in`, or the account's expiry setting, after it's generated). Null if it's kept until you delete it.
     attr_accessor :expires_at
 
     # When the PDF was generated. Null until then.

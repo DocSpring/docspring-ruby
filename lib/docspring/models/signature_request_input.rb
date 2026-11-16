@@ -22,13 +22,13 @@ module DocSpring
     # Their email address. Null when they have none.
     attr_accessor :email
 
-    # The fields this person fills in. Each field can only be in one signature request, and a field that `data` fills in needs `prefilled_values_editable`.
+    # The fields this person fills in or signs, besides the ones the template gives their role. A submission's only signature request can leave it out: the person gets every field without a role that `data` doesn't fill in. With two or more signature requests, every required field that `data` doesn't fill in needs a signer, from its role in the template or from a signature request's `fields` (an optional one that nobody is given stays empty). Each field can only be in one signature request, can't be another role's or the sender's, and needs `prefilled_values_editable` when `data` fills it in. A field that the Liquid of an HTML template, a Word template or a page design uses outside its form fields (`{{ name }}`) can only be filled in by the signer who signs first (the only signer, or the only one in the first `signing_step`): their signing page asks them for it before the document is made.
     attr_accessor :fields
 
     # Your own data about the signature request, such as an ID from your app.
     attr_accessor :metadata
 
-    # Which of the template's signers the person is: `Signer 1`, `Signer 2` and so on, up to `Signer 100`, until templates have roles of their own. Either every signature request has a `role` or none does, and each role can only have one.
+    # Which of the template's signers the person is: one of its roles, by key (`tenant`), or by place (`Signer 1` is the first role). A template without roles has `Signer 1`, `Signer 2` and so on, up to `Signer 100`. Either every signature request has a `role` or none does, and each role can only have one. Without any `role`, the first signature request is the template's first signer, the second its second, and so on. When the template gives its roles names of their own (`Tenant`, not `Signer 1`), two or more signature requests each need a `role`.
     attr_accessor :role
 
     # How your app authenticated the person before it showed them the signature request.
@@ -58,7 +58,7 @@ module DocSpring
     # Leave out names in `fields` that the template doesn't have, for one field list that you send with several templates. Without it, an unknown name makes the submission `invalid_data`.
     attr_accessor :ignore_unknown_fields
 
-    # Let the person change the values that `data` already has for fields in `fields`. Without it, those fields are a 422.
+    # Let the person change the values that `data` already has for their fields. Without it, a field in `fields` that `data` fills in is a 422, and a field of their role that `data` fills in is the sender's.
     attr_accessor :prefilled_values_editable
 
     # Whether DocSpring emails this person their signing link. Default: the submission's `send_email`. Set it to false for someone who signs in your app (embedded signing) or whose link you send yourself. When DocSpring emails them, `email` is required and `auth_type` is `email_link` (the default). Otherwise `auth_type` is required.
@@ -197,8 +197,6 @@ module DocSpring
         if (value = attributes[:'fields']).is_a?(Array)
           self.fields = value
         end
-      else
-        self.fields = nil
       end
 
       if attributes.key?(:'metadata')
@@ -265,10 +263,6 @@ module DocSpring
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @fields.nil?
-        invalid_properties.push('invalid value for "fields", fields cannot be nil.')
-      end
-
       invalid_properties
     end
 
@@ -276,7 +270,6 @@ module DocSpring
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @fields.nil?
       true
     end
 

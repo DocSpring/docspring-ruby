@@ -22,7 +22,7 @@ module DocSpring
     # `true` keeps the PDF's text and check fields fillable, and `false` flattens every field. Left out, the template decides: its `editable_submissions` setting, or each field's own Editable option. A response shows the template's setting when the request left this out. Can't be `true` with `signature_requests`.
     attr_accessor :editable
 
-    # The values of the template's fields, by field name. Required for PDF templates, Word templates and page designs, unless `signature_requests` collects them (PDF templates only). Signatures come only from signature requests: a value for a signature or initials field makes the submission `invalid_data`, in test mode too. To print an image or a name you send, use an Image or Text field.
+    # The values of the template's fields, by field name. Required for PDF templates, Word templates and page designs, unless `signature_requests` collects them. Signatures come only from signature requests: a value for a signature or initials field makes the submission `invalid_data`, in test mode too. To print an image or a name you send, use an Image or Text field.
     attr_accessor :data
 
     # Your own data about the submission, such as an ID from your app. It isn't printed on the PDF. Two keys also change the PDF: `pdf_filename` names its file (`files.pdf.filename`, and its download), and `pdf_title` is its title in the PDF's document properties (and an HTML template's `<title>`, unless its HTML has one). Without `pdf_title`, the title is the template's name. In `pdf_filename`, a `.pdf` ending is removed, each run of characters other than letters, digits, `-`, `_` and `.` becomes one `_`, and the first 128 characters are kept, then `.pdf` is added. Without it, the file is named after the submission's ID (`sub_1234567890abcdef01.pdf`).
@@ -31,10 +31,10 @@ module DocSpring
     # A password that the PDF needs to be opened with. It's never returned; `has_password` says if it's set. Word documents and OpenDocument files can't be password-protected, so a submission with a password can't make them.
     attr_accessor :password
 
-    # What the submission makes: `pdf`, `docx` (a Word document, from a Word template), `odt` (an OpenDocument file, the format LibreOffice uses, converted from a Word template's Word document), and `png` (an image of each page of the PDF, up to 100 pages, which adds `pdf`) when you ask for it. Default `["pdf"]`, or a Word template's `output_format`. POST /submissions/{submission_id}/generate_files adds `png`, and a Word template's submission's `pdf`, `docx` or `odt`, to a processed submission.
+    # What the submission makes: `pdf`, `docx` (a Word document, from a Word template), `odt` (an OpenDocument file, the format LibreOffice uses, converted from a Word template's Word document), and `png` (an image of each page of the PDF, up to 100 pages, which adds `pdf`) when you ask for it. Default `["pdf"]`, or a Word template's `output_format`. A Word template's submission with signature requests makes only `pdf`, which its signers sign. POST /submissions/{submission_id}/generate_files adds `png`, and a Word template's submission's `pdf`, `docx` or `odt`, to a processed submission.
     attr_accessor :output_formats
 
-    # Seconds after the PDF is generated until the submission expires, up to 10 years (315360000). Default the template's expiration setting. A submission that isn't processed, such as one with invalid data, is kept for at least 48 hours. The demo API token's submissions expire within an hour: up to 3600, and that's their default.
+    # Seconds after the submission is processed until it expires, up to 10 years (315360000), sooner or later than the template's or the account's expiry setting. Defaults to the template's expiry when it overrides the account's (`override_account_expiry`), and otherwise to the account's expiry setting. A submission that isn't processed, such as one with invalid data, is kept for at least 48 hours. The demo API token's submissions expire within an hour: up to 3600, and that's their default.
     attr_accessor :expires_in
 
     # Changes to field settings for this submission only, by field name, such as `{"name": {"required": false, "font_size": 9}}`. A setting that identifies the field (`id`, `name`, `type`), that only the template sets (such as `description`), or that doesn't apply to the field's type and display type (such as `check_character` on a field displayed as text) is a 422. A `default` for a signature or initials field makes the submission `invalid_data`. With `signature_requests`, `editable: true` is a 422.
@@ -46,7 +46,7 @@ module DocSpring
     # For an HTML template, SCSS (plain CSS works too) added after the template's styles, on the page and in its header and footer. It doesn't replace them: its rules come later, so they win over the template's rules of the same specificity.
     attr_accessor :css
 
-    # The people who sign the PDF, and fill in their fields first. The PDF is generated once every signature request is completed. PDF templates only. Without `role`s, the first signature request is `Signer 1`, the second `Signer 2`, and so on. To leave a signer out, give every signature request its `role` and leave that one's out.
+    # The people who sign the PDF, and fill in their fields first. The PDF is generated once every signature request is completed. The signers of an HTML template, a Word template or a page design fill in its form fields and signature tags in a PDF made from `data`, and a Word template's submission makes only a PDF. Without `role`s, the first signature request is `Signer 1`, the second `Signer 2`, and so on. To leave a signer out, give every signature request its `role` and leave that one's out.
     attr_accessor :signature_requests
 
     # Whether DocSpring emails the signers their signing links, and sends the reminders and the completed document. Default true. Each signature request's own `send_email` overrides it. A test submission only emails your DocSpring team: every other address is a 422. `true` needs `signature_requests`. DocSpring doesn't email the signers of a form library template: leave `send_email` out, and send them their links yourself.
@@ -61,7 +61,7 @@ module DocSpring
     # A message for the people who sign, shown above the signing button. It takes the same variables as `email_subject`. Links and web addresses are shown as plain text. Leave it out for none: a blank message is a 422.
     attr_accessor :email_message
 
-    # People who get a copy of the completed document. They don't sign.
+    # People who get a copy of the completed document, as well as the template's `signature_request_cc`. They don't sign.
     attr_accessor :cc
 
     # Where replies to the emails go: a member of your DocSpring team, or an address at one of your verified email domains. Leave it out for the template's reply-to address (the account owner when it has none).

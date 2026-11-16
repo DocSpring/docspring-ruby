@@ -1592,7 +1592,7 @@ end
     end
 
     # Delete a template
-    # Deletes a template's draft and all of its published versions, or one published version (`version`). Returns the template as it was before it was deleted. 
+    # Deletes a template's draft and all of its published versions, or one published version (`version`). Returns the template as it was before it was deleted. A deleted template can be restored from Trash in the dashboard for a limited time; a single deleted version can't. 
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
     # @option opts [String] :version Delete only this published version (`1.2.0`) or the draft (`draft`, when no version has been published). Without it, the draft and every published version are deleted.
@@ -1604,7 +1604,7 @@ end
     end
 
     # Delete a template
-    # Deletes a template's draft and all of its published versions, or one published version (`version`). Returns the template as it was before it was deleted. 
+    # Deletes a template's draft and all of its published versions, or one published version (`version`). Returns the template as it was before it was deleted. A deleted template can be restored from Trash in the dashboard for a limited time; a single deleted version can't. 
     # @param template_id [String] The template's ID.
     # @param [Hash] opts the optional parameters
     # @option opts [String] :version Delete only this published version (`1.2.0`) or the draft (`draft`, when no version has been published). Without it, the draft and every published version are deleted.
@@ -1793,7 +1793,7 @@ end
     end
 
     # Expire a submission
-    # Deletes a submission's data and PDF now, and returns the expired submission.
+    # Deletes a submission's data and files now, along with any signature requests and audit trail, and returns the expired submission. 
     # @param submission_id [String] The submission's ID.
     # @param [Hash] opts the optional parameters
     # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then. A repeated response is the first one as it was, so its `download_url` links may have expired: use `permanent_url`, or get the record again for new links.
@@ -1804,7 +1804,7 @@ end
     end
 
     # Expire a submission
-    # Deletes a submission's data and PDF now, and returns the expired submission.
+    # Deletes a submission's data and files now, along with any signature requests and audit trail, and returns the expired submission. 
     # @param submission_id [String] The submission's ID.
     # @param [Hash] opts the optional parameters
     # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then. A repeated response is the first one as it was, so its `download_url` links may have expired: use `permanent_url`, or get the record again for new links.
@@ -5267,6 +5267,7 @@ end
     # @option opts [FieldSetupLogic] :field_logic With `detect_fields`, whether AI reads the whole form once the fields are named and sets up conditional logic and required fields (`ai`) or not (`none`). Default: your account's template settings.
     # @option opts [OutputFormat] :output_format What each submission of a Word template makes unless its request sets `output_formats`: `docx` (a Word document), `odt` (an OpenDocument file, converted from the Word document) or `pdf`. Required when `document` is a Word document.
     # @option opts [Boolean] :include_office_use_fields With `detect_fields`, whether AI field setup keeps the fields that only the office receiving the form fills in, such as a "For office use only" box (`true`), or leaves them out (`false`). Default: your account's template settings.
+    # @option opts [Boolean] :sync_fields Add a field for each value the template's code, Word document or layout reads for the first time, with a type worked out from how it's used. Existing fields keep their settings, and a field you deleted while the code still read the value stays deleted. Default true. Set it to false to manage the fields yourself with the fields endpoints: a form field whose field isn't on the template then fails its submissions and previews. Only for HTML templates, Word templates and page designs.
     # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then. A repeated response is the first one as it was, so its `download_url` links may have expired: use `permanent_url`, or get the record again for new links.
     # @return [Template]
     def upload_template(document, opts = {})
@@ -5289,6 +5290,7 @@ end
     # @option opts [FieldSetupLogic] :field_logic With `detect_fields`, whether AI reads the whole form once the fields are named and sets up conditional logic and required fields (`ai`) or not (`none`). Default: your account's template settings.
     # @option opts [OutputFormat] :output_format What each submission of a Word template makes unless its request sets `output_formats`: `docx` (a Word document), `odt` (an OpenDocument file, converted from the Word document) or `pdf`. Required when `document` is a Word document.
     # @option opts [Boolean] :include_office_use_fields With `detect_fields`, whether AI field setup keeps the fields that only the office receiving the form fills in, such as a "For office use only" box (`true`), or leaves them out (`false`). Default: your account's template settings.
+    # @option opts [Boolean] :sync_fields Add a field for each value the template's code, Word document or layout reads for the first time, with a type worked out from how it's used. Existing fields keep their settings, and a field you deleted while the code still read the value stays deleted. Default true. Set it to false to manage the fields yourself with the fields endpoints: a form field whose field isn't on the template then fails its submissions and previews. Only for HTML templates, Word templates and page designs.
     # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then. A repeated response is the first one as it was, so its `download_url` links may have expired: use `permanent_url`, or get the record again for new links.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def upload_template_with_http_info(document, opts = {})
@@ -5330,6 +5332,7 @@ end
       form_params['field_logic'] = opts[:'field_logic'] if !opts[:'field_logic'].nil?
       form_params['output_format'] = opts[:'output_format'] if !opts[:'output_format'].nil?
       form_params['include_office_use_fields'] = opts[:'include_office_use_fields'] if !opts[:'include_office_use_fields'].nil?
+      form_params['sync_fields'] = opts[:'sync_fields'] if !opts[:'sync_fields'].nil?
 
       # http body (model)
       post_body = opts[:debug_body]
@@ -5364,6 +5367,7 @@ end
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
     # @option opts [Boolean] :reimport_fields Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields. Only for PDF templates: a Word template adds a field for each new tag.
+    # @option opts [Boolean] :sync_fields Add a field for each value the template's code, Word document or layout reads for the first time, with a type worked out from how it's used. Existing fields keep their settings, and a field you deleted while the code still read the value stays deleted. Default true. Set it to false to manage the fields yourself with the fields endpoints: a form field whose field isn't on the template then fails its submissions and previews. Only for HTML templates, Word templates and page designs.
     # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then. A repeated response is the first one as it was, so its `download_url` links may have expired: use `permanent_url`, or get the record again for new links.
     # @return [Template]
     def upload_template_document(template_id, document, opts = {})
@@ -5378,6 +5382,7 @@ end
     # @param [Hash] opts the optional parameters
     # @option opts [Boolean] :wait Wait until the PDF has been processed, a `document_url`'s PDF or Word document downloaded, and an OpenDocument file converted, before responding. Default true on sync.api hosts.
     # @option opts [Boolean] :reimport_fields Replace all of the template's fields with the fillable fields in the new PDF, once DocSpring has processed it (`document.field_reimport_state`). As on a first upload, the default typeface, font size, bold and color are taken from the PDF's fields; the template's other settings are kept. If the PDF has no fillable fields, the template keeps its fields. A locked template can't re-import its fields. Only for PDF templates: a Word template adds a field for each new tag.
+    # @option opts [Boolean] :sync_fields Add a field for each value the template's code, Word document or layout reads for the first time, with a type worked out from how it's used. Existing fields keep their settings, and a field you deleted while the code still read the value stays deleted. Default true. Set it to false to manage the fields yourself with the fields endpoints: a form field whose field isn't on the template then fails its submissions and previews. Only for HTML templates, Word templates and page designs.
     # @option opts [String] :idempotency_key A key of your own, such as a UUID, that makes it safe to send this request again: for 24 hours, DocSpring answers a request with the same key from the same API token with the first request's response (and an `Idempotent-Replayed: true` header) instead of processing it again. Send a new key with each new request, and the same key each time you send the same request again, such as after a timeout, a network error or a 5xx. The same key with a different request is a 422 `idempotency_key_reused`. A 409 `idempotency_key_in_use` with a `Retry-After` header means the first request is still being processed: send the request again then. A repeated response is the first one as it was, so its `download_url` links may have expired: use `permanent_url`, or get the record again for new links.
     # @return [Array<(Template, Integer, Hash)>] Template data, response status code and response headers
     def upload_template_document_with_http_info(template_id, document, opts = {})
@@ -5414,6 +5419,7 @@ end
       form_params = opts[:form_params] || {}
       form_params['document'] = document
       form_params['reimport_fields'] = opts[:'reimport_fields'] if !opts[:'reimport_fields'].nil?
+      form_params['sync_fields'] = opts[:'sync_fields'] if !opts[:'sync_fields'].nil?
 
       # http body (model)
       post_body = opts[:debug_body]

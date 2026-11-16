@@ -25,13 +25,13 @@ module DocSpring
     # A temporary link to download the file. Null until the file has been made, and when your account turns off download links for submissions.
     attr_accessor :download_url
 
-    # A link to download the file that doesn't expire: it redirects to a new temporary link. It needs your API token or a signed-in session, except for a submission of a template that makes its submissions public. Null until the file has been made.
+    # A link to download the file that doesn't expire: it redirects to a new temporary link. It needs your API token or a signed-in session, except for a submission of a template that makes its submissions public (a signing manifest's link always needs one). Null until the file has been made.
     attr_accessor :permanent_url
 
     # The file's name, such as `sub_123.pdf`, `sub_123.docx` or `sub_123.odt`.
     attr_accessor :filename
 
-    # The file's media type: `application/pdf`, `application/vnd.openxmlformats-officedocument.wordprocessingml.document` for a Word document, or `application/vnd.oasis.opendocument.text` for an OpenDocument file.
+    # The file's media type: `application/pdf`, `application/vnd.openxmlformats-officedocument.wordprocessingml.document` for a Word document, or `application/vnd.oasis.opendocument.text` for an OpenDocument file, or `application/json` for a signing manifest.
     attr_accessor :content_type
 
     # The file's size in bytes. Null until the file has been made.

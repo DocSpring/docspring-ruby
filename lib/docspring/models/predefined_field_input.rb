@@ -31,6 +31,9 @@ module DocSpring
     # String fields only: the values allowed, separated by commas, such as `Yes,No`. Null allows any value.
     attr_accessor :option_list
 
+    # The labels forms show for `option_list`'s values, by value, as a field's `option_labels`, such as `{"married_filing_jointly": "Married filing jointly"}`. Each key must be one of `option_list`'s values. A value without a label shows the value, or its sentence case when the values are lowercase words joined by underscores. Null gives no value a label of its own.
+    attr_accessor :option_labels
+
     # Whether the template must have a field with this name. The embedded editor shows the names that are missing, and with `disableDoneButtonIfPredefinedFieldsMissing` keeps its Done button disabled until the template has them. Default false.
     attr_accessor :required_in_template
 
@@ -67,6 +70,7 @@ module DocSpring
         :'title' => :'title',
         :'type' => :'type',
         :'option_list' => :'option_list',
+        :'option_labels' => :'option_labels',
         :'required_in_template' => :'required_in_template',
         :'field_required' => :'field_required'
       }
@@ -90,6 +94,7 @@ module DocSpring
         :'title' => :'String',
         :'type' => :'FieldType',
         :'option_list' => :'String',
+        :'option_labels' => :'Hash<String, String>',
         :'required_in_template' => :'Boolean',
         :'field_required' => :'Boolean'
       }
@@ -101,6 +106,7 @@ module DocSpring
         :'display_name',
         :'title',
         :'option_list',
+        :'option_labels',
       ])
     end
 
@@ -152,6 +158,12 @@ module DocSpring
 
       if attributes.key?(:'option_list')
         self.option_list = attributes[:'option_list']
+      end
+
+      if attributes.key?(:'option_labels')
+        if (value = attributes[:'option_labels']).is_a?(Hash) || value.nil?
+          self.option_labels = value
+        end
       end
 
       if attributes.key?(:'required_in_template')
@@ -218,6 +230,7 @@ module DocSpring
           title == o.title &&
           type == o.type &&
           option_list == o.option_list &&
+          option_labels == o.option_labels &&
           required_in_template == o.required_in_template &&
           field_required == o.field_required
     end
@@ -231,7 +244,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [name, display_name, title, type, option_list, required_in_template, field_required].hash
+      [name, display_name, title, type, option_list, option_labels, required_in_template, field_required].hash
     end
 
     # Builds the object from hash

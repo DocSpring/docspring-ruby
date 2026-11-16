@@ -96,6 +96,7 @@ docs/ModelCodeLanguage.md
 docs/MoveFolderRequest.md
 docs/MoveTemplateRequest.md
 docs/NumberConditionType.md
+docs/NumberPart.md
 docs/OutputFormat.md
 docs/PageFormat.md
 docs/PageImage.md
@@ -172,6 +173,8 @@ docs/TemplatePageImages.md
 docs/TemplatePageProcessingStatus.md
 docs/TemplatePreview.md
 docs/TemplatePreviewState.md
+docs/TemplateSignerRole.md
+docs/TemplateSignerRoleInput.md
 docs/TemplateSourcePdf.md
 docs/TemplateSummary.md
 docs/TemplateSummaryList.md
@@ -295,6 +298,7 @@ lib/docspring/models/model_code_language.rb
 lib/docspring/models/move_folder_request.rb
 lib/docspring/models/move_template_request.rb
 lib/docspring/models/number_condition_type.rb
+lib/docspring/models/number_part.rb
 lib/docspring/models/output_format.rb
 lib/docspring/models/page_format.rb
 lib/docspring/models/page_image.rb
@@ -371,6 +375,8 @@ lib/docspring/models/template_page_images.rb
 lib/docspring/models/template_page_processing_status.rb
 lib/docspring/models/template_preview.rb
 lib/docspring/models/template_preview_state.rb
+lib/docspring/models/template_signer_role.rb
+lib/docspring/models/template_signer_role_input.rb
 lib/docspring/models/template_source_pdf.rb
 lib/docspring/models/template_summary.rb
 lib/docspring/models/template_summary_list.rb
@@ -488,6 +494,7 @@ spec/models/model_code_language_spec.rb
 spec/models/move_folder_request_spec.rb
 spec/models/move_template_request_spec.rb
 spec/models/number_condition_type_spec.rb
+spec/models/number_part_spec.rb
 spec/models/output_format_spec.rb
 spec/models/page_format_spec.rb
 spec/models/page_image_spec.rb
@@ -563,6 +570,8 @@ spec/models/template_page_images_spec.rb
 spec/models/template_page_processing_status_spec.rb
 spec/models/template_preview_spec.rb
 spec/models/template_preview_state_spec.rb
+spec/models/template_signer_role_input_spec.rb
+spec/models/template_signer_role_spec.rb
 spec/models/template_source_pdf_spec.rb
 spec/models/template_spec.rb
 spec/models/template_summary_list_spec.rb

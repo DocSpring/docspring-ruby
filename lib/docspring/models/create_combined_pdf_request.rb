@@ -28,7 +28,7 @@ module DocSpring
     # Delete the custom files in `source_pdfs` once the combined PDF has been generated (they're kept if it fails). Other combined PDFs can't use them after that. A test API token can't delete custom files.
     attr_accessor :delete_custom_files
 
-    # Seconds after the PDF is generated until the combined PDF expires, up to 10 years (315360000). One that fails is kept for at least 48 hours. Without it, the combined PDF is kept until you delete it.
+    # Seconds after the PDF is generated until the combined PDF expires, up to 10 years (315360000), sooner or later than the account's expiry setting. Defaults to the account's expiry setting, which keeps it until you delete it when it's off. One that fails is kept for at least 48 hours.
     attr_accessor :expires_in
 
     # Attribute mapping from ruby-style variable name to JSON key.

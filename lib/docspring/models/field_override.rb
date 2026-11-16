@@ -34,6 +34,12 @@ module DocSpring
     # The values the field can take, separated by commas, such as `Yes,No`. Null allows any value.
     attr_accessor :option_list
 
+    # The label forms show for each option, keyed by its value, such as `{"no": "No, I don't"}`. Each key must be one of the options.
+    attr_accessor :option_labels
+
+    # Print the chosen option's label instead of its value.
+    attr_accessor :print_option_labels
+
     # The names of the fields a combined field joins, separated by commas.
     attr_accessor :combined_field_names
 
@@ -60,6 +66,12 @@ module DocSpring
 
     # The kind of barcode a field with display_type `barcode` prints.
     attr_accessor :barcode_symbology
+
+    # Fill the last boxes of the field's comb fields, padding the value on the left, as amounts are written on paper forms.
+    attr_accessor :comb_fill_from_right
+
+    # With `comb_fill_from_right`, pad the value with zeros instead of spaces.
+    attr_accessor :comb_pad_with_zeros
 
     # Leave the field off the PDF. Its value is still in the data, and combined fields can use it.
     attr_accessor :hidden
@@ -139,7 +151,7 @@ module DocSpring
     # The number of boxes in a comb field.
     attr_accessor :comb_number_of_cells
 
-    # The character of the value that the first box starts from, for a value split over several comb fields (such as the parts of a Social Security number).
+    # How many boxes of the value's row come before this field, for a value split over several comb fields (such as the parts of a Social Security number).
     attr_accessor :comb_value_offset
 
     # The shape a field with display_type `shape` draws.
@@ -199,6 +211,9 @@ module DocSpring
     # The number of decimal places a number field prints. Null prints the value as it was sent.
     attr_accessor :decimal_places
 
+    # Which part of a number field's number this field prints: the whole number, only the part before the decimal point, or only the decimal places.
+    attr_accessor :number_part
+
     # How an image is resized to its field.
     attr_accessor :image_scale_type
 
@@ -236,6 +251,8 @@ module DocSpring
         :'title' => :'title',
         :'required' => :'required',
         :'option_list' => :'option_list',
+        :'option_labels' => :'option_labels',
+        :'print_option_labels' => :'print_option_labels',
         :'combined_field_names' => :'combined_field_names',
         :'combined_field_type' => :'combined_field_type',
         :'combined_field_separator' => :'combined_field_separator',
@@ -245,6 +262,8 @@ module DocSpring
         :'signature_allow_draw' => :'signature_allow_draw',
         :'signature_allow_type' => :'signature_allow_type',
         :'barcode_symbology' => :'barcode_symbology',
+        :'comb_fill_from_right' => :'comb_fill_from_right',
+        :'comb_pad_with_zeros' => :'comb_pad_with_zeros',
         :'hidden' => :'hidden',
         :'x' => :'x',
         :'y' => :'y',
@@ -291,6 +310,7 @@ module DocSpring
         :'number_condition_range_exclusive_max' => :'number_condition_range_exclusive_max',
         :'invert_boolean_condition' => :'invert_boolean_condition',
         :'decimal_places' => :'decimal_places',
+        :'number_part' => :'number_part',
         :'image_scale_type' => :'image_scale_type',
         :'image_gravity' => :'image_gravity'
       }
@@ -315,6 +335,8 @@ module DocSpring
         :'title' => :'String',
         :'required' => :'Boolean',
         :'option_list' => :'String',
+        :'option_labels' => :'Hash<String, String>',
+        :'print_option_labels' => :'Boolean',
         :'combined_field_names' => :'String',
         :'combined_field_type' => :'CombinedFieldType',
         :'combined_field_separator' => :'String',
@@ -324,6 +346,8 @@ module DocSpring
         :'signature_allow_draw' => :'Boolean',
         :'signature_allow_type' => :'Boolean',
         :'barcode_symbology' => :'BarcodeSymbology',
+        :'comb_fill_from_right' => :'Boolean',
+        :'comb_pad_with_zeros' => :'Boolean',
         :'hidden' => :'Boolean',
         :'x' => :'Float',
         :'y' => :'Float',
@@ -370,6 +394,7 @@ module DocSpring
         :'number_condition_range_exclusive_max' => :'Boolean',
         :'invert_boolean_condition' => :'Boolean',
         :'decimal_places' => :'Integer',
+        :'number_part' => :'NumberPart',
         :'image_scale_type' => :'ImageScaleType',
         :'image_gravity' => :'ImageGravity'
       }
@@ -380,6 +405,7 @@ module DocSpring
       Set.new([
         :'default',
         :'option_list',
+        :'option_labels',
         :'include_time',
         :'date_time_format',
         :'typeface',
@@ -450,6 +476,16 @@ module DocSpring
         self.option_list = attributes[:'option_list']
       end
 
+      if attributes.key?(:'option_labels')
+        if (value = attributes[:'option_labels']).is_a?(Hash) || value.nil?
+          self.option_labels = value
+        end
+      end
+
+      if attributes.key?(:'print_option_labels')
+        self.print_option_labels = attributes[:'print_option_labels']
+      end
+
       if attributes.key?(:'combined_field_names')
         self.combined_field_names = attributes[:'combined_field_names']
       end
@@ -484,6 +520,14 @@ module DocSpring
 
       if attributes.key?(:'barcode_symbology')
         self.barcode_symbology = attributes[:'barcode_symbology']
+      end
+
+      if attributes.key?(:'comb_fill_from_right')
+        self.comb_fill_from_right = attributes[:'comb_fill_from_right']
+      end
+
+      if attributes.key?(:'comb_pad_with_zeros')
+        self.comb_pad_with_zeros = attributes[:'comb_pad_with_zeros']
       end
 
       if attributes.key?(:'hidden')
@@ -670,6 +714,10 @@ module DocSpring
         self.decimal_places = attributes[:'decimal_places']
       end
 
+      if attributes.key?(:'number_part')
+        self.number_part = attributes[:'number_part']
+      end
+
       if attributes.key?(:'image_scale_type')
         self.image_scale_type = attributes[:'image_scale_type']
       end
@@ -705,6 +753,8 @@ module DocSpring
           title == o.title &&
           required == o.required &&
           option_list == o.option_list &&
+          option_labels == o.option_labels &&
+          print_option_labels == o.print_option_labels &&
           combined_field_names == o.combined_field_names &&
           combined_field_type == o.combined_field_type &&
           combined_field_separator == o.combined_field_separator &&
@@ -714,6 +764,8 @@ module DocSpring
           signature_allow_draw == o.signature_allow_draw &&
           signature_allow_type == o.signature_allow_type &&
           barcode_symbology == o.barcode_symbology &&
+          comb_fill_from_right == o.comb_fill_from_right &&
+          comb_pad_with_zeros == o.comb_pad_with_zeros &&
           hidden == o.hidden &&
           x == o.x &&
           y == o.y &&
@@ -760,6 +812,7 @@ module DocSpring
           number_condition_range_exclusive_max == o.number_condition_range_exclusive_max &&
           invert_boolean_condition == o.invert_boolean_condition &&
           decimal_places == o.decimal_places &&
+          number_part == o.number_part &&
           image_scale_type == o.image_scale_type &&
           image_gravity == o.image_gravity
     end
@@ -773,7 +826,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [static, editable, default, title, required, option_list, combined_field_names, combined_field_type, combined_field_separator, combined_field_format, integer, include_time, signature_allow_draw, signature_allow_type, barcode_symbology, hidden, x, y, width, height, rotation, display_type, opacity, date_time_format, typeface, font_size, character_spacing, bold, uppercase, strikethrough, keep_leading_spaces, overflow, multiline, multiline_lines, max_length, color, background_color, alignment, v_alignment, comb, comb_number_of_cells, comb_value_offset, shape_type, shape_sides, shape_border_width, shape_border_color, shape_fill_color, check_character, check_color, qrcode_color, true_text, false_text, condition, string_condition_type, number_condition_type, number_condition_range_min, number_condition_range_max, number_condition_range_exclusive_min, number_condition_range_exclusive_max, invert_boolean_condition, decimal_places, image_scale_type, image_gravity].hash
+      [static, editable, default, title, required, option_list, option_labels, print_option_labels, combined_field_names, combined_field_type, combined_field_separator, combined_field_format, integer, include_time, signature_allow_draw, signature_allow_type, barcode_symbology, comb_fill_from_right, comb_pad_with_zeros, hidden, x, y, width, height, rotation, display_type, opacity, date_time_format, typeface, font_size, character_spacing, bold, uppercase, strikethrough, keep_leading_spaces, overflow, multiline, multiline_lines, max_length, color, background_color, alignment, v_alignment, comb, comb_number_of_cells, comb_value_offset, shape_type, shape_sides, shape_border_width, shape_border_color, shape_fill_color, check_character, check_color, qrcode_color, true_text, false_text, condition, string_condition_type, number_condition_type, number_condition_range_min, number_condition_range_max, number_condition_range_exclusive_min, number_condition_range_exclusive_max, invert_boolean_condition, decimal_places, number_part, image_scale_type, image_gravity].hash
     end
 
     # Builds the object from hash

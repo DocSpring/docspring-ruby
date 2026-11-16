@@ -43,8 +43,11 @@ module DocSpring
     # Accept submission data with properties that aren't fields of the template.
     attr_accessor :allow_additional_properties
 
-    # Visual forms and signature request forms show the Continue button as soon as the required fields are filled in, without visiting each optional field. The `allowSkippingOptionalFields` embed option overrides it.
+    # Visual Forms JS 2.16.0 to 2.23.0 only: with it on, Continue takes the place of Next once the required fields are filled in. Later versions use `continue_before_optional_fields`.
     attr_accessor :allow_skipping_optional_fields
+
+    # Visual forms and signature request forms show the Continue button next to Next as soon as the required fields are filled in, without visiting each optional field. Turned off, Continue shows in place of Next only once every field has a value or has been visited. The `allowSkippingOptionalFields` embed option overrides it.
+    attr_accessor :continue_before_optional_fields
 
     # The hosted form that /templates/{template_id}/form shows when its URL has no `mode` parameter: `web` (the web form), `visual` (the visual form, where fields are filled in on the PDF) or `dual` (both, in tabs). Only PDF templates have a visual form, so other templates accept only `web`.
     attr_accessor :default_form_mode
@@ -52,7 +55,7 @@ module DocSpring
     # Generate PDFs whose text and check fields stay fillable ("Generate Editable PDFs"). A submission's `editable` overrides it.
     attr_accessor :editable_submissions
 
-    # The sites that can embed the template's live signature requests and its embedded template editor: a host such as `app.example.com`, with an optional leading wildcard (`*.example.com`), port (`localhost:3000`) or scheme (`https://app.example.com`; without one, `http` and `https` both work), without a path. Each one is stored in lowercase, without a trailing slash. Browsers open a live signature request in a frame only on these sites (and DocSpring's), so with an empty list it can't be embedded anywhere; a test signature request can be embedded on any site. The embedded template editor loads only for a page on one of these sites (by its Referer or Origin header), and on any site when the list is empty. Forms embedded on a page (Visual Forms JS and Web Forms JS) aren't restricted.
+    # The sites that can embed the template's live signature requests, its embedded template editor and its visual form: a host such as `app.example.com`, with an optional leading wildcard (`*.example.com`), port (`localhost:3000`) or scheme (`https://app.example.com`; without one, `http` and `https` both work), without a path. Each one is stored in lowercase, without a trailing slash. Browsers open a live signature request in a frame only on these sites (and DocSpring's), so with an empty list it can't be embedded anywhere; a test signature request can be embedded on any site. The embedded template editor loads only for a page on one of these sites (by its Referer or Origin header), and on any site when the list is empty. A visual form embedded with Visual Forms JS loads only on these sites, and on any site when the list is empty. Web Forms JS isn't restricted.
     attr_accessor :embed_domains
 
     # Allow the embedded template editor to change sensitive template settings (webhooks, redirect URL, encryption, public access, expiration and so on).
@@ -70,10 +73,10 @@ module DocSpring
     # The password that opens encrypted PDFs. It's never returned; `has_encrypt_pdfs_password` says if it's set.
     attr_accessor :encrypt_pdfs_password
 
-    # Delete each submission's data and PDF after `expire_after` `expiration_interval`.
+    # Delete each submission's data and files after `expire_after` `expiration_interval`, when `override_account_expiry` is on.
     attr_accessor :expire_submissions
 
-    # How many `expiration_interval`s a submission's data and PDF are kept for, when `expire_submissions` is on. At most 5256000 (10 years in minutes).
+    # How many `expiration_interval`s a submission's data and PDF are kept for, when `expire_submissions` and `override_account_expiry` are on. At most 5256000 (10 years in minutes).
     attr_accessor :expire_after
 
     # The unit of `expire_after`.
@@ -94,25 +97,25 @@ module DocSpring
     # Where the web form sends people after they submit it, instead of showing its success screen. After its `?` or `#`, it can have variables such as `{{ data.first_name }}`, which the form fills in with what they submitted.
     attr_accessor :redirect_url
 
-    # How DocSpring's completed emails send the signed PDF to your signers and CCs: `attachment` (attached, or a download link when it's too big to attach) or `link` (a download link). Null uses your account's rule: a link if your account has signed a BAA, otherwise attached. PDF templates only. A signature request uses the value it had when the request was created.
+    # How DocSpring's completed emails send the signed PDF to your signers and CCs: `attachment` (attached, or a download link when it's too big to attach) or `link` (a download link). Null uses your account's rule: a link if your account has signed a BAA, otherwise attached. A signature request uses the value it had when the request was created.
     attr_accessor :signature_request_email_attachments
 
-    # The address DocSpring's emails to your signers come from: an address at one of your verified email domains, on the Growth plan or higher. Null sends them from DocSpring's shared address, with "via DocSpring" after the sender name. PDF templates only.
+    # The address DocSpring's emails to your signers come from: an address at one of your verified email domains, on the Growth plan or higher. Null sends them from DocSpring's shared address, with "via DocSpring" after the sender name.
     attr_accessor :signature_request_from_address
 
-    # Puts a signing token in `signature_request_signing_url`, as `{{ token_id }}` and `{{ token_secret }}`, so your page can open the signing form without creating a token itself. The email then carries a credential: anyone who has it can open the form and sign. PDF templates only.
+    # Puts a signing token in `signature_request_signing_url`, as `{{ token_id }}` and `{{ token_secret }}`, so your page can open the signing form without creating a token itself. The email then carries a credential: anyone who has it can open the form and sign.
     attr_accessor :signature_request_include_signing_token
 
-    # The sender name on the emails DocSpring sends your signers, as in "Acme via DocSpring". It can't contain an email address, a website or quotes. Null uses your account's name. PDF templates only.
+    # The sender name on the emails DocSpring sends your signers, as in "Acme via DocSpring". It can't contain an email address, a website or quotes. Null uses your account's name.
     attr_accessor :signature_request_from_name
 
-    # Who DocSpring tells when a signature request's document is completed or declined, or an email bounces or can't be sent: members of your DocSpring team or addresses at your verified email domains. Empty means your account's owner. A submission's `notification_emails` replaces them. PDF templates only.
+    # Who DocSpring tells when a signature request's document is completed or declined, or an email bounces or can't be sent: members of your DocSpring team or addresses at your verified email domains. Empty means your account's owner. A submission's `notification_emails` replaces them.
     attr_accessor :signature_request_notification_emails
 
-    # Where your signers' replies to DocSpring's emails go: a member of your DocSpring team or an address at one of your verified email domains. Null means your account's owner. A submission's `reply_to` replaces it. PDF templates only.
+    # Where your signers' replies to DocSpring's emails go: a member of your DocSpring team or an address at one of your verified email domains. Null means your account's owner. A submission's `reply_to` replaces it.
     attr_accessor :signature_request_reply_to
 
-    # A page on your own site that the button in DocSpring's email to a signer opens, instead of DocSpring's signing page: an https URL on one of your verified email domains or a subdomain of one, on the Growth plan or higher. It must include `{{ signature_request_id }}`. Your page authenticates the signer, creates a token for the signature request, and opens the signing form with it. Null links to DocSpring's signing page. PDF templates only.
+    # A page on your own site that the button in DocSpring's email to a signer opens, instead of DocSpring's signing page: an https URL on one of your verified email domains or a subdomain of one, on the Growth plan or higher. It must include `{{ signature_request_id }}`. Your page authenticates the signer, creates a token for the signature request, and opens the signing form with it. Null links to DocSpring's signing page.
     attr_accessor :signature_request_signing_url
 
     # The title of the web form's success screen. When it's null or empty, the screen says "Thanks for filling out" and the template's name. It can have variables such as `{{ data.first_name }}`.
@@ -124,6 +127,9 @@ module DocSpring
     # Whether the web form's success screen has a "Fill out again" button, which clears the form so someone can fill it in again.
     attr_accessor :show_fill_again_button
 
+    # Whether a web form with sections makes people fill them out in order. When true, a later section stays locked until they reach it with Next. When false, they can open any section from the list, and Next and Submit still check their answers.
+    attr_accessor :form_sections_in_order
+
     # A Slack incoming webhook URL that is notified about the template's submissions. It's never returned; `has_slack_webhook_url` says if it's set.
     attr_accessor :slack_webhook_url
 
@@ -132,6 +138,12 @@ module DocSpring
 
     # The template's conditional logic rules. Setting them replaces all of the rules.
     attr_accessor :field_dependencies
+
+    # The template's signer roles, in order. Setting them replaces the whole list: a role left out is deleted, and its fields are left unassigned. Give each role you keep its `id`.
+    attr_accessor :signer_roles
+
+    # Who gets a copy of the completed document when DocSpring emails a submission's signers, with the submission's `cc`: email addresses, or `{{ variables }}` that name an address in the submission's data, such as `{{ agent.email }}`. A value the data doesn't have prints nothing, and an address that comes out blank is left out. The data has to have the value, so it's one of the template's fields (one the sender fills in) or the template allows additional properties: setting a variable that isn't a field is a `422` otherwise. They don't sign. Setting it replaces the whole list.
+    attr_accessor :signature_request_cc
 
     # The field names that people using the embedded template editor choose from, each with the data type and settings a field gets when it's given that name. Setting it replaces the whole list; an empty list turns them off.
     attr_accessor :predefined_fields
@@ -159,6 +171,12 @@ module DocSpring
 
     # A page design's layout: its page setup, its sections and the elements placed in them, in the Page Designer layout format (https://docspring.com/docs/page-designer/layout-format/). Its JSON Schema is at https://docspring.com/schemas/page-designer/layout.v1.json. Null for other templates. Setting it replaces the whole layout, and DocSpring adds a field for each value it reads. Left out when a page design is created, it starts with an empty page.
     attr_accessor :layout
+
+    # Whether the template's own expiry (`expire_submissions`, `expire_after` and `expiration_interval`) decides when all its submissions are deleted, with or without signature requests, including keeping them until you delete them. When false, the account's expiry settings do. Turning `expire_submissions` on also turns this on, unless the same request sets it, and so does creating a template with `expire_submissions` on or off.
+    attr_accessor :override_account_expiry
+
+    # Add a field for each value the template's code, Word document or layout reads for the first time, with a type worked out from how it's used. Existing fields keep their settings, and a field you deleted while the code still read the value stays deleted. Default true. Set it to false to manage the fields yourself with the fields endpoints: a form field whose field isn't on the template then fails its submissions and previews. Only for HTML templates, Word templates and page designs.
+    attr_accessor :sync_fields
 
     # The template's document, a PDF or a Word document (.docx or .odt): the `fields.key` of a file you uploaded with the presigned upload (GET /uploads/presign). PDF and Word templates need one of `cache_id`, `document_url` and `document_base64`. To upload the file with the request, use POST /templates/upload.
     attr_accessor :cache_id
@@ -222,6 +240,7 @@ module DocSpring
         :'ai_field_naming_language' => :'ai_field_naming_language',
         :'allow_additional_properties' => :'allow_additional_properties',
         :'allow_skipping_optional_fields' => :'allow_skipping_optional_fields',
+        :'continue_before_optional_fields' => :'continue_before_optional_fields',
         :'default_form_mode' => :'default_form_mode',
         :'editable_submissions' => :'editable_submissions',
         :'embed_domains' => :'embed_domains',
@@ -248,9 +267,12 @@ module DocSpring
         :'success_title' => :'success_title',
         :'success_message' => :'success_message',
         :'show_fill_again_button' => :'show_fill_again_button',
+        :'form_sections_in_order' => :'form_sections_in_order',
         :'slack_webhook_url' => :'slack_webhook_url',
         :'defaults' => :'defaults',
         :'field_dependencies' => :'field_dependencies',
+        :'signer_roles' => :'signer_roles',
+        :'signature_request_cc' => :'signature_request_cc',
         :'predefined_fields' => :'predefined_fields',
         :'predefined_fields_sample_data' => :'predefined_fields_sample_data',
         :'html' => :'html',
@@ -260,6 +282,8 @@ module DocSpring
         :'html_engine_options' => :'html_engine_options',
         :'html_escape_data' => :'html_escape_data',
         :'layout' => :'layout',
+        :'override_account_expiry' => :'override_account_expiry',
+        :'sync_fields' => :'sync_fields',
         :'cache_id' => :'cache_id',
         :'document_url' => :'document_url',
         :'document_base64' => :'document_base64',
@@ -295,6 +319,7 @@ module DocSpring
         :'ai_field_naming_language' => :'AiFieldNamingLanguage',
         :'allow_additional_properties' => :'Boolean',
         :'allow_skipping_optional_fields' => :'Boolean',
+        :'continue_before_optional_fields' => :'Boolean',
         :'default_form_mode' => :'TemplateFormMode',
         :'editable_submissions' => :'Boolean',
         :'embed_domains' => :'Array<String>',
@@ -321,9 +346,12 @@ module DocSpring
         :'success_title' => :'String',
         :'success_message' => :'String',
         :'show_fill_again_button' => :'Boolean',
+        :'form_sections_in_order' => :'Boolean',
         :'slack_webhook_url' => :'String',
         :'defaults' => :'TemplateDefaultsInput',
         :'field_dependencies' => :'Array<TemplateFieldDependencyInput>',
+        :'signer_roles' => :'Array<TemplateSignerRoleInput>',
+        :'signature_request_cc' => :'Array<String>',
         :'predefined_fields' => :'Array<PredefinedFieldInput>',
         :'predefined_fields_sample_data' => :'Hash<String, Object>',
         :'html' => :'String',
@@ -333,6 +361,8 @@ module DocSpring
         :'html_engine_options' => :'HtmlEngineOptionsInput',
         :'html_escape_data' => :'Boolean',
         :'layout' => :'Hash<String, Object>',
+        :'override_account_expiry' => :'Boolean',
+        :'sync_fields' => :'Boolean',
         :'cache_id' => :'String',
         :'document_url' => :'String',
         :'document_base64' => :'String',
@@ -436,6 +466,10 @@ module DocSpring
 
       if attributes.key?(:'allow_skipping_optional_fields')
         self.allow_skipping_optional_fields = attributes[:'allow_skipping_optional_fields']
+      end
+
+      if attributes.key?(:'continue_before_optional_fields')
+        self.continue_before_optional_fields = attributes[:'continue_before_optional_fields']
       end
 
       if attributes.key?(:'default_form_mode')
@@ -546,6 +580,10 @@ module DocSpring
         self.show_fill_again_button = attributes[:'show_fill_again_button']
       end
 
+      if attributes.key?(:'form_sections_in_order')
+        self.form_sections_in_order = attributes[:'form_sections_in_order']
+      end
+
       if attributes.key?(:'slack_webhook_url')
         self.slack_webhook_url = attributes[:'slack_webhook_url']
       end
@@ -557,6 +595,18 @@ module DocSpring
       if attributes.key?(:'field_dependencies')
         if (value = attributes[:'field_dependencies']).is_a?(Array)
           self.field_dependencies = value
+        end
+      end
+
+      if attributes.key?(:'signer_roles')
+        if (value = attributes[:'signer_roles']).is_a?(Array)
+          self.signer_roles = value
+        end
+      end
+
+      if attributes.key?(:'signature_request_cc')
+        if (value = attributes[:'signature_request_cc']).is_a?(Array)
+          self.signature_request_cc = value
         end
       end
 
@@ -600,6 +650,14 @@ module DocSpring
         if (value = attributes[:'layout']).is_a?(Hash) || value.nil?
           self.layout = value
         end
+      end
+
+      if attributes.key?(:'override_account_expiry')
+        self.override_account_expiry = attributes[:'override_account_expiry']
+      end
+
+      if attributes.key?(:'sync_fields')
+        self.sync_fields = attributes[:'sync_fields']
       end
 
       if attributes.key?(:'cache_id')
@@ -694,6 +752,7 @@ module DocSpring
           ai_field_naming_language == o.ai_field_naming_language &&
           allow_additional_properties == o.allow_additional_properties &&
           allow_skipping_optional_fields == o.allow_skipping_optional_fields &&
+          continue_before_optional_fields == o.continue_before_optional_fields &&
           default_form_mode == o.default_form_mode &&
           editable_submissions == o.editable_submissions &&
           embed_domains == o.embed_domains &&
@@ -720,9 +779,12 @@ module DocSpring
           success_title == o.success_title &&
           success_message == o.success_message &&
           show_fill_again_button == o.show_fill_again_button &&
+          form_sections_in_order == o.form_sections_in_order &&
           slack_webhook_url == o.slack_webhook_url &&
           defaults == o.defaults &&
           field_dependencies == o.field_dependencies &&
+          signer_roles == o.signer_roles &&
+          signature_request_cc == o.signature_request_cc &&
           predefined_fields == o.predefined_fields &&
           predefined_fields_sample_data == o.predefined_fields_sample_data &&
           html == o.html &&
@@ -732,6 +794,8 @@ module DocSpring
           html_engine_options == o.html_engine_options &&
           html_escape_data == o.html_escape_data &&
           layout == o.layout &&
+          override_account_expiry == o.override_account_expiry &&
+          sync_fields == o.sync_fields &&
           cache_id == o.cache_id &&
           document_url == o.document_url &&
           document_base64 == o.document_base64 &&
@@ -752,7 +816,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [name, description, template_type, output_format, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, signature_request_email_attachments, signature_request_from_address, signature_request_include_signing_token, signature_request_from_name, signature_request_notification_emails, signature_request_reply_to, signature_request_signing_url, success_title, success_message, show_fill_again_button, slack_webhook_url, defaults, field_dependencies, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, html_escape_data, layout, cache_id, document_url, document_base64, filename, detect_fields, field_source, field_naming, field_logic, include_office_use_fields].hash
+      [name, description, template_type, output_format, parent_folder_id, locked, add_signature_request_submission_id_footers, ai_field_naming_language, allow_additional_properties, allow_skipping_optional_fields, continue_before_optional_fields, default_form_mode, editable_submissions, embed_domains, embed_edit_allow_settings, embed_edit_allow_versioning, embed_edit_allow_document_replacement, encrypt_pdfs, encrypt_pdfs_password, expire_submissions, expire_after, expiration_interval, merge_audit_trail_pdf, parse_dates_using_template_date_format, public_submissions, public_web_form, redirect_url, signature_request_email_attachments, signature_request_from_address, signature_request_include_signing_token, signature_request_from_name, signature_request_notification_emails, signature_request_reply_to, signature_request_signing_url, success_title, success_message, show_fill_again_button, form_sections_in_order, slack_webhook_url, defaults, field_dependencies, signer_roles, signature_request_cc, predefined_fields, predefined_fields_sample_data, html, scss, header_html, footer_html, html_engine_options, html_escape_data, layout, override_account_expiry, sync_fields, cache_id, document_url, document_base64, filename, detect_fields, field_source, field_naming, field_logic, include_office_use_fields].hash
     end
 
     # Builds the object from hash

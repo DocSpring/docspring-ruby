@@ -46,7 +46,7 @@ module DocSpring
     # How date fields are printed, as a strftime format such as `%m/%d/%Y`.
     attr_accessor :date_format
 
-    # How date-time fields are printed, as a strftime format such as `%m/%d/%Y %H:%M:%S`.
+    # How date-time fields are printed, as a strftime format such as `%m/%d/%Y %H:%M`.
     attr_accessor :date_time_format
 
     # The color of check marks, as 6 hex digits.

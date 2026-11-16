@@ -1,0 +1,31 @@
+# Written by DocSpring/docspring's api_clients/scripts/generate from api_clients/github_workflows/ruby/.shiplist.yml:
+# change it there.
+#
+# The files the gem may hold (https://github.com/DocSpring/shiplist). The release workflow builds the gem and fails if
+# it has any other file.
+version: 1
+stages: [package]
+
+remove_before:
+  package:
+    include:
+      - '.*'
+      - '.*/**'
+      - 'docs/'
+      - 'spec/'
+      - 'Gemfile'
+      - 'Gemfile.lock'
+      - 'Rakefile'
+      - 'docspring.gemspec'
+
+keep:
+  include:
+    - 'lib/'
+    - 'AGENTS.md'
+    - 'CHANGELOG.md'
+    - 'LICENSE'
+    - 'README.md'
+
+forbid:
+  - '**/.env'
+  - '**/.env.*'

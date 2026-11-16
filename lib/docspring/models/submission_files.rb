@@ -22,6 +22,9 @@ module DocSpring
     # The audit trail of a submission with signature requests: who signed, when and how. It's also added to the end of the PDF when the template's `merge_audit_trail_pdf` is on.
     attr_accessor :audit_trail
 
+    # The audit data behind the audit trail of a submission with signature requests, as JSON: the hashes of the document and the audit trail, and each signing event with the salt and hash that DocSpring's signing record holds for it. It has who signed, like the audit trail, and goes when the submission expires, so keep it with the PDF and the audit trail.
+    attr_accessor :signing_manifest
+
     # The preview PDF from POST /submissions/{submission_id}/generate_preview, such as for a submission still waiting for its signature requests.
     attr_accessor :preview
 
@@ -38,6 +41,7 @@ module DocSpring
       {
         :'pdf' => :'pdf',
         :'audit_trail' => :'audit_trail',
+        :'signing_manifest' => :'signing_manifest',
         :'preview' => :'preview',
         :'docx' => :'docx',
         :'odt' => :'odt',
@@ -60,6 +64,7 @@ module DocSpring
       {
         :'pdf' => :'GeneratedFile',
         :'audit_trail' => :'GeneratedFile',
+        :'signing_manifest' => :'GeneratedFile',
         :'preview' => :'GeneratedFile',
         :'docx' => :'GeneratedFile',
         :'odt' => :'GeneratedFile',
@@ -107,6 +112,10 @@ module DocSpring
         self.audit_trail = attributes[:'audit_trail']
       end
 
+      if attributes.key?(:'signing_manifest')
+        self.signing_manifest = attributes[:'signing_manifest']
+      end
+
       if attributes.key?(:'preview')
         self.preview = attributes[:'preview']
       end
@@ -146,6 +155,7 @@ module DocSpring
       self.class == o.class &&
           pdf == o.pdf &&
           audit_trail == o.audit_trail &&
+          signing_manifest == o.signing_manifest &&
           preview == o.preview &&
           docx == o.docx &&
           odt == o.odt &&
@@ -161,7 +171,7 @@ module DocSpring
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [pdf, audit_trail, preview, docx, odt, png].hash
+      [pdf, audit_trail, signing_manifest, preview, docx, odt, png].hash
     end
 
     # Builds the object from hash

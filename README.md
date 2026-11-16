@@ -13,7 +13,7 @@ pull requests are welcome.
 Outside Ruby code, the [DocSpring CLI](https://docspring.com/docs/cli/) calls the same API from a terminal or a
 shell script, and the [MCP server](https://docspring.com/docs/mcp/) connects AI assistants to your account.
 
-Version 4.5.0. Requires Ruby >= 2.7.
+Version 4.6.0. Requires Ruby >= 2.7.
 
 ## Install and configure
 
