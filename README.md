@@ -13,7 +13,7 @@ pull requests are welcome.
 Outside Ruby code, the [DocSpring CLI](https://docspring.com/docs/cli/) calls the same API from a terminal or a
 shell script, and the [MCP server](https://docspring.com/docs/mcp/) connects AI assistants to your account.
 
-Version 4.6.0. Requires Ruby >= 2.7.
+Version 4.7.0. Requires Ruby >= 2.7.
 
 ## Install and configure
 
@@ -91,6 +91,7 @@ Ruby code for every method.
 | Method | Description |
 | ------ | ----------- |
 | [`add_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#add_template_fields) | Add fields to a template |
+| [`ask_support_help`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#ask_support_help) | Ask for help |
 | [`copy_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#copy_template) | Copy a template |
 | [`create_account_email_action`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_account_email_action) | Create an account email action |
 | [`create_combined_pdf`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#create_combined_pdf) | Combine PDFs |
@@ -127,6 +128,8 @@ Ruby code for every method.
 | [`get_signature_request`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_signature_request) | Get a signature request |
 | [`get_submission`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_submission) | Get a submission |
 | [`get_submission_batch`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_submission_batch) | Get a batch |
+| [`get_support_help`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_support_help) | Get a help request |
+| [`get_support_ticket`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_support_ticket) | Get a support ticket |
 | [`get_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template) | Get a template |
 | [`get_template_diff`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_diff) | Compare a version of a template with the one before it |
 | [`get_template_model_code`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#get_template_model_code) | Generate typed code for a template's submission data |
@@ -141,19 +144,23 @@ Ruby code for every method.
 | [`list_email_domains`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_email_domains) | List email domains |
 | [`list_folders`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_folders) | List folders |
 | [`list_submissions`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_submissions) | List submissions |
+| [`list_support_tickets`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_support_tickets) | List support tickets |
 | [`list_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_template_fields) | List a template's fields |
 | [`list_template_submissions`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_template_submissions) | List a template's submissions |
 | [`list_templates`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_templates) | List templates |
 | [`list_webhooks`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#list_webhooks) | List webhooks |
 | [`move_folder`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#move_folder) | Move a folder |
 | [`move_template`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#move_template) | Move a template to a folder |
+| [`open_support_ticket`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#open_support_ticket) | Open a support ticket |
 | [`publish_template_version`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#publish_template_version) | Publish a template version |
 | [`remove_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#remove_template_fields) | Remove fields from a template |
 | [`rename_folder`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#rename_folder) | Rename a folder |
 | [`reorder_template_fields`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#reorder_template_fields) | Reorder a template's fields |
+| [`reply_to_support_ticket`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#reply_to_support_ticket) | Reply to a support ticket |
 | [`restore_template_version`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#restore_template_version) | Restore a template version |
 | [`send_account_email_action_test_email`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#send_account_email_action_test_email) | Send a test email for an account email action |
 | [`send_email_action_test_email`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#send_email_action_test_email) | Send a test email |
+| [`send_support_feedback`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#send_support_feedback) | Send feedback |
 | [`test_authentication`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#test_authentication) | Test authentication |
 | [`update_account_email_action`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_account_email_action) | Update an account email action |
 | [`update_email_action`](https://github.com/DocSpring/docspring-ruby/blob/main/docs/Client.md#update_email_action) | Update an email action |
